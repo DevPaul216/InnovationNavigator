@@ -898,8 +898,11 @@ def end_sub_view():
             add_empty_lines(5)
 
 
+
 def start_sub_view():
     data_stores_dir = os.path.join(".", "data_stores")
+    os.makedirs(data_stores_dir, exist_ok=True)  # Ensure the folder exists
+
     data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
     core_names = [path.stem for path in data_stores_paths]
     project_names = [str(name).split('data_store_')[1] for name in core_names]
@@ -910,10 +913,8 @@ def start_sub_view():
     # Button to create a new project manually
     if st.button("Create new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
-            # Save the current data store just to be sure
             update_data_store()
             sst.project_name = new_project_name
-            # Create new empty data store
             sst.data_store = {}
             update_data_store()
             load_data_store()
@@ -924,62 +925,49 @@ def start_sub_view():
         else:
             st.warning("A project with this name is already there")
 
-    #IMPORT
+    # File uploader for importing a project file
     st.divider()
-    st.subheader("Import Existing Project")
-    uploaded_file = st.file_uploader("Upload an existing Innovation Project file (JSON format)", type="json")
-
-    if uploaded_file is not None:  # Check if a file has been uploaded
-        # Automatically read the project name from the uploaded file's title
-        try:
-            uploaded_data = json.load(uploaded_file)  # Load the JSON data from the uploaded file
-            project_name_from_file = uploaded_file.name.split('.')[0]  # Use the file name (without extension) as the project name
-            if project_name_from_file not in project_names:  # Check if the project name is not already in the list of existing projects
-                # Save the uploaded file to the data_stores folder
-                with open(os.path.join(data_stores_dir, f"data_store_{project_name_from_file}.json"), "w", encoding="utf-8") as f:
-                    json.dump(uploaded_data, f, indent=4)  # Write the uploaded data to a new JSON file in the data_stores directory
-                st.success(f"Project '{project_name_from_file}' imported successfully!")  # Display a success message
-
-                load_data_store()  # Load the data store for the new project
-                sst.sidebar_state = "expanded"  # Expand the sidebar
-                sst.update_graph = True  # Mark the graph for update
-                st.rerun()  # Rerun the Streamlit app to reflect changes
-            else:
-                st.warning(f"A project with the name '{project_name_from_file}' already exists.")  # Warn the user if the project name already exists
-        except json.JSONDecodeError:  # Handle the case where the uploaded file is not a valid JSON file
-            st.error("The uploaded file is not a valid JSON file.")  # Display an error message
-
-
+    st.subheader("Upload Existing Project File")
+    uploaded_file = st.file_uploader("Choose a project file to upload (.json)", type=["json"])
+    if uploaded_file is not None:
+        # Determine destination path
+        dest_path = os.path.join(data_stores_dir, uploaded_file.name)
+        # Save the uploaded file
+        with open(dest_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success(f"Uploaded successfully as {uploaded_file.name}")
+        st.rerun()
 
     st.divider()
     st.subheader("Switch/Delete/Download Project")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
         index=project_names.index(sst.project_name))
+    
     if selected_project_name != sst.project_name:
         sst.project_name = selected_project_name
         load_data_store()
         sst.sidebar_state = "expanded"
         st.rerun()
+
     if selected_project_name != "default":
         add_empty_lines(2)
-        with st.expander("Delete Project"):
-            if st.button("Delete"):
-                os.remove(get_full_data_store_path())
-                sst.project_name = "default"
-                load_data_store()
-                st.success("Deleted")
-                time.sleep(1.0)
-                st.rerun()
+        if st.button("Delete"):
+            os.remove(get_full_data_store_path())
+            sst.project_name = "default"
+            load_data_store()
+            st.success("Deleted")
+            time.sleep(1.0)
+            st.rerun()
 
         with st.expander("Download Project"):
             file_path = os.path.join(data_stores_dir, f"data_store_{selected_project_name}.json")
             with open(file_path, "r", encoding="utf-8") as f:
                 file_data = f.read()
-        st.download_button(
-            label="Download Project File",
-            data=file_data,
-            file_name=f"data_store_{selected_project_name}.json",
-            mime="application/json"
+            st.download_button(
+                label="Download Project File",
+                data=file_data,
+                file_name=f"data_store_{selected_project_name}.json",
+                mime="application/json"
             )
 
 
