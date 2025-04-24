@@ -925,29 +925,25 @@ def start_sub_view():
         else:
             st.warning("A project with this name is already there")
 
-st.divider()
-st.subheader("Upload Existing Project File")
-uploaded_file = st.file_uploader("Choose a project file to upload (.json)", type=["json"])
-if uploaded_file is not None:
-    filename = uploaded_file.name
-    if filename.startswith("data_store_") and filename.endswith(".json"):
+    # File uploader for importing a project file
+    st.divider()
+    st.subheader("Upload Existing Project File")
+    uploaded_file = st.file_uploader("Choose a project file to upload (.json)", type=["json"])
+    if uploaded_file is not None:
+        # Determine destination path
+        dest_path = os.path.join(data_stores_dir, uploaded_file.name)
+
         # Save the uploaded file
-        dest_path = os.path.join(data_stores_dir, filename)
+        new_project_name = uploaded_file.name.split("data_store_")[1].split(".json")[0]
+        sst.project_name = new_project_name
         with open(dest_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
-        
-        # Extract project name from file name
-        project_name = filename[len("data_store_"):-len(".json")]
-        sst.project_name = project_name
-        
-        # Optionally load the new data store here
-        load_data_store()
-        st.success(f"Uploaded and switched to project: {project_name}")
+        update_data_store()
+        load_data_store()    
+        st.success(f"Uploaded successfully as {uploaded_file.name}")
         sst.sidebar_state = "expanded"
         sst.update_graph = True
         st.rerun()
-    else:
-        st.warning("File name must follow the format: data_store_<project_name>.json")
 
     st.divider()
     st.subheader("Switch/Delete/Download Project")
