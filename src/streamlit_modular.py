@@ -907,36 +907,6 @@ def start_sub_view():
     st.subheader("Add new Innovation Project")
     new_project_name = st.text_input(label="Name of new Innovation Project").strip()
 
-    # File uploader for existing JSON files
-    uploaded_file = st.file_uploader("Upload an existing Innovation Project file (JSON format)", type="json")
-
-    if uploaded_file is not None:
-        # Validate and save the uploaded file
-        try:
-            uploaded_data = json.load(uploaded_file)
-            project_name_from_file = uploaded_file.name.split('.')[0]  # Use the file name as the project name
-            if project_name_from_file not in project_names:
-                # Save the uploaded file to the data_stores folder
-                with open(os.path.join(data_stores_dir, f"data_store_{project_name_from_file}.json"), "w", encoding="utf-8") as f:
-                    json.dump(uploaded_data, f, indent=4)
-                st.success(f"Project '{project_name_from_file}' uploaded successfully!")
-                
-                # Refresh project names after uploading
-                data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
-                core_names = [path.stem for path in data_stores_paths]
-                project_names = [str(name).split('data_store_')[1] for name in core_names]
-
-                sst.project_name = project_name_from_file
-                load_data_store()
-                sst.sidebar_state = "expanded"
-                sst.update_graph = True
-                # Refresh the dropdown by re-rendering the page
-                st.rerun()
-            else:
-                st.warning(f"A project with the name '{project_name_from_file}' already exists.")
-        except json.JSONDecodeError:
-            st.error("The uploaded file is not a valid JSON file.")
-
     if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
             # Save the current data store just to be sure
@@ -949,7 +919,6 @@ def start_sub_view():
             st.success("Project created")
             sst.sidebar_state = "expanded"
             sst.update_graph = True
-            time.sleep(1.0)
             st.rerun()
         else:
             st.warning("A project with this name is already there")
