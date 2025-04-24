@@ -942,7 +942,7 @@ def start_sub_view():
                     # Save the uploaded file to the data_store directory
                     with open(os.path.join(data_stores_dir, f"data_store_{uploaded_project_name}.json"), "w", encoding="utf-8") as file:
                         json.dump(uploaded_data, file, indent=4)
-                    
+                    update_data_store()
                     # Update project names and trigger a rerun
                     project_names.append(uploaded_project_name)
                     st.success(f"Project '{uploaded_project_name}' uploaded successfully!")
