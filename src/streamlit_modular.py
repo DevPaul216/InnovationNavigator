@@ -944,10 +944,10 @@ def start_sub_view():
                         json.dump(uploaded_data, file, indent=4)
                     
                     # Update session state and project names
-                    update_data_store()
+                    sst.project_names.append(uploaded_project_name)  # Update session state project names
                     sst.project_name = uploaded_project_name
-                    load_data_store()
-                    project_names.append(uploaded_project_name)
+                    sst.data_store = uploaded_data  # Load the uploaded data into session state
+                    update_data_store()
                     
                     # Provide success feedback and trigger a rerun
                     st.success(f"Project '{uploaded_project_name}' uploaded successfully!")
