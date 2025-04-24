@@ -911,7 +911,7 @@ def start_sub_view():
     uploaded_file = st.file_uploader("Upload an existing Innovation Project file (JSON format)", type="json")
 
     if uploaded_file is not None:
-        # Automatically read the project name from the uploaded file's title
+        # Validate and save the uploaded file
         try:
             uploaded_data = json.load(uploaded_file)
             project_name_from_file = uploaded_file.name.split('.')[0]  # Use the file name as the project name
@@ -930,13 +930,14 @@ def start_sub_view():
                 load_data_store()
                 sst.sidebar_state = "expanded"
                 sst.update_graph = True
-                st.rerun()
+                
+                # Refresh the dropdown by re-rendering the page
+                st.experimental_rerun()
             else:
                 st.warning(f"A project with the name '{project_name_from_file}' already exists.")
         except json.JSONDecodeError:
             st.error("The uploaded file is not a valid JSON file.")
 
-    # Button to create a new project manually
     if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
             # Save the current data store just to be sure
@@ -946,13 +947,13 @@ def start_sub_view():
             sst.data_store = {}
             update_data_store()
             load_data_store()
-            st.success(f"Project '{new_project_name}' created successfully!")
+            st.success("Project created")
             sst.sidebar_state = "expanded"
             sst.update_graph = True
             time.sleep(1.0)
             st.rerun()
         else:
-            st.warning(f"A project with the name '{new_project_name}' already exists.")
+            st.warning("A project with this name is already there")
 
     st.divider()
     st.subheader("Switch/Delete/Download Project")
