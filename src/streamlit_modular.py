@@ -951,7 +951,9 @@ def start_sub_view():
             st.warning("A project with this name is already there")
    
     st.divider()
-    st.subheader("Switch/Delete Project")
+
+    st.divider()
+    st.subheader("Switch/Delete/Download Project")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
                                          index=project_names.index(sst.project_name))
     if selected_project_name != sst.project_name:
@@ -969,6 +971,17 @@ def start_sub_view():
                 st.success("Deleted")
                 time.sleep(1.0)
                 st.rerun()
+
+        with st.expander("Download Project"):
+            file_path = os.path.join(data_stores_dir, f"data_store_{selected_project_name}.json")
+            with open(file_path, "r", encoding="utf-8") as f:
+                file_data = f.read()
+            st.download_button(
+                label="Download Project File",
+                data=file_data,
+                file_name=f"data_store_{selected_project_name}.json",
+                mime="application/json"
+            )
 
 
 view_assignment_dict = {"general": general_creation_view,
