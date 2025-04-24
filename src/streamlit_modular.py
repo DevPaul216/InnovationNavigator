@@ -921,6 +921,28 @@ def start_sub_view():
         else:
             st.warning("A project with this name is already there")
     st.divider()
+
+    st.divider()
+    st.subheader("Upload Project JSON File")
+    uploaded_file = st.file_uploader("Upload a JSON file to add a new project", type="json")
+    if uploaded_file is not None:
+        try:
+            # Load the uploaded JSON file
+            uploaded_data = json.load(uploaded_file)
+            uploaded_project_name = uploaded_file.name.replace("data_store_", "").replace(".json", "")
+            
+            if uploaded_project_name not in project_names:
+                # Save the uploaded file to the data_store directory
+                with open(os.path.join(data_stores_dir, f"data_store_{uploaded_project_name}.json"), "w", encoding="utf-8") as file:
+                    json.dump(uploaded_data, file, indent=4)
+                st.success(f"Project '{uploaded_project_name}' uploaded successfully!")
+                st.rerun()
+            else:
+                st.warning(f"A project with the name '{uploaded_project_name}' already exists.")
+        except Exception as e:
+            st.error(f"Error uploading file: {e}")
+
+
     st.subheader("Switch/Delete Project")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
                                          index=project_names.index(sst.project_name))
