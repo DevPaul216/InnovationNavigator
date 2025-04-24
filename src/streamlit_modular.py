@@ -929,7 +929,7 @@ def start_sub_view():
         try:
             # Load the uploaded JSON file
             uploaded_data = json.load(uploaded_file)
-            uploaded_project_name = uploaded_file.name.replace("data_store_", "").replace(".json", "")
+            uploaded_project_name = os.path.splitext(uploaded_file.name)[0].replace("data_store_", "")
             
             if uploaded_project_name not in project_names:
                 # Save the uploaded file to the data_store directory
