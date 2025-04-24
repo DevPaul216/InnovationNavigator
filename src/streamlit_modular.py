@@ -930,9 +930,8 @@ def start_sub_view():
                 load_data_store()
                 sst.sidebar_state = "expanded"
                 sst.update_graph = True
-                
                 # Refresh the dropdown by re-rendering the page
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning(f"A project with the name '{project_name_from_file}' already exists.")
         except json.JSONDecodeError:
