@@ -308,7 +308,8 @@
     ],
     "elements": [
       "IdeasToEvaluate",
-      "DFVS_Evaluation"
+      "DFVS_Evaluation",
+      "IdeaVisualization"
     ],
     "display": [
       {
