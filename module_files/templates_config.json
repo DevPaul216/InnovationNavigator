@@ -420,8 +420,7 @@
   "InnovationLearnings": {
     "display_name": "Learnings",
     "connects": [
-      "End",
-      "Business Model Canvas"
+      "End"
     ],
     "elements": [
       "Learnings",
