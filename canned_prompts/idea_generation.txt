@@ -1,0 +1,4 @@
+Dir wird eine Idee übermittelt. Zerlege diese Idee in Sub-Ideen.
+Gib diese Sub-Ideen als Liste zurück.
+Formuliere die Sub-Ideen so kurz als möglich.
+Die Liste sollte nicht mehr als drei Elemente umfassen.

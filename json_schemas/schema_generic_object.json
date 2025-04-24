@@ -1,0 +1,17 @@
+{
+  "name": "text_points",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "points": {
+        "type": "string",
+        "description": "A list single paragraph of text."
+      }
+    },
+    "required": [
+      "points"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}
