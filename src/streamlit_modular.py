@@ -256,7 +256,6 @@ def display_generated_artifacts_view(element_name):
             columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
             with columns[1]:
                 if isinstance(artifact, str):
-                    st.write("text")
                     st.markdown(artifact)
                 else:
                     st.image(artifact)
