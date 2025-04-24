@@ -939,9 +939,7 @@ def start_sub_view():
             if uploaded_project_name:
                 # Check if the project name already exists
 
-                if uploaded_project_name in project_names:
-                    st.warning(f"A project with the name '{uploaded_project_name}' already exists.")
-                elif uploaded_project_name not in project_names:
+                if uploaded_project_name not in project_names:
                     # Save the uploaded file to the data_store directory
                     with open(os.path.join(data_stores_dir, f"data_store_{uploaded_project_name}.json"), "w", encoding="utf-8") as file:
                         json.dump(uploaded_data, file, indent=4)
