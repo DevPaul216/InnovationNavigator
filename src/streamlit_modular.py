@@ -920,29 +920,42 @@ def start_sub_view():
             st.rerun()
         else:
             st.warning("A project with this name is already there")
-    st.divider()
+   
+st.divider()
+st.subheader("Upload Project JSON File")
+uploaded_file = st.file_uploader("Upload a JSON file to add a new project", type="json")
+if uploaded_file is not None:
+    try:
+        # Load the uploaded JSON file
+        uploaded_data = json.load(uploaded_file)
+        
+        # Extract project name from the file name
+        if uploaded_file.name.startswith("data_store_") and uploaded_file.name.endswith(".json"):
+            uploaded_project_name = uploaded_file.name.replace("data_store_", "").replace(".json", "").strip()
+        else:
+            st.error("Invalid file name format. Expected format: 'data_store_<project_name>.json'")
+            uploaded_project_name = None
 
-    st.divider()
-    st.subheader("Upload Project JSON File")
-    uploaded_file = st.file_uploader("Upload a JSON file to add a new project", type="json")
-    if uploaded_file is not None:
-        try:
-            # Load the uploaded JSON file
-            uploaded_data = json.load(uploaded_file)
-            uploaded_project_name = os.path.splitext(uploaded_file.name)[0].replace("data_store_", "")
-            
+        if uploaded_project_name:
+            # Check if the project name already exists
             if uploaded_project_name not in project_names:
                 # Save the uploaded file to the data_store directory
                 with open(os.path.join(data_stores_dir, f"data_store_{uploaded_project_name}.json"), "w", encoding="utf-8") as file:
                     json.dump(uploaded_data, file, indent=4)
+                
+                # Update project names and trigger a rerun
+                project_names.append(uploaded_project_name)
                 st.success(f"Project '{uploaded_project_name}' uploaded successfully!")
                 st.rerun()
             else:
                 st.warning(f"A project with the name '{uploaded_project_name}' already exists.")
-        except Exception as e:
-            st.error(f"Error uploading file: {e}")
-
-
+    except json.JSONDecodeError:
+        st.error("The uploaded file is not a valid JSON file.")
+    except Exception as e:
+        st.error(f"Error uploading file: {e}")
+   
+   
+    st.divider()
     st.subheader("Switch/Delete Project")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
                                          index=project_names.index(sst.project_name))
