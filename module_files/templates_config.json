@@ -319,6 +319,14 @@
         "height": 300,
         "background-color": "yellow",
         "font-color": "black"
+      },
+      {
+        "format": [
+          1
+        ],
+        "height": 600,
+        "background-color": "yellow",
+        "font-color": "black"
       }
     ]
   },
