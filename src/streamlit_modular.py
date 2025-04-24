@@ -929,35 +929,25 @@ def start_sub_view():
     st.subheader("Import Existing Project")
     uploaded_file = st.file_uploader("Upload an existing Innovation Project file (JSON format)", type="json")
 
-    if uploaded_file is not None:
+    if uploaded_file is not None:  # Check if a file has been uploaded
         # Automatically read the project name from the uploaded file's title
         try:
-            uploaded_data = json.load(uploaded_file)
-            project_name_from_file = uploaded_file.name.split('.')[0]  # Use the file name as the project name
-            if project_name_from_file not in project_names:
+            uploaded_data = json.load(uploaded_file)  # Load the JSON data from the uploaded file
+            project_name_from_file = uploaded_file.name.split('.')[0]  # Use the file name (without extension) as the project name
+            if project_name_from_file not in project_names:  # Check if the project name is not already in the list of existing projects
                 # Save the uploaded file to the data_stores folder
                 with open(os.path.join(data_stores_dir, f"data_store_{project_name_from_file}.json"), "w", encoding="utf-8") as f:
-                    json.dump(uploaded_data, f, indent=4)
-                st.success(f"Project '{project_name_from_file}' imported successfully!")
-                
-                # Refresh project names after uploading
-                data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
-                core_names = [path.stem for path in data_stores_paths]
-                project_names = [str(name).split('data_store_')[1] for name in core_names]
-                
-                # Update session state with the new project names
-                sst.project_names = project_names
+                    json.dump(uploaded_data, f, indent=4)  # Write the uploaded data to a new JSON file in the data_stores directory
+                st.success(f"Project '{project_name_from_file}' imported successfully!")  # Display a success message
 
-                # Set the project name and reload the data store
-                sst.project_name = project_name_from_file
-                load_data_store()
-                sst.sidebar_state = "expanded"
-                sst.update_graph = True
-                st.rerun()
+                load_data_store()  # Load the data store for the new project
+                sst.sidebar_state = "expanded"  # Expand the sidebar
+                sst.update_graph = True  # Mark the graph for update
+                st.rerun()  # Rerun the Streamlit app to reflect changes
             else:
-                st.warning(f"A project with the name '{project_name_from_file}' already exists.")
-        except json.JSONDecodeError:
-            st.error("The uploaded file is not a valid JSON file.")
+                st.warning(f"A project with the name '{project_name_from_file}' already exists.")  # Warn the user if the project name already exists
+        except json.JSONDecodeError:  # Handle the case where the uploaded file is not a valid JSON file
+            st.error("The uploaded file is not a valid JSON file.")  # Display an error message
 
 
 
