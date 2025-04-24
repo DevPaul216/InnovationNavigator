@@ -56,6 +56,7 @@ def init_session_state():
         sst.generated_artifacts = {}
         sst.confirmed_artifacts = {}
         sst.project_name = "default"
+        sst.project_names = []
         sst.template_config = load_json_dictionary(os.path.join("module_files", "templates_config.json"))
         sst.elements_config = load_json_dictionary(os.path.join("module_files", "elements_config.json"))
         sst.selected_template_name = None
@@ -902,8 +903,36 @@ def start_sub_view():
     data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
     core_names = [path.stem for path in data_stores_paths]
     project_names = [str(name).split('data_store_')[1] for name in core_names]
+
     st.subheader("Add new Innovation Project")
     new_project_name = st.text_input(label="Name of new Innovation Project").strip()
+
+    # File uploader for existing JSON files
+    uploaded_file = st.file_uploader("Upload an existing Innovation Project file (JSON format)", type="json")
+
+    if uploaded_file is not None:
+        # Validate and save the uploaded file
+        try:
+            uploaded_data = json.load(uploaded_file)
+            project_name_from_file = uploaded_file.name.split('.')[0]  # Use the file name as the project name
+            if project_name_from_file not in project_names:
+                # Save the uploaded file to the data_stores folder
+                with open(os.path.join(data_stores_dir, f"data_store_{project_name_from_file}.json"), "w", encoding="utf-8") as f:
+                    json.dump(uploaded_data, f, indent=4)
+                st.success(f"Project '{project_name_from_file}' uploaded successfully!")
+                sst.project_name = project_name_from_file
+                load_data_store()
+                sst.sidebar_state = "expanded"
+                sst.update_graph = True
+                st.rerun()
+            else:
+                st.warning(f"A project with the name '{project_name_from_file}' already exists.")
+        except json.JSONDecodeError:
+            st.error("The uploaded file is not a valid JSON file.")
+
+
+
+
     if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
             # Save the current data store just to be sure
@@ -920,47 +949,6 @@ def start_sub_view():
             st.rerun()
         else:
             st.warning("A project with this name is already there")
-   
-    st.divider()
-    st.subheader("Upload Project JSON File")
-    uploaded_file = st.file_uploader("Upload a JSON file to add a new project", type="json")
-    if uploaded_file is not None:
-        try:
-            # Load the uploaded JSON file
-            uploaded_data = json.load(uploaded_file)
-            
-            # Extract project name from the file name
-            if uploaded_file.name.startswith("data_store_") and uploaded_file.name.endswith(".json"):
-                uploaded_project_name = uploaded_file.name.replace("data_store_", "").replace(".json", "").strip()
-            else:
-                st.error("Invalid file name format. Expected format: 'data_store_<project_name>.json'")
-                uploaded_project_name = None
-
-            if uploaded_project_name:
-                # Check if the project name already exists
-                if uploaded_project_name not in project_names:
-                    # Save the uploaded file to the data_store directory
-                    with open(os.path.join(data_stores_dir, f"data_store_{uploaded_project_name}.json"), "w", encoding="utf-8") as file:
-                        json.dump(uploaded_data, file, indent=4)
-                    
-                    # Update session state and project names
-                    sst.project_names.append(uploaded_project_name)  # Update session state project names
-                    sst.project_name = uploaded_project_name
-                    sst.data_store = uploaded_data  # Load the uploaded data into session state
-                    update_data_store()
-                    
-                    # Provide success feedback and trigger a rerun
-                    st.success(f"Project '{uploaded_project_name}' uploaded successfully!")
-                    st.sidebar_state = "expanded"
-                    sst.update_graph = True
-                    st.rerun()
-                else:
-                    st.warning(f"A project with the name '{uploaded_project_name}' already exists.")
-        except json.JSONDecodeError:
-            st.error("The uploaded file is not a valid JSON file.")
-        except Exception as e:
-            st.error(f"Error uploading file: {e}")
-   
    
     st.divider()
     st.subheader("Switch/Delete Project")
