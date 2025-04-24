@@ -956,7 +956,7 @@ def start_sub_view():
     st.divider()
     st.subheader("Switch/Delete/Download Project")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
-                                         index=project_names.index(sst.project_name))
+        index=project_names.index(sst.project_name))
     if selected_project_name != sst.project_name:
         sst.project_name = selected_project_name
         load_data_store()
