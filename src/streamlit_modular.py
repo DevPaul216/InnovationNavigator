@@ -925,42 +925,18 @@ def start_sub_view():
         else:
             st.warning("A project with this name is already there")
 
-# File uploader for importing a project file
-st.divider()
-st.subheader("Upload Existing Project File")
-uploaded_file = st.file_uploader("Choose a project file to upload (.json)", type=["json"])
-if uploaded_file is not None:
-    try:
+    # File uploader for importing a project file
+    st.divider()
+    st.subheader("Upload Existing Project File")
+    uploaded_file = st.file_uploader("Choose a project file to upload (.json)", type=["json"])
+    if uploaded_file is not None:
         # Determine destination path
         dest_path = os.path.join(data_stores_dir, uploaded_file.name)
-
-        # Extract project name from the file name
-        if "data_store_" in uploaded_file.name and uploaded_file.name.endswith(".json"):
-            new_project_name = uploaded_file.name.split("data_store_")[1].split(".json")[0]
-        else:
-            st.error("Invalid file name format. Expected 'data_store_<project_name>.json'.")
-            st.stop()
-
         # Save the uploaded file
         with open(dest_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
-
-        # Update session state and reload data
-        sst.project_name = new_project_name
-        update_data_store()
-        load_data_store()
-
-        # Refresh project names
-        data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
-        core_names = [path.stem for path in data_stores_paths]
-        project_names = [str(name).split('data_store_')[1] for name in core_names]
-
         st.success(f"Uploaded successfully as {uploaded_file.name}")
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
         st.rerun()
-    except Exception as e:
-        st.error(f"An error occurred while uploading the file: {e}")
 
     st.divider()
     st.subheader("Switch/Delete/Download Project")
