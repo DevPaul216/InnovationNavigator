@@ -566,7 +566,7 @@
     ]
   },
   "DFVS_Evaluation": {
-    "display_name": "DVFS_Evaluation",
+    "display_name": "DVFS?",
     "required": true,
     "used_templates": [
       "Idea Evaluation",
@@ -584,6 +584,19 @@
       "websearch"
     ]
   },
+
+  "IdeaVisualization": {
+    "display_name": "Visualization",
+    "type": "image",
+    "required": false,
+    "resources": [],
+    "used_templates": [
+      "Ideas Evaluation"
+    ],
+    "prompt_name": "prompt_idea_visualization"
+  },
+  
+  
   "ValuePropositionCanvas_Group": {
     "display_name": "Value Proposition Canvas",
     "required": true,
