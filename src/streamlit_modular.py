@@ -920,6 +920,12 @@ def start_sub_view():
                 with open(os.path.join(data_stores_dir, f"data_store_{project_name_from_file}.json"), "w", encoding="utf-8") as f:
                     json.dump(uploaded_data, f, indent=4)
                 st.success(f"Project '{project_name_from_file}' uploaded successfully!")
+                
+                # Refresh project names after uploading
+                data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
+                core_names = [path.stem for path in data_stores_paths]
+                project_names = [str(name).split('data_store_')[1] for name in core_names]
+
                 sst.project_name = project_name_from_file
                 load_data_store()
                 sst.sidebar_state = "expanded"
@@ -929,9 +935,6 @@ def start_sub_view():
                 st.warning(f"A project with the name '{project_name_from_file}' already exists.")
         except json.JSONDecodeError:
             st.error("The uploaded file is not a valid JSON file.")
-
-
-
 
     if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
@@ -949,8 +952,6 @@ def start_sub_view():
             st.rerun()
         else:
             st.warning("A project with this name is already there")
-   
-    st.divider()
 
     st.divider()
     st.subheader("Switch/Delete/Download Project")
