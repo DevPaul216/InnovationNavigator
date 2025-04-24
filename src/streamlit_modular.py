@@ -905,7 +905,6 @@ def start_sub_view():
     project_names = [str(name).split('data_store_')[1] for name in core_names]
 
     st.subheader("Add new Innovation Project")
-    new_project_name = st.text_input(label="Name of new Innovation Project").strip()
 
     # File uploader for existing JSON files
     uploaded_file = st.file_uploader("Upload an existing Innovation Project file (JSON format)", type="json")
@@ -936,22 +935,8 @@ def start_sub_view():
         except json.JSONDecodeError:
             st.error("The uploaded file is not a valid JSON file.")
 
-    if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
-        if new_project_name not in project_names:
-            # Save the current data store just to be sure
-            update_data_store()
-            sst.project_name = new_project_name
-            # Create new empty data store
-            sst.data_store = {}
-            update_data_store()
-            load_data_store()
-            st.success("Project created")
-            sst.sidebar_state = "expanded"
-            sst.update_graph = True
-            time.sleep(1.0)
-            st.rerun()
-        else:
-            st.warning("A project with this name is already there")
+    if st.button("Create and open new Innovation Project"):
+        st.warning("Please upload a valid JSON file to create a new project.")
 
     st.divider()
     st.subheader("Switch/Delete/Download Project")
