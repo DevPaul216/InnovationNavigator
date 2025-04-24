@@ -948,6 +948,7 @@ def start_sub_view():
                 # Update session state with the new project names
                 sst.project_names = project_names
 
+                # Set the project name and reload the data store
                 sst.project_name = project_name_from_file
                 load_data_store()
                 sst.sidebar_state = "expanded"
