@@ -75,10 +75,10 @@ def init_page():
         """
             <style>
                 .block-container {
-                        padding-top: 5rem;
+                        padding-top: 2rem;
                         padding-bottom: 5rem;
-                        padding-left: 12rem;
-                        padding-right: 12rem;
+                        padding-left: 2rem;
+                        padding-right: 2rem;
                     }
                       /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
@@ -625,6 +625,7 @@ def chart_view():
         show_controls=True,
         allow_zoom=True,
         pan_on_drag=True,
+
     )
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
