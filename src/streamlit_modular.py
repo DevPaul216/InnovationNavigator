@@ -944,6 +944,9 @@ def start_sub_view():
                 data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
                 core_names = [path.stem for path in data_stores_paths]
                 project_names = [str(name).split('data_store_')[1] for name in core_names]
+                
+                # Update session state with the new project names
+                sst.project_names = project_names
 
                 sst.project_name = project_name_from_file
                 load_data_store()
