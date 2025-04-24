@@ -936,6 +936,8 @@ def start_sub_view():
         with open(dest_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         st.success(f"Uploaded successfully as {uploaded_file.name}")
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
         st.rerun()
 
     st.divider()
