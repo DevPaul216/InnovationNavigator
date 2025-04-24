@@ -936,6 +936,8 @@ def start_sub_view():
         with open(dest_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         st.success(f"Uploaded successfully as {uploaded_file.name}")
+        update_data_store()
+        load_data_store()
         st.rerun()
 
     st.divider()
@@ -959,16 +961,15 @@ def start_sub_view():
             time.sleep(1.0)
             st.rerun()
 
-        with st.expander("Download Project"):
-            file_path = os.path.join(data_stores_dir, f"data_store_{selected_project_name}.json")
-            with open(file_path, "r", encoding="utf-8") as f:
-                file_data = f.read()
-            st.download_button(
-                label="Download Project File",
-                data=file_data,
-                file_name=f"data_store_{selected_project_name}.json",
-                mime="application/json"
-            )
+        file_path = os.path.join(data_stores_dir, f"data_store_{selected_project_name}.json")
+        with open(file_path, "r", encoding="utf-8") as f:
+            file_data = f.read()
+        st.download_button(
+            label="Download Project File",
+            data=file_data,
+            file_name=f"data_store_{selected_project_name}.json",
+            mime="application/json"
+        )
 
 
 view_assignment_dict = {"general": general_creation_view,
