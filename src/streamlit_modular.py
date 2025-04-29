@@ -371,32 +371,31 @@ def generate_artifacts(element_name, is_image=False):
         default=required_items  # Preselect only the ones defined in the config
     )
     selected_elements = {}
-    with st.expander("Choose individual elements from selected templates"):
-        columns = st.columns(2)
-        position = 0
-        for selected_key in selected_keys:
-            element_store = sst.data_store[selected_key]
-            with columns[position]:
-                element_names = [element for element in element_store.keys() if element != element_name]
-                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                           options=element_names,
-                                           default=element_names, key=f"multiselect_{selected_key}")
-                selected_elements[selected_key] = selection
-                position += 1
-            if position >= 2:
-                position = 0
+    columns = st.columns(2)
+    position = 0
+    for selected_key in selected_keys:
+        element_store = sst.data_store[selected_key]
+        with columns[position]:
+            element_names = [element for element in element_store.keys() if element != element_name]
+            selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                       options=element_names,
+                                       default=element_names, key=f"multiselect_{selected_key}")
+            selected_elements[selected_key] = selection
+            position += 1
+        if position >= 2:
+            position = 0
 
-        for selected_key, selected_elements in selected_elements.items():
-            element_store = sst.data_store[selected_key]
-            for name in selected_elements:
-                resource_text = ""
-                element_value = element_store[name]
-                for value in element_value:
-                    resource_text += f"- {value}\n"
-                if resource_text.strip() != "":
-                    if "display_name" in sst.elements_config[name]:
-                        name = sst.elements_config[name]["display_name"]
-                    selected_resources[name] = resource_text
+    for selected_key, selected_elements in selected_elements.items():
+        element_store = sst.data_store[selected_key]
+        for name in selected_elements:
+            resource_text = ""
+            element_value = element_store[name]
+            for value in element_value:
+                resource_text += f"- {value}\n"
+            if resource_text.strip() != "":
+                if "display_name" in sst.elements_config[name]:
+                    name = sst.elements_config[name]["display_name"]
+                selected_resources[name] = resource_text
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
