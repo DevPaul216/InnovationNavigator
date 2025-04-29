@@ -10,6 +10,7 @@
   },
   "IdeaGeneration": {
     "display_name": "Ideen-Generierung",
+    "description": "Facilitates the generation of innovative and creative ideas to address specific challenges identified in earlier stages of the project.",
     "required": false,
     "connects": [
       "Idea Evaluation"
@@ -30,7 +31,7 @@
   },
   "Problem": {
     "display_name": "Problem",
-    "description": "This template provides an overview of the problem you are trying to solve. It includes a human problem you are trying to solve, and a person (or a group of people) affected by the issue.",
+    "description": "Provides a structured overview of the core issue being addressed, including the human problem and the individuals or groups affected by it.",
     "required": true,
     "connects": [
       "Design Challenge"
@@ -53,6 +54,7 @@
   },
   "Resources": {
     "display_name": "Resources",
+    "description": "Organizes and categorizes the available resources, such as tools, materials, and expertise, to support project execution effectively.",
     "required": false,
     "connects": [
       "Design Challenge"
@@ -73,6 +75,7 @@
   },
   "Strategic Foundation": {
     "display_name": "Strategic Foundation",
+    "description": "Defines the strategic goals, objectives, and guiding principles that align the project with broader organizational or team priorities.",
     "connects": [
       "Design Challenge"
     ],
@@ -102,6 +105,7 @@
   },
   "Design Challenge": {
     "display_name": "Design Challenge",
+    "description": "Frames the problem-solving approach by clearly defining the design challenge, ensuring alignment with the project's goals and constraints.",
     "required": true,
     "connects": [
       "Customer Persona",
@@ -134,6 +138,7 @@
   },
   "Customer Persona": {
     "display_name": "Customer Persona",
+    "description": "Develops a detailed profile of the target customer, including demographics, behaviors, and needs, to guide design and decision-making processes.",
     "connects": [
       "Empathy Map",
       "Problem Statement"
@@ -167,7 +172,7 @@
   },
   "Empathy Map": {
     "display_name": "Empathy Map",
-    "description": "Mit einer Empathy Map (dt. Empathiekarte) können Sie die Gedanken, Gefühle und Verhaltensweisen Ihrer Kunden besser verstehen. Produktteams verwenden häufig Empathy Maps, um die Nutzererfahrung zu verbessern",
+    "description": "Captures insights into customer thoughts, feelings, and behaviors to foster a deeper understanding and empathy for their experiences.",
     "connects": [
       "Problem Statement"
     ],
@@ -206,6 +211,7 @@
   },
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
+    "description": "Analyzes external macro-environmental factors, including Political, Economic, Social, Technological, Environmental, and Legal influences, that impact the project.",
     "connects": [
       "SWOT-Analysis",
       "Jobs-To-Be-Done"
@@ -227,6 +233,7 @@
   },
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",
+    "description": "Evaluates the project's internal strengths and weaknesses, as well as external opportunities and threats, to inform strategic planning.",
     "connects": [
       "IdeaGeneration",
       "Ideation"
@@ -257,6 +264,7 @@
   },
   "Jobs-To-Be-Done": {
     "display_name": "Jobs-to-be-done statement",
+    "description": "Identifies the specific tasks or goals customers aim to achieve with the proposed solution, providing clarity on their expectations and priorities.",
     "connects": [
       "IdeaGeneration",
       "Ideation"
@@ -280,6 +288,7 @@
   },
   "Problem Statement": {
     "display_name": "Problem Statement",
+    "description": "Articulates the core problem in a concise and actionable statement, serving as a foundation for developing solutions.",
     "connects": [
       "Jobs-To-Be-Done"
     ],
@@ -301,6 +310,7 @@
   },
   "Ideation": {
     "display_name": "Ideation",
+    "description": "Facilitates brainstorming sessions to generate, organize, and refine innovative ideas that address the defined problem or challenge.",
     "connects": [
       "Idea Evaluation"
     ],
@@ -324,6 +334,7 @@
   },
   "Idea Evaluation": {
     "display_name": "Idea Evaluation",
+    "description": "Provides a framework for assessing and prioritizing ideas based on their feasibility, impact, and alignment with project goals.",
     "connects": [
       "Value Proposition Canvas"
     ],
@@ -345,6 +356,7 @@
   },
   "Value Proposition Canvas": {
     "display_name": "Value Proposition Canvas",
+    "description": "Aligns customer needs and pain points with the value offered by the solution, ensuring a strong product-market fit.",
     "connects": [
       "Business Model Canvas"
     ],
@@ -365,6 +377,7 @@
   },
   "Business Model Canvas": {
     "display_name": "Business Model Canvas",
+    "description": "Outlines the project's business model, detailing key activities, resources, value propositions, customer segments, and revenue streams.",
     "connects": [
       "Test Card"
     ],
@@ -397,6 +410,7 @@
   },
   "Test Card": {
     "display_name": "Hypothesis-Experiment Test Card",
+    "description": "Designs and documents hypotheses and experiments to validate assumptions, enabling data-driven decision-making.",
     "connects": [
       "ExperimentSimulation"
     ],
@@ -419,6 +433,7 @@
   },
   "ExperimentSimulation": {
     "display_name": "Experiment Simulations",
+    "description": "Simulates experiments to predict outcomes, refine solutions, and assess the feasibility of proposed ideas.",
     "connects": [
       "InnovationLearnings"
     ],
@@ -440,6 +455,7 @@
   },
   "InnovationLearnings": {
     "display_name": "Learnings",
+    "description": "Captures and organizes key insights, lessons, and feedback from the innovation process to inform future projects.",
     "connects": [
       "End"
     ],
@@ -461,6 +477,7 @@
   },
   "End": {
     "display_name": "Solution Summary",
+    "description": "Summarizes the final solution, highlighting its key components, benefits, and alignment with the project's objectives.",
     "connects": [
     ],
     "elements": [

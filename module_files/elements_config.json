@@ -12,7 +12,8 @@
       "documents",
       "websearch",
       "website"
-    ]
+    ],
+    "description": "The problem or challenge to be addressed"
   },
   "SelectedIdea": {
     "display_name": "Gewählte Idee",
@@ -20,7 +21,8 @@
     "used_templates": null,
     "prompt_name": "idea_generation",
     "schema_name": "generic_schema",
-    "max": 1
+    "max": 1,
+    "description": "The chosen idea to address the problem"
   },
   "TargetGroup": {
     "display_name": "Person affected by the problem",
@@ -35,7 +37,8 @@
       "documents",
       "websearch",
       "website"
-    ]
+    ],
+    "description": "The group of people affected by the problem"
   },
   "Resource_Group": {
     "display_name": "Available resources to solve the problem",
@@ -59,32 +62,38 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "A collection of resources available to solve the problem"
   },
   "Physical Resources": {
     "display_name": "Physical Resources",
     "required": false,
-    "max": 5
+    "max": 5,
+    "description": "Tangible assets like equipment or materials"
   },
   "Human Resources": {
     "display_name": "Human Resources",
     "required": false,
-    "max": 5
+    "max": 5,
+    "description": "People or teams available to contribute"
   },
   "Financial Resources": {
     "display_name": "Financial Resources",
     "required": false,
-    "max": 5
+    "max": 5,
+    "description": "Monetary assets available for the project"
   },
   "Intellectual Property": {
     "display_name": "Intellectual Property",
     "required": false,
-    "max": 5
+    "max": 5,
+    "description": "Patents, trademarks, or copyrights owned"
   },
   "KnowHow and Information": {
     "display_name": "KnowHow and Information",
     "required": false,
-    "max": 5
+    "max": 5,
+    "description": "Knowledge and data relevant to the problem"
   },
   "HowMightWe": {
     "display_name": "How-Might-We Questions",
@@ -100,7 +109,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "Questions framing the problem in a solution-oriented way"
   },
   "ResourcesCombined": {
     "display_name": "Summary of available resources",
@@ -116,7 +126,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A summary of all available resources"
   },
   "StrategyCombined": {
     "display_name": "Strategic Foundation of Organization",
@@ -132,7 +143,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "The strategic foundation of the organization"
   },
   "StrategicFoundation_Group": {
     "display_name": "Strategic Foundation",
@@ -154,27 +166,32 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements defining the organization's strategy"
   },
   "Organization Name": {
     "display_name": "Organization Name",
     "required": true,
-    "max": 1
+    "max": 1,
+    "description": "The name of the organization"
   },
   "Mission": {
     "display_name": "Mission",
     "required": false,
-    "max": 1
+    "max": 1,
+    "description": "The organization's purpose or mission statement"
   },
   "Vision": {
     "display_name": "Vision",
     "required": false,
-    "max": 1
+    "max": 1,
+    "description": "The organization's long-term vision"
   },
   "Values": {
     "display_name": "Values",
     "required": false,
-    "max": 10
+    "max": 10,
+    "description": "The core values guiding the organization"
   },
   "Persona_Group": {
     "display_name": "Customer Persona",
@@ -200,27 +217,32 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements defining a customer persona"
   },
   "Name": {
     "display_name": "Name",
     "required": true,
-    "max": 1
+    "max": 1,
+    "description": "The name of the persona"
   },
   "Demographics": {
     "display_name": "Demographics",
     "required": true,
-    "max": 1
+    "max": 1,
+    "description": "The demographic details of the persona"
   },
   "About": {
     "display_name": "About",
     "required": true,
-    "max": 1
+    "max": 1,
+    "description": "A brief description of the persona"
   },
   "Problem_Attitude": {
     "display_name": "Problem Attitude",
     "required": true,
-    "max": 1
+    "max": 1,
+    "description": "The persona's attitude towards the problem"
   },
   "Pains": {
     "display_name": "Pains",
@@ -249,7 +271,8 @@
     "used_templates": [
       "Customer Persona"
     ],
-    "prompt_name": "prompt_persona_portrait"
+    "prompt_name": "prompt_persona_portrait",
+    "description": "An image representing the persona"
   },
   "EmpathyMap_Group": {
     "display_name": "Empathy Map",
@@ -274,7 +297,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements defining the empathy map"
   },
   "ThinkFeel": {
     "display_name": "Think & Feel",
@@ -324,7 +348,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "A group of elements for PESTEL analysis"
   },
   "Political": {
     "display_name": "Political",
@@ -378,7 +403,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements for SWOT analysis"
   },
   "Strengths": {
     "display_name": "Strengths",
@@ -421,7 +447,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements for Jobs-To-Be-Done analysis"
   },
   "Situation": {
     "display_name": "Situation",
@@ -463,7 +490,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements defining the problem statement"
   },
   "Context": {
     "display_name": "Context",
@@ -496,7 +524,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "Basic ideas generated during brainstorming"
   },
   "IdeasABC": {
     "display_name": "ABC Method",
@@ -514,7 +543,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "Ideas generated using the ABC method"
   },
   "Ideas3": {
     "display_name": "Outside-Of-The Box Ideas",
@@ -532,7 +562,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "Creative and unconventional ideas"
   },
   "IdeasToEvaluate": {
     "display_name": "Ideas to Evaluate",
@@ -549,7 +580,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "Ideas selected for further evaluation"
   },
   "Idea Rating": {
     "display_name": "Idea Rating",
@@ -568,7 +600,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "Ratings assigned to evaluated ideas"
   },
   "DFVS_Evaluation": {
     "display_name": "DVFS_Evaluation",
@@ -587,7 +620,8 @@
       "documents",
       "website",
       "websearch"
-    ]
+    ],
+    "description": "Evaluation of ideas using the DVFS framework"
   },
   "ValuePropositionCanvas_Group": {
     "display_name": "Value Proposition Canvas",
@@ -613,7 +647,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements for the Value Proposition Canvas"
   },
   "CustomerJobs": {
     "display_name": "Customer Jobs",
@@ -672,7 +707,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements for the Business Model Canvas"
   },
   "KeyPartnerships": {
     "display_name": "Key Partnerships",
@@ -739,7 +775,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A group of elements for the Test Card"
   },
   "Hypothesis": {
     "display_name": "Hypothesis",
@@ -777,7 +814,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "A summary of experiments conducted"
   },
   "LikelyOutcome": {
     "display_name": "Likely Outcome",
@@ -795,7 +833,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "The expected outcome of the experiments"
   },
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
@@ -812,7 +851,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "Insights gained from the innovation journey"
   },
   "Impact": {
     "display_name": "Impact on Business Model",
@@ -830,7 +870,8 @@
     "resources": [
       "documents",
       "website"
-    ]
+    ],
+    "description": "The impact of the solution on the business model"
   },
   "Solution": {
     "display_name": "Solution",
@@ -846,6 +887,7 @@
     "schema_name_import": "schema_generic_array",
     "max": 1,
     "resources": [
-    ]
+    ],
+    "description": "The proposed solution to the problem"
   }
 }
