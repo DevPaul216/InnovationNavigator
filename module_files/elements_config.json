@@ -176,18 +176,6 @@
     "required": false,
     "max": 10
   },
-
-  "Portrait": {
-    "display_name": "Portrait",
-    "type": "image",
-    "required": false,
-    "resources": [],
-    "used_templates": [
-      "Customer Persona"
-    ],
-    "prompt_name": "prompt_persona_portrait"
-  },
-
   "Persona_Group": {
     "display_name": "Customer Persona",
     "required": true,
@@ -236,20 +224,33 @@
   },
   "Pains": {
     "display_name": "Pains",
+    "description": "Was die Person momentan belastet",
     "required": true,
     "max": 5
   },
   "Gains": {
     "display_name": "Gains",
+    "description": "Wo die Person ihre Stärken sieht",
     "required": true,
     "max": 5
   },
   "Quote": {
     "display_name": "Quote",
+    "description": "Ein typischer Ausspruch",
     "required": true,
     "max": 1
   },
-
+  "Portrait": {
+    "display_name": "Portrait",
+    "type": "image",
+    "required": false,
+    "resources": [],
+    "max": 1,
+    "used_templates": [
+      "Customer Persona"
+    ],
+    "prompt_name": "prompt_persona_portrait"
+  },
   "EmpathyMap_Group": {
     "display_name": "Empathy Map",
     "required": true,
@@ -277,21 +278,25 @@
   },
   "ThinkFeel": {
     "display_name": "Think & Feel",
+    "description": "Was die Person denkt und fühlt",
     "required": true,
     "max": 5
   },
   "SayDo": {
     "display_name": "Say & Do",
+    "description": "Was die Person normalerweise sagt und tut",
     "required": true,
     "max": 5
   },
   "See": {
     "display_name": "See",
+    "description": "Der individuelle Blickwinkel der Person",
     "required": true,
     "max": 5
   },
   "Hear": {
     "display_name": "Hear",
+    "description": "Wie die Person Dinge interpretiert",
     "required": true,
     "max": 5
   },
@@ -566,7 +571,7 @@
     ]
   },
   "DFVS_Evaluation": {
-    "display_name": "DVFS?",
+    "display_name": "DVFS_Evaluation",
     "required": true,
     "used_templates": [
       "Idea Evaluation",
@@ -584,19 +589,6 @@
       "websearch"
     ]
   },
-
-  "IdeaVisualization": {
-    "display_name": "Visualization",
-    "type": "image",
-    "required": false,
-    "resources": [],
-    "used_templates": [
-      "Ideas Evaluation"
-    ],
-    "prompt_name": "prompt_idea_visualization"
-  },
-  
-  
   "ValuePropositionCanvas_Group": {
     "display_name": "Value Proposition Canvas",
     "required": true,

@@ -1,7 +1,9 @@
 import io
 import json
 import os
+import shutil
 import time
+from datetime import datetime
 from pathlib import Path
 
 import PyPDF2
@@ -14,12 +16,12 @@ from streamlit_flow.layouts import LayeredLayout
 from streamlit_flow.state import StreamlitFlowState
 
 from experimental.streamlit_artifact_generation import scrape_texts
-from streamlit_idea_generation_test import idea_generation_view
+from streamlit_idea_generation import idea_generation_view
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
 
-data_store_path = os.path.join("data_stores", "data_store")
+data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
 COLOR_BLOCKED = "rgb(173, 200, 235)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
@@ -56,7 +58,6 @@ def init_session_state():
         sst.generated_artifacts = {}
         sst.confirmed_artifacts = {}
         sst.project_name = "default"
-        sst.project_names = []
         sst.template_config = load_json_dictionary(os.path.join("module_files", "templates_config.json"))
         sst.elements_config = load_json_dictionary(os.path.join("module_files", "elements_config.json"))
         sst.selected_template_name = None
@@ -76,10 +77,10 @@ def init_page():
         """
             <style>
                 .block-container {
-                        padding-top: 2rem;
+                        padding-top: 5rem;
                         padding-bottom: 5rem;
-                        padding-left: 2rem;
-                        padding-right: 2rem;
+                        padding-left: 12rem;
+                        padding-right: 12rem;
                     }
                       /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
@@ -115,7 +116,8 @@ def load_json_dictionary(path):
 
 
 def get_full_data_store_path():
-    return f"{data_store_path}_{sst.project_name}.json"
+    store_name = f"data_store_{sst.project_name}.json"
+    return os.path.join(data_store_path, store_name)
 
 
 def update_data_store():
@@ -154,14 +156,18 @@ def get_available_elements(elements, assigned_elements, data_store):
     return available_elements
 
 
-def get_display_name(name, for_template=True):
+def get_config_value(name, for_template=True, config_value="display_name", default_value=""):
     if for_template:
+        if name not in sst.template_config:
+            return default_value
         config = sst.template_config[name]
     else:
+        if name not in sst.elements_config:
+            return default_value
         config = sst.elements_config[name]
-    display_name = str(name)
-    if "display_name" in config:
-        display_name = str(config["display_name"])
+    display_name = default_value
+    if config_value in config:
+        display_name = str(config[config_value])
     return display_name
 
 
@@ -169,7 +175,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
-            template_display_name = get_display_name(template_name)
+            template_display_name = get_config_value(template_name)
             if template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
@@ -194,9 +200,9 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
         for source, value in sst.template_config.items():
             # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
-                id = f'{source}-{target}'
-                connection_state = connection_states[id]
-                edge = StreamlitFlowEdge(id, str(source), str(target), marker_end={'type': 'arrowclosed'},
+                edge_id = f'{source}-{target}'
+                connection_state = connection_states[edge_id]
+                edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'},
                                          animated=connection_state,
                                          style={"backgroundColor": "green"})
                 edges.append(edge)
@@ -222,8 +228,8 @@ def init_graph():
         if is_fulfilled:
             completed_templates.append(template_name)
         for target in template_config["connects"]:
-            id = f"{template_name}-{target}"
-            connection_states[id] = is_fulfilled
+            edge_id = f"{template_name}-{target}"
+            connection_states[edge_id] = is_fulfilled
     blocked_templates = []
     for template_name, template_config in sst.template_config.items():
         connections = template_config["connects"]
@@ -281,31 +287,34 @@ def resource_selection_view(element_name):
         used_resources = element_config["resources"]
     else:
         used_resources = ["documents", "websearch", "website"]
-    selected_option = st.segmented_control(label="Add additional Resources", options=used_resources,
-                                           selection_mode='single',
-                                           format_func=format_func)
+
     home_url = None
     query = None
-    uploaded_files = None
     number_entries_used = None
-    if selected_option is not None:
-        if "website" in selected_option:
-            with st.container(border=True):
-                st.subheader("Website")
-                home_url = st.text_input(label="Website URL").strip()
+    uploaded_files = None
+    if used_resources is not None and len(used_resources) > 0:
+        selected_option = st.segmented_control(label="Add additional Resources", options=used_resources,
+                                               selection_mode='multi',
+                                               format_func=format_func)
+        if selected_option is not None:
+            if "website" in selected_option:
+                with st.container(border=True):
+                    st.subheader("Website")
+                    home_url = st.text_input(label="Website URL").strip()
 
-        number_entries_used = 0
-        if "websearch" in selected_option:
-            with st.container(border=True):
-                st.subheader("Google Search")
-                query = st.text_input(label="Search Query").strip()
-                number_entries_used = st.number_input(label="Number of websites searched (1-10)", min_value=1,
-                                                      max_value=10,
-                                                      value=2)
-        if "documents" in selected_option:
-            with st.container(border=True):
-                st.subheader("Documents")
-                uploaded_files = st.file_uploader(label="Upload Document", type="pdf")
+            number_entries_used = 0
+            if "websearch" in selected_option:
+                with st.container(border=True):
+                    st.subheader("Google Search")
+                    query = st.text_input(label="Search Query").strip()
+                    number_entries_used = st.number_input(label="Number of websites searched (1-10)", min_value=1,
+                                                          max_value=10,
+                                                          value=5)
+            if "documents" in selected_option:
+                with st.container(border=True):
+                    st.subheader("Documents")
+                    uploaded_files = st.file_uploader(label="Upload Relevant Documents", type="pdf",
+                                                      accept_multiple_files=True)
     return home_url, query, number_entries_used, uploaded_files
 
 
@@ -354,10 +363,10 @@ def generate_artifacts(element_name, is_image=False):
 
     # Fetch all template names from sst.template_config
     all_templates = list(sst.template_config.keys())
-
     # Dropdown to select templates
     selected_keys = st.multiselect(
-        label="Suggested templates used as information sources for this generation (open dropdown menue to add others)",
+        label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+        placeholder="Choose templates to use",
         options=all_templates,  # Show all templates as options
         default=required_items  # Preselect only the ones defined in the config
     )
@@ -385,6 +394,8 @@ def generate_artifacts(element_name, is_image=False):
                 for value in element_value:
                     resource_text += f"- {value}\n"
                 if resource_text.strip() != "":
+                    if "display_name" in sst.elements_config[name]:
+                        name = sst.elements_config[name]["display_name"]
                     selected_resources[name] = resource_text
 
     prompt_name = element_config['prompt_name']
@@ -400,7 +411,6 @@ def generate_artifacts(element_name, is_image=False):
         # Construct the user prompt to show the user
         user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
         st.markdown(user_prompt)
-
     with st.expander(label="Add external information source"):
         home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
     schema = None
@@ -458,11 +468,14 @@ def add_resources(selected_resources, home_url, number_entries_used, query, uplo
     if query is not None:
         texts_scrape = scrape_texts(query, number_entries_used)
         selected_resources.update(texts_scrape)
-    if uploaded_files is not None:
-        reader = PyPDF2.PdfReader(uploaded_files)
+    if uploaded_files is not None and len(uploaded_files) > 0:
         text = ""
-        for page in reader.pages:
-            text += page.extract_text()
+        for uploaded_file in uploaded_files:
+            text += f"# {uploaded_file.name}\n"
+            reader = PyPDF2.PdfReader(uploaded_file)
+            for page in reader.pages:
+                text += page.extract_text()
+            text += "\n"
         selected_resources["document_text"] = text
 
 
@@ -558,7 +571,9 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                     if len(artifact_text) > 0:
                                         text_to_show = artifact_text
                                     else:
-                                        text_to_show = ":heavy_exclamation_mark: Keine Informationen verfügbar"
+                                        text_to_show = "Keine Informationen verfügbar"
+                                        if 'required' not in element_config or element_config['required']:
+                                            text_to_show = text_to_show + "  \n  \n:heavy_exclamation_mark: Wird benötigt"
                                     st.markdown(text_to_show)
                             if element_name in artifact_images:
                                 if artifact_images[element_name] is not None:
@@ -605,7 +620,7 @@ def chart_view():
     add_empty_lines(2)
 
     st.markdown(
-        "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
+        "<h2 style='font-size:18px;'>HTTPS: Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
         unsafe_allow_html=True,
     )  # replaced header with this smaller text box.
     add_empty_lines(2)
@@ -625,7 +640,6 @@ def chart_view():
         show_controls=True,
         allow_zoom=True,
         pan_on_drag=True,
-
     )
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
@@ -635,7 +649,7 @@ def chart_view():
 
 
 def element_selection_format_func(item):
-    return get_display_name(item, for_template=False)
+    return get_config_value(item, for_template=False)
 
 
 def general_creation_view(assigned_elements):
@@ -657,7 +671,6 @@ def general_creation_view(assigned_elements):
             is_image = True
         else:
             is_single = False
-    # creation_mode = "Generate"
     if creation_mode == "Manual":
         if is_single:
             with st.container(border=True):
@@ -675,7 +688,8 @@ def general_creation_view(assigned_elements):
                 with columns[position]:
                     with st.container(border=True):
                         element_name = elements_group_copy.pop(0)
-                        st.subheader(get_display_name(element_name, False))
+                        st.subheader(get_config_value(element_name, False))
+                        st.markdown(get_config_value(element_name, False, "description"))
                         artifact_input_subview(element_name, element_store)
                         st.divider()
                         display_artifacts_view(element_name, element_store)
@@ -702,7 +716,8 @@ def general_creation_view(assigned_elements):
                 with columns[position]:
                     with st.container(border=True):
                         element_name = elements_group_copy.pop(0)
-                        st.subheader(get_display_name(element_name, False))
+                        st.subheader(get_config_value(element_name, False))
+                        st.markdown(get_config_value(element_name, False, "description"))
                         confirm_single_subview(element_name, element_store)
                         st.divider()
                         display_artifacts_view(element_name, element_store)
@@ -740,6 +755,7 @@ def special_view_idea_generation(assigned_elements):
                                     format_func=element_selection_format_func)
     element_store = sst.data_store[sst.selected_template_name]
     selected_idea = idea_generation_view()
+    st.divider()
     display_artifacts_view(element_selected, element_store)
     if selected_idea is not None:
         element_store[element_selected] = [selected_idea]
@@ -757,7 +773,7 @@ def confirm_single_subview(element_selected, element_store):
                 if isinstance(confirmed_artifact, str):
                     element_store[element_selected].append(confirmed_artifact)
                 else:
-                    add_image_to_element_store(element_selected, element_store, confirmed_artifact)
+                    add_image_to_image_store(element_selected, element_store, confirmed_artifact)
             st.rerun()
         else:
             st.warning(check)
@@ -785,13 +801,14 @@ def check_can_add(element_store, element_selected, elements_to_add):
         if "max" in element_config:
             max_entries = element_config["max"]
             if number_current_entries + len(elements_to_add) > max_entries:
-                return f"Maximal '{max_entries}' Einträge erlaubt. Zuvor bestehende löschen um weitere hinzuzufügen!"
+                return f"Maximal '{max_entries}' Einträge erlaubt. Weniger Artefakte auswählen zum Hinzufügen oder zuvor bestehende löschen!"
     return None
 
 
 def artifact_input_subview(element_selected, element_store):
-    input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}")
-    if st.button("Confirm", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
+    input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}",
+                              label_visibility="collapsed")
+    if st.button("Bestätigen", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
         check = check_can_add(element_store, element_selected, [input_text])
         if check is None:
             element_store[element_selected].append(input_text)
@@ -800,10 +817,10 @@ def artifact_input_subview(element_selected, element_store):
             st.warning(check)
 
 
-def add_image_to_element_store(element_selected, element_store, image):
-    directory_path = './image_store'
+def add_image_to_image_store(element_selected, element_store, image):
+    directory_path = './stores/image_store'
     if not os.path.exists(directory_path):
-        os.makedirs('./image_store')
+        os.makedirs(directory_path)
     image = Image.open(image)
     filename = element_selected + "_" + sst.project_name + '.jpg'
     full_path = os.path.join(directory_path, filename)
@@ -819,8 +836,12 @@ def image_input_subview(element_selected, element_store):
         # decoded_image = Image.open()
         buffered = io.BytesIO(uploaded_file.read())
         # decoded_image.save(buffered, format="PNG")
-        add_image_to_element_store(element_selected, element_store, buffered)
-        st.rerun()
+        check = check_can_add(element_store, element_selected, [buffered])
+        if check is None:
+            add_image_to_image_store(element_selected, element_store, buffered)
+            st.rerun()
+        else:
+            st.warning(check)
 
 
 def detail_view():
@@ -831,7 +852,8 @@ def detail_view():
     # el ....
 
     if sst.selected_template_name is not None and sst.selected_template_name in sst.template_config:
-        st.title(get_display_name(sst.selected_template_name))
+        st.title(get_config_value(sst.selected_template_name, config_value="display_name"))
+        st.markdown(get_config_value(sst.selected_template_name, config_value="description"))
         if str(sst.selected_template_name).lower() == "start":
             start_sub_view()
         elif str(sst.selected_template_name).lower() == "end":
@@ -850,7 +872,6 @@ def open_sidebar():
     sst.sidebar_state = "expanded"
 
     # Add a logo to the top of the sidebar
-
     st.sidebar.image(os.path.join(".", "misc", "LogoFH.png"), use_container_width=True)
 
     # Button in sidebar to go back to overview
@@ -891,84 +912,84 @@ def end_sub_view():
     st.header("Overview")
     for template_name in sst.template_config.keys():
         if template_name.lower() != "start" and template_name.lower() != "end":
-            display_name = get_display_name(template_name)
+            display_name = get_config_value(template_name)
             st.subheader(display_name)
             display_template_view(template_name)
             add_empty_lines(5)
 
 
-
 def start_sub_view():
-    data_stores_dir = os.path.join(".", "data_stores")
-    os.makedirs(data_stores_dir, exist_ok=True)  # Ensure the folder exists
-
-    data_stores_paths = Path(data_stores_dir).glob("data_store_*.json")
+    data_stores_paths = Path(data_store_path).glob("data_store_*.json")
     core_names = [path.stem for path in data_stores_paths]
     project_names = [str(name).split('data_store_')[1] for name in core_names]
-
     st.subheader("Add new Innovation Project")
     new_project_name = st.text_input(label="Name of new Innovation Project").strip()
-
-    # Button to create a new project manually
-    if st.button("Create new Innovation Project", disabled=new_project_name == ""):
+    if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
+            # Save the current data store just to be sure
             update_data_store()
             sst.project_name = new_project_name
+            # Create new empty data store
             sst.data_store = {}
             update_data_store()
             load_data_store()
             st.success("Project created")
             sst.sidebar_state = "expanded"
             sst.update_graph = True
+            time.sleep(1.0)
             st.rerun()
         else:
             st.warning("A project with this name is already there")
-
-    # File uploader for importing a project file
     st.divider()
-    st.subheader("Upload Existing Project File")
-    uploaded_file = st.file_uploader("Choose a project file to upload (.json)", type=["json"])
-    if uploaded_file is not None:
-        # Determine destination path
-        dest_path = os.path.join(data_stores_dir, uploaded_file.name)
-        # Save the uploaded file
-        with open(dest_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-        st.success(f"Uploaded successfully as {uploaded_file.name}")
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    st.divider()
-    st.subheader("Switch/Delete/Download Project")
+    st.subheader("Switch/Delete Project")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
-        index=project_names.index(sst.project_name))
-    
+                                         index=project_names.index(sst.project_name))
     if selected_project_name != sst.project_name:
         sst.project_name = selected_project_name
         load_data_store()
         sst.sidebar_state = "expanded"
         st.rerun()
-
     if selected_project_name != "default":
         add_empty_lines(2)
-        if st.button("Delete"):
-            os.remove(get_full_data_store_path())
-            sst.project_name = "default"
-            load_data_store()
-            st.success("Deleted")
-            time.sleep(1.0)
+        with st.expander("Delete Project"):
+            if st.button("Delete"):
+                os.remove(get_full_data_store_path())
+                sst.project_name = "default"
+                load_data_store()
+                st.success("Deleted")
+                time.sleep(1.0)
+                st.rerun()
+    st.divider()
+    st.subheader("Export all projects")
+    if st.button("Export"):
+        zip_directory_path = shutil.make_archive("stores", "zip", "./stores")
+        now = datetime.now()
+        date_time_str = now.strftime("%Y-%m-%d-%H-%M")
+        with open(zip_directory_path, "rb") as file:
+            st.download_button(
+                label="Download",
+                data=file,
+                file_name=f"projects_{date_time_str}.zip",
+                mime="application/zip",
+                type="primary"
+            )
+    st.divider()
+    st.subheader("Import projects")
+    uploaded_file = st.file_uploader(label="Upload zip project folder",
+                                     type=".zip",
+                                     accept_multiple_files=False)
+    if uploaded_file is not None:
+        if st.button("Import"):
+            save_path = "uploaded_project.zip"
+            with open(save_path, "wb") as file:
+                file.write(uploaded_file.getbuffer())
+            shutil.unpack_archive(save_path, "./stores", "zip")
+            time.sleep(0.2)
+            os.remove(save_path)
+            os.remove("stores.zip")
+            st.success("Projects imported")
+            time.sleep(2.0)
             st.rerun()
-
-        file_path = os.path.join(data_stores_dir, f"data_store_{selected_project_name}.json")
-        with open(file_path, "r", encoding="utf-8") as f:
-            file_data = f.read()
-        st.download_button(
-            label="Export",
-            data=file_data,
-            file_name=f"data_store_{selected_project_name}.json",
-            mime="application/json"
-        )
 
 
 view_assignment_dict = {"general": general_creation_view,

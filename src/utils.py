@@ -28,19 +28,13 @@ def get_openai_api_key():
             st.stop()
 
 
-def make_request(prompt_text, additional_information_list=None, image_paths=None):
-    messages = [
-        {"role": "system", "content": prompt_text},
-    ]
-    if additional_information_list is not None and len(additional_information_list) > 0:
-        for additional_information in additional_information_list:
-            messages.append({"role": "system", "content": additional_information})
-    if image_paths is not None and len(image_paths) > 0:
+def append_image_messages(image_paths, messages):
+    if image_paths is not None:
         for image_path in image_paths:
             messages.append({
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Beachte dabei auch folgendes Bild:"},
+                    {"type": "text", "text": "Please also consider the following image:"},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -49,6 +43,16 @@ def make_request(prompt_text, additional_information_list=None, image_paths=None
                     },
                 ],
             })
+
+
+def make_request(prompt_text, additional_information_list=None, image_paths=None):
+    messages = [
+        {"role": "system", "content": prompt_text},
+    ]
+    if additional_information_list is not None and len(additional_information_list) > 0:
+        for additional_information in additional_information_list:
+            messages.append({"role": "system", "content": additional_information})
+    append_image_messages(image_paths, messages)
     openai_api_key = get_openai_api_key()
 
     client = OpenAI(api_key=openai_api_key)
@@ -66,28 +70,13 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
         {"role": "system", "content": prompt_text},
     ]
     if additional_information_dict is not None and len(additional_information_dict) > 0:
-        messages.append({"role": "system", "content": "Beachte dabei auch folgende zusätzliche Informationen:"})
+        messages.append({"role": "system", "content": "Please also consider the following pieces of information for this task:"})
         for source, text in additional_information_dict.items():
             additional_information = f"Source: {source}\nContent: {text}"
             messages.append({"role": "system", "content": additional_information})
-    if image_paths is not None and len(image_paths) > 0:
-        for image_path in image_paths:
-            messages.append({
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": "Beachte dabei auch folgendes Bild:"},
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": image_path,
-                        },
-                    },
-                ],
-            })
-
+    append_image_messages(image_paths, messages)
     openai_api_key = get_openai_api_key()
     client = OpenAI(api_key=openai_api_key)
-
     if json_schema is None:
         completion = client.beta.chat.completions.parse(
             model="gpt-4o-mini",
@@ -106,10 +95,11 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
 
 
 def make_request_image(prompt, model="dall-e-3", additional_information_dict=None):
-    openai_api_key = get_openai_api_key()
-
+    with open("./config/keys.json") as f:
+        config = json.load(f)
+    openai_api_key = config["openai_api_key"]
     if additional_information_dict is not None and len(additional_information_dict) > 0:
-        prompt += "\nBeachte dabei auch folgende zusätzliche Informationen:\n"
+        prompt += "\nPlease also consider the following pieces of information for this task:\n"
         for source, text in additional_information_dict.items():
             additional_information = f"Source: {source}\nContent: {text}"
             prompt += f"{additional_information}\n"
@@ -148,11 +138,13 @@ def load_schema(filename_pattern):
 
 def scrape_texts(query, num_results):
     texts = {}
+    st.subheader("Verwendete Webseiten")
     for url in search(query, num_results=num_results):
         st.write(url)
         try:
             text, _ = get_url_text_and_images(url)
-            texts[url] = text[:10000]
-        except:
-            print("Continuing")
+            texts[url] = text[:15000]
+        except Exception as e:
+            print("Exception occured during website data fetching:", e)
+            print("Ignoring and continuing")
     return texts

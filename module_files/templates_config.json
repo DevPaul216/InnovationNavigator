@@ -9,7 +9,7 @@
     "elements": []
   },
   "IdeaGeneration": {
-    "display_name": "Idea Tree",
+    "display_name": "Ideen-Generierung",
     "required": false,
     "connects": [
       "Idea Evaluation"
@@ -30,6 +30,7 @@
   },
   "Problem": {
     "display_name": "Problem",
+    "description": "Definition des Problems",
     "required": true,
     "connects": [
       "Design Challenge"
@@ -52,6 +53,7 @@
   },
   "Resources": {
     "display_name": "Resources",
+    "required": false,
     "connects": [
       "Design Challenge"
     ],
@@ -137,20 +139,10 @@
       "Problem Statement"
     ],
     "elements": [
-      "Portrait",
-      "Persona_Group"
+      "Persona_Group",
+      "Portrait"
     ],
     "display": [
-      {
-        "format": [
-          1,
-          2,
-          2
-        ],
-        "height": 600,
-        "background-color": "yellow",
-        "font-color": "black"
-      },
       {
         "format": [
           1,
@@ -160,11 +152,22 @@
         "height": 300,
         "background-color": "yellow",
         "font-color": "black"
+      },
+      {
+        "format": [
+          2,
+          2,
+          1
+        ],
+        "height": 500,
+        "background-color": "yellow",
+        "font-color": "black"
       }
     ]
   },
   "Empathy Map": {
     "display_name": "Empathy Map",
+    "description": "Mit einer Empathy Map (dt. Empathiekarte) können Sie die Gedanken, Gefühle und Verhaltensweisen Ihrer Kunden besser verstehen. Produktteams verwenden häufig Empathy Maps, um die Nutzererfahrung zu verbessern",
     "connects": [
       "Problem Statement"
     ],
@@ -174,10 +177,28 @@
     "display": [
       {
         "format": [
-          3,
-          3
+          1,
+          1
         ],
-        "height": 600,
+        "height": 200,
+        "background-color": "yellow",
+        "font-color": "black"
+      },
+      {
+        "format": [
+          1,
+          1
+        ],
+        "height": 200,
+        "background-color": "yellow",
+        "font-color": "black"
+      },
+      {
+        "format": [
+          1,
+          1
+        ],
+        "height": 200,
         "background-color": "yellow",
         "font-color": "black"
       }
@@ -207,7 +228,7 @@
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",
     "connects": [
-      "IdeaGeneration",      
+      "IdeaGeneration",
       "Ideation"
     ],
     "elements": [
@@ -237,7 +258,7 @@
   "Jobs-To-Be-Done": {
     "display_name": "Jobs-to-be-done statement",
     "connects": [
-      "IdeaGeneration",      
+      "IdeaGeneration",
       "Ideation"
     ],
     "elements": [
@@ -308,8 +329,7 @@
     ],
     "elements": [
       "IdeasToEvaluate",
-      "DFVS_Evaluation",
-      "IdeaVisualization"
+      "DFVS_Evaluation"
     ],
     "display": [
       {
@@ -318,14 +338,6 @@
           1
         ],
         "height": 300,
-        "background-color": "yellow",
-        "font-color": "black"
-      },
-      {
-        "format": [
-          1
-        ],
-        "height": 600,
         "background-color": "yellow",
         "font-color": "black"
       }
