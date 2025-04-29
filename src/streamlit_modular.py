@@ -401,8 +401,11 @@ def generate_artifacts(element_name, is_image=False):
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
     if prompt is None:
-        st.error("Kein Prompt hinterlegt")
+        st.error("There is no prompt assigned")
         return
+    with st.expander(label="Add external information source"):
+        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+    schema = None    
     with st.expander(label="View prompt"):  # added name of the prompt used to label
         st.markdown("**Prompt:** " + prompt_name + ".txt")
         st.markdown(prompt)
@@ -411,9 +414,7 @@ def generate_artifacts(element_name, is_image=False):
         # Construct the user prompt to show the user
         user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
         st.markdown(user_prompt)
-    with st.expander(label="Add external information source"):
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
-    schema = None
+
     if not is_image:
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
@@ -659,7 +660,7 @@ def general_creation_view(assigned_elements):
                                         format_func=element_selection_format_func)
         # element_selected = "Portrait"
     with columns[1]:
-        creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Manual", help="Select the mode to create artifacts")
+        creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Manual", help="Select the mode to create artifacts PLACEHOLDER")
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_single = True
@@ -750,7 +751,8 @@ def template_edit_subview():
 def special_view_idea_generation(assigned_elements):
     element_selected = st.selectbox(key="Select_Idea", label="Select Element to generate: ",
                                     options=assigned_elements,
-                                    format_func=element_selection_format_func)
+                                    format_func=element_selection_format_func,
+                                    help="Select the element to generate ideas for PLACEHOLDER")
     element_store = sst.data_store[sst.selected_template_name]
     selected_idea = idea_generation_view()
     st.divider()
