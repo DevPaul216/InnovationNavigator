@@ -26,14 +26,14 @@
         "StrategyCombined": {}
     },
     "Customer Persona": {
-        "Portrait": {},
         "Name": {},
         "Demographics": {},
         "About": {},
         "Problem_Attitude": {},
         "Pains": {},
         "Gains": {},
-        "Quote": {}
+        "Quote": {},
+        "Portrait": {}
     },
     "Empathy Map": {
         "SayDo": {},
