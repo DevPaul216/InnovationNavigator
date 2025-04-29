@@ -623,7 +623,7 @@ def chart_view():
         unsafe_allow_html=True,
     )  # replaced header with this smaller text box.
     add_empty_lines(2)
-    st.subheader("Open Project: " + sst.project_name)
+    st.subheader("Project: " + sst.project_name)
     add_empty_lines(1)
 
     legend_subview()

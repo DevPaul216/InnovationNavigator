@@ -41,8 +41,7 @@
         "items": {
           "type": "string",
           "description": "A specific representative quote."
-        },
-        "maxItems": 5
+        }
       }
     },
     "required": [
