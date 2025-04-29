@@ -1,76 +1,55 @@
 {
     "Start": {},
+    "IdeaGeneration": {
+        "SelectedIdea": {}
+    },
     "Problem": {
-        "InnovationIssue": [
-            "High energy consumption of AI technologies raises environmental concerns."
-        ],
-        "TargetGroup": [
-            "Tech industry professionals seeking to innovate without harming the planet."
-        ]
+        "InnovationIssue": {},
+        "TargetGroup": {}
     },
     "Resources": {
-        "Physical Resources": [],
-        "Human Resources": [],
-        "Financial Resources": [],
-        "Intellectual Property": [],
-        "KnowHow and Information": []
+        "Physical Resources": {},
+        "Human Resources": {},
+        "Financial Resources": {},
+        "Intellectual Property": {},
+        "KnowHow and Information": {}
     },
     "Strategic Foundation": {
-        "Organization Name": [],
-        "Mission": [],
-        "Vision": [],
-        "Values": []
+        "Organization Name": {},
+        "Mission": {},
+        "Vision": {},
+        "Values": {}
     },
     "Design Challenge": {
-        "HowMightWe": [
-            "How might we educate tech professionals about the environmental impacts of AI, empowering them to make responsible choices during development?",
-            "How might we engage consumers to demand eco-conscious AI solutions and prioritize sustainability in tech products?",
-            "How might we reimagine the lifecycle of AI technologies to ensure sustainability from conception to disposal?"
-        ],
-        "ResourcesCombined": [],
-        "StrategyCombined": []
+        "HowMightWe": {},
+        "ResourcesCombined": {},
+        "StrategyCombined": {}
     },
     "Customer Persona": {
-        "Name": [
-            "Jordan Green"
-        ],
-        "Demographics": [
-            "35, Male, San Francisco, CA, Sustainability Consultant"
-        ],
-        "About": [
-            "Jordan has spent the past decade in the tech industry, transitioning from software engineering to sustainability consulting. He witnessed the rapid evolution of AI technologies and became increasingly aware of their environmental impacts. This awareness sparked his mission to influence tech professionals to innovate responsibly while considering ecological footprints. He often collaborates with companies to develop eco-friendly practices and believes that technology should harmonize with nature rather than disrupt it."
-        ],
-        "Problem_Attitude": [
-            "Jordan feels a mix of urgency and hope. He is determined to challenge the status quo but often feels that many in the industry are reluctant to prioritize sustainability. He channels his frustrations into advocacy and education."
-        ],
-        "Pains": [
-            "Frustration with the tech industry's slow adoption of sustainable practices."
-        ],
-        "Gains": [
-            "Building a network of like-minded professionals who prioritize sustainability in tech."
-        ],
-        "Quote": [
-            "\"Innovation should not come at the expense of our planet. We need to reimagine how we create technology for a sustainable future.\""
-        ],
-        "Portrait": [
-            "./stores/image_store\\Portrait_default.jpg"
-        ]
+        "Name": {},
+        "Demographics": {},
+        "About": {},
+        "Problem_Attitude": {},
+        "Pains": {},
+        "Gains": {},
+        "Quote": {},
+        "Portrait": {}
     },
     "Empathy Map": {
-        "SayDo": [],
-        "See": [],
-        "Pains": [],
-        "ThinkFeel": [],
-        "Hear": [],
-        "Gains": []
+        "SayDo": {},
+        "See": {},
+        "Pains": {},
+        "ThinkFeel": {},
+        "Hear": {},
+        "Gains": {}
     },
     "PESTEL-Analysis": {
-        "Political": [],
-        "Economical": [],
-        "Social": [],
-        "Technological": [],
-        "Environmental": [],
-        "Legal": []
+        "Political": {},
+        "Economical": {},
+        "Social": {},
+        "Technological": {},
+        "Environmental": {},
+        "Legal": {}
     },
     "SWOT-Analysis": {
         "Strengths": {},
@@ -79,10 +58,10 @@
         "Threats": {}
     },
     "Jobs-To-Be-Done": {
-        "Situation": [],
-        "Motivation": [],
-        "Outcome": [],
-        "EmotionalJob": []
+        "Situation": {},
+        "Motivation": {},
+        "Outcome": {},
+        "EmotionalJob": {}
     },
     "Problem Statement": {
         "Context": {},
@@ -90,7 +69,7 @@
         "Consequence": {}
     },
     "Ideation": {
-        "IdeasSimple": [],
+        "IdeasSimple": {},
         "IdeasABC": {},
         "Ideas3": {}
     },
@@ -128,15 +107,10 @@
         "LikelyOutcome": {}
     },
     "InnovationLearnings": {
-        "Learnings": [],
+        "Learnings": {},
         "Impact": {}
     },
     "End": {
         "Solution": {}
-    },
-    "IdeaGeneration": {
-        "SelectedIdea": [
-            "Analyse der Ursachen f\u00fcr Zeitverlust"
-        ]
     }
 }
