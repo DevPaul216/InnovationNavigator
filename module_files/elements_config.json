@@ -1,7 +1,7 @@
 {
   "InnovationIssue": {
     "display_name": "Problem to be solved",
-    "description": "The problem or challenge to be addressed",
+    "description": "The problem or challenge to be addressed in the innovation process",
     "required": true,
     "used_templates": null,
     "prompt_name": "prompt_innovationissue",
@@ -17,7 +17,7 @@
   },
   "SelectedIdea": {
     "display_name": "Selected Idea",
-    "description": "The chosen idea to address the problem",
+    "description": "The idea chosen to address the identified innovation issue",
     "required": true,
     "used_templates": null,
     "prompt_name": "idea_generation",
@@ -31,7 +31,7 @@
   },
   "TargetGroup": {
     "display_name": "Person affected by the problem",
-    "description": "The group of people affected by the problem",
+    "description": "The group of people or entities affected by the problem or challenge",
     "required": true,
     "used_templates": null,
     "prompt_name": "prompt_targetgroup",
@@ -47,7 +47,7 @@
   },
   "Resource_Group": {
     "display_name": "Available resources to solve the problem",
-    "description": "A collection of resources available to solve the problem",
+    "description": "A collection of resources categorized to solve the identified problem",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -127,7 +127,7 @@
   },
   "HowMightWe": {
     "display_name": "How-Might-We Questions",
-    "description": "Questions framing the problem in a solution-oriented way",
+    "description": "Solution-oriented questions that frame the problem in an actionable way",
     "required": true,
     "used_templates": [
       "Problem"
@@ -181,7 +181,7 @@
   },
   "StrategicFoundation_Group": {
     "display_name": "Strategic Foundation",
-    "description": "A group of elements defining the organization's strategy",
+    "description": "A group of elements defining the organization's strategic foundation",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -249,7 +249,7 @@
   },
   "Persona_Group": {
     "display_name": "Customer Persona",
-    "description": "A group of elements defining a customer persona",
+    "description": "A group of elements defining a customer persona for innovation purposes",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -370,7 +370,7 @@
   },
   "EmpathyMap_Group": {
     "display_name": "Empathy Map",
-    "description": "A group of elements defining the empathy map",
+    "description": "A group of elements capturing the customer's perspective, emotions, and experiences",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -441,7 +441,7 @@
   },
   "PESTEL_Group": {
     "display_name": "PESTEL-Analysis",
-    "description": "A group of elements for PESTEL analysis",
+    "description": "A group of elements analyzing external factors affecting the innovation environment",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -534,7 +534,7 @@
   },
   "SWOT_Group": {
     "display_name": "SWOT-Analysis",
-    "description": "A group of elements for SWOT analysis",
+    "description": "A group of elements analyzing strengths, weaknesses, opportunities, and threats",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -604,7 +604,7 @@
   },
   "JTBD_Group": {
     "display_name": "Jobs-To-Be-Done",
-    "description": "A group of elements for Jobs-To-Be-Done analysis",
+    "description": "A group of elements analyzing the jobs customers need to accomplish",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -673,7 +673,7 @@
   },
   "ProblemStatement_Group": {
     "display_name": "Problem Statement",
-    "description": "A group of elements defining the problem statement",
+    "description": "A group of elements defining the problem's context, cause, and consequence",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -730,7 +730,7 @@
   },
   "IdeasSimple": {
     "display_name": "Basic Ideas",
-    "description": "Basic ideas generated during brainstorming",
+    "description": "Basic ideas generated during brainstorming sessions",
     "required": false,
     "used_templates": [
       "Jobs-To-Be-Done",
@@ -749,7 +749,7 @@
   },
   "IdeasABC": {
     "display_name": "ABC Method",
-    "description": "Ideas generated using the ABC method",
+    "description": "Ideas generated using the structured ABC brainstorming method",
     "required": false,
     "used_templates": [
       "Jobs-To-Be-Done",
@@ -768,7 +768,7 @@
   },
   "Ideas3": {
     "display_name": "Outside-Of-The Box Ideas",
-    "description": "Creative and unconventional ideas",
+    "description": "Creative and unconventional ideas generated through lateral thinking",
     "required": false,
     "used_templates": [
       "Jobs-To-Be-Done",
@@ -845,7 +845,7 @@
   },
   "ValuePropositionCanvas_Group": {
     "display_name": "Value Proposition Canvas",
-    "description": "A group of elements for the Value Proposition Canvas",
+    "description": "A group of elements defining the value proposition for the customer",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -939,7 +939,7 @@
   },
   "BusinessModelCanvas_Group": {
     "display_name": "Business Model Canvas",
-    "description": "A group of elements for the Business Model Canvas",
+    "description": "A group of elements defining the business model for delivering value",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -1069,7 +1069,7 @@
   },
   "TestCard_Group": {
     "display_name": "Test Card",
-    "description": "A group of elements for the Test Card",
+    "description": "A group of elements for designing and testing hypotheses",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -1137,7 +1137,7 @@
   },
   "ExperimentSummary": {
     "display_name": "Experiment Summary",
-    "description": "A summary of experiments conducted",
+    "description": "A summary of experiments conducted to validate hypotheses",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -1157,7 +1157,7 @@
   },
   "LikelyOutcome": {
     "display_name": "Likely Outcome",
-    "description": "The expected outcome of the experiments",
+    "description": "The expected results or outcomes of the conducted experiments",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -1177,7 +1177,7 @@
   },
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
-    "description": "Insights gained from the innovation journey",
+    "description": "Insights and lessons learned from the innovation process",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -1196,7 +1196,7 @@
   },
   "Impact": {
     "display_name": "Impact on Business Model",
-    "description": "The impact of the solution on the business model",
+    "description": "The effect of the solution on the business model and overall strategy",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -1216,7 +1216,7 @@
   },
   "Solution": {
     "display_name": "Solution",
-    "description": "The proposed solution to the problem",
+    "description": "The proposed solution designed to address the identified problem",
     "required": true,
     "used_templates": [
       "Business Model Canvas",
