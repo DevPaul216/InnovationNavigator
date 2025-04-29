@@ -9,7 +9,7 @@
       },
       "Demographics": {
         "type": "string",
-        "description": "A single paragraph describing key demographic information (e.g., age, gender, location, occupation)."
+        "description": "A single string describing key demographic information (e.g., age, gender, location, occupation)."
       },
       "About": {
         "type": "string",
@@ -21,33 +21,23 @@
         "items": {
           "type": "string",
           "description": "A specific pain point."
-        },
-        "minItems": 10,
-        "maxItems": 10
+        }
       },
       "Gains": {
         "type": "array",
-        "description": "A list of (always) Ten (10) different gains describing what success or satisfaction looks like for the persona.",
+        "description": "What success or satisfaction looks like for the persona.",
         "items": {
           "type": "string",
           "description": "A specific gain or benefit desired."
-        },
-        "minItems": 10,
-        "maxItems": 10
+        }
       },
       "Problem_Attitude": {
         "type": "string",
-        "description": "A list of (always) Ten (10) different pains describing how the persona feels or behaves toward the problem or challenge they face."
+        "description": "How the persona feels or behaves toward the problem or challenge they face."
       },
       "Quote": {
-        "type": "array",
-        "description": "An array of 5 different representative quotes that capture the persona’s mindset or experience.",
-        "items": {
-          "type": "string",
-          "description": "A representative quote that captures the persona’s mindset or experience."
-        },
-        "minItems": 5,
-        "maxItems": 5
+        "type": "string",
+        "description": "A representative quote that captures the persona’s mindset or experience."
       }
     },
     "required": [
