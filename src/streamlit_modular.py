@@ -70,7 +70,7 @@ def init_session_state():
 
 def init_page():
     st.set_page_config(page_title="Innovation Navigator", layout="wide",
-                       page_icon=os.path.join("misc", "LogoFH_Notext.png"),
+                       page_icon=os.path.join("misc", "LogoFH.png"),
                        initial_sidebar_state=sst.sidebar_state)
 
     st.markdown(
@@ -659,8 +659,7 @@ def general_creation_view(assigned_elements):
                                         format_func=element_selection_format_func)
         # element_selected = "Portrait"
     with columns[1]:
-        creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"],
-                                             default="Manual")
+        creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Manual", help="Select the mode to create artifacts")
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_single = True
