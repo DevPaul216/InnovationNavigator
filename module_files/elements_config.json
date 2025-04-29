@@ -1,6 +1,7 @@
 {
   "InnovationIssue": {
     "display_name": "Problem to be solved",
+    "description": "The problem or challenge to be addressed",
     "required": true,
     "used_templates": null,
     "prompt_name": "prompt_innovationissue",
@@ -12,20 +13,20 @@
       "documents",
       "websearch",
       "website"
-    ],
-    "description": "The problem or challenge to be addressed"
+    ]
   },
   "SelectedIdea": {
     "display_name": "Gewählte Idee",
+    "description": "The chosen idea to address the problem",
     "required": true,
     "used_templates": null,
     "prompt_name": "idea_generation",
     "schema_name": "generic_schema",
-    "max": 1,
-    "description": "The chosen idea to address the problem"
+    "max": 1
   },
   "TargetGroup": {
     "display_name": "Person affected by the problem",
+    "description": "The group of people affected by the problem",
     "required": true,
     "used_templates": null,
     "prompt_name": "prompt_targetgroup",
@@ -37,11 +38,11 @@
       "documents",
       "websearch",
       "website"
-    ],
-    "description": "The group of people affected by the problem"
+    ]
   },
   "Resource_Group": {
     "display_name": "Available resources to solve the problem",
+    "description": "A collection of resources available to solve the problem",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -62,41 +63,41 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "A collection of resources available to solve the problem"
+    ]
   },
   "Physical Resources": {
     "display_name": "Physical Resources",
+    "description": "Tangible assets like equipment or materials",
     "required": false,
-    "max": 5,
-    "description": "Tangible assets like equipment or materials"
+    "max": 5
   },
   "Human Resources": {
     "display_name": "Human Resources",
+    "description": "People or teams available to contribute",
     "required": false,
-    "max": 5,
-    "description": "People or teams available to contribute"
+    "max": 5
   },
   "Financial Resources": {
     "display_name": "Financial Resources",
+    "description": "Monetary assets available for the project",
     "required": false,
-    "max": 5,
-    "description": "Monetary assets available for the project"
+    "max": 5
   },
   "Intellectual Property": {
     "display_name": "Intellectual Property",
+    "description": "Patents, trademarks, or copyrights owned",
     "required": false,
-    "max": 5,
-    "description": "Patents, trademarks, or copyrights owned"
+    "max": 5
   },
   "KnowHow and Information": {
     "display_name": "KnowHow and Information",
+    "description": "Knowledge and data relevant to the problem",
     "required": false,
-    "max": 5,
-    "description": "Knowledge and data relevant to the problem"
+    "max": 5
   },
   "HowMightWe": {
     "display_name": "How-Might-We Questions",
+    "description": "Questions framing the problem in a solution-oriented way",
     "required": true,
     "used_templates": [
       "Problem"
@@ -109,11 +110,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "Questions framing the problem in a solution-oriented way"
+    ]
   },
   "ResourcesCombined": {
     "display_name": "Summary of available resources",
+    "description": "A summary of all available resources",
     "required": true,
     "used_templates": [
       "Resources"
@@ -126,11 +127,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A summary of all available resources"
+    ]
   },
   "StrategyCombined": {
     "display_name": "Strategic Foundation of Organization",
+    "description": "The strategic foundation of the organization",
     "required": true,
     "used_templates": [
       "Strategic Foundation"
@@ -143,11 +144,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "The strategic foundation of the organization"
+    ]
   },
   "StrategicFoundation_Group": {
     "display_name": "Strategic Foundation",
+    "description": "A group of elements defining the organization's strategy",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -166,35 +167,35 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements defining the organization's strategy"
+    ]
   },
   "Organization Name": {
     "display_name": "Organization Name",
+    "description": "The name of the organization",
     "required": true,
-    "max": 1,
-    "description": "The name of the organization"
+    "max": 1
   },
   "Mission": {
     "display_name": "Mission",
+    "description": "The organization's purpose or mission statement",
     "required": false,
-    "max": 1,
-    "description": "The organization's purpose or mission statement"
+    "max": 1
   },
   "Vision": {
     "display_name": "Vision",
+    "description": "The organization's long-term vision",
     "required": false,
-    "max": 1,
-    "description": "The organization's long-term vision"
+    "max": 1
   },
   "Values": {
     "display_name": "Values",
+    "description": "The core values guiding the organization",
     "required": false,
-    "max": 10,
-    "description": "The core values guiding the organization"
+    "max": 10
   },
   "Persona_Group": {
     "display_name": "Customer Persona",
+    "description": "A group of elements defining a customer persona",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -217,32 +218,31 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements defining a customer persona"
+    ]
   },
   "Name": {
     "display_name": "Name",
+    "description": "The name of the persona",
     "required": true,
-    "max": 1,
-    "description": "The name of the persona"
+    "max": 1
   },
   "Demographics": {
     "display_name": "Demographics",
+    "description": "The demographic details of the persona",
     "required": true,
-    "max": 1,
-    "description": "The demographic details of the persona"
+    "max": 1
   },
   "About": {
     "display_name": "About",
+    "description": "A brief description of the persona",
     "required": true,
-    "max": 1,
-    "description": "A brief description of the persona"
+    "max": 1
   },
   "Problem_Attitude": {
     "display_name": "Problem Attitude",
+    "description": "The persona's attitude towards the problem",
     "required": true,
-    "max": 1,
-    "description": "The persona's attitude towards the problem"
+    "max": 1
   },
   "Pains": {
     "display_name": "Pains",
@@ -264,6 +264,7 @@
   },
   "Portrait": {
     "display_name": "Portrait",
+    "description": "An image representing the persona",
     "type": "image",
     "required": false,
     "resources": [],
@@ -271,11 +272,11 @@
     "used_templates": [
       "Customer Persona"
     ],
-    "prompt_name": "prompt_persona_portrait",
-    "description": "An image representing the persona"
+    "prompt_name": "prompt_persona_portrait"
   },
   "EmpathyMap_Group": {
     "display_name": "Empathy Map",
+    "description": "A group of elements defining the empathy map",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -297,8 +298,7 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements defining the empathy map"
+    ]
   },
   "ThinkFeel": {
     "display_name": "Think & Feel",
@@ -326,6 +326,7 @@
   },
   "PESTEL_Group": {
     "display_name": "PESTEL-Analysis",
+    "description": "A group of elements for PESTEL analysis",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -348,41 +349,47 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "A group of elements for PESTEL analysis"
+    ]
   },
   "Political": {
     "display_name": "Political",
+    "description": "Political factors affecting the environment",
     "required": false,
     "max": 5
   },
   "Economical": {
     "display_name": "Economical",
+    "description": "Economic factors influencing the environment",
     "required": false,
     "max": 5
   },
   "Social": {
     "display_name": "Social",
+    "description": "Social factors impacting the environment",
     "required": false,
     "max": 5
   },
   "Technological": {
     "display_name": "Technological",
+    "description": "Technological factors affecting the environment",
     "required": false,
     "max": 5
   },
   "Environmental": {
     "display_name": "Environmental",
+    "description": "Environmental factors influencing the environment",
     "required": false,
     "max": 5
   },
   "Legal": {
     "display_name": "Legal",
+    "description": "Legal factors impacting the environment",
     "required": false,
     "max": 5
   },
   "SWOT_Group": {
     "display_name": "SWOT-Analysis",
+    "description": "A group of elements for SWOT analysis",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -403,31 +410,35 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements for SWOT analysis"
+    ]
   },
   "Strengths": {
     "display_name": "Strengths",
+    "description": "Internal strengths of the organization",
     "required": true,
     "max": 5
   },
   "Weaknesses": {
     "display_name": "Weaknesses",
+    "description": "Internal weaknesses of the organization",
     "required": true,
     "max": 5
   },
   "Opportunities": {
     "display_name": "Opportunities",
+    "description": "External opportunities available to the organization",
     "required": true,
     "max": 5
   },
   "Threats": {
     "display_name": "Threats",
+    "description": "External threats faced by the organization",
     "required": true,
     "max": 5
   },
   "JTBD_Group": {
     "display_name": "Jobs-To-Be-Done",
+    "description": "A group of elements for Jobs-To-Be-Done analysis",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -447,31 +458,35 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements for Jobs-To-Be-Done analysis"
+    ]
   },
   "Situation": {
     "display_name": "Situation",
+    "description": "The context or situation of the job to be done",
     "required": true,
     "max": 5
   },
   "Motivation": {
     "display_name": "Motivation",
+    "description": "The motivation behind the job to be done",
     "required": true,
     "max": 5
   },
   "Outcome": {
     "display_name": "Outcome",
+    "description": "The desired outcome of the job to be done",
     "required": true,
     "max": 5
   },
   "EmotionalJob": {
     "display_name": "Emotional Job",
+    "description": "The emotional aspect of the job to be done",
     "required": true,
     "max": 5
   },
   "ProblemStatement_Group": {
     "display_name": "Problem Statement",
+    "description": "A group of elements defining the problem statement",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -490,26 +505,29 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements defining the problem statement"
+    ]
   },
   "Context": {
     "display_name": "Context",
+    "description": "The context in which the problem occurs",
     "required": true,
     "max": 5
   },
   "Cause": {
     "display_name": "Cause",
+    "description": "The root cause of the problem",
     "required": true,
     "max": 5
   },
   "Consequence": {
     "display_name": "Consequence",
+    "description": "The consequence of the problem",
     "required": true,
     "max": 5
   },
   "IdeasSimple": {
     "display_name": "Basic Ideas",
+    "description": "Basic ideas generated during brainstorming",
     "required": false,
     "used_templates": [
       "Jobs-To-Be-Done",
@@ -524,11 +542,11 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "Basic ideas generated during brainstorming"
+    ]
   },
   "IdeasABC": {
     "display_name": "ABC Method",
+    "description": "Ideas generated using the ABC method",
     "required": false,
     "used_templates": [
       "Jobs-To-Be-Done",
@@ -543,11 +561,11 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "Ideas generated using the ABC method"
+    ]
   },
   "Ideas3": {
     "display_name": "Outside-Of-The Box Ideas",
+    "description": "Creative and unconventional ideas",
     "required": false,
     "used_templates": [
       "Jobs-To-Be-Done",
@@ -562,11 +580,11 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "Creative and unconventional ideas"
+    ]
   },
   "IdeasToEvaluate": {
     "display_name": "Ideas to Evaluate",
+    "description": "Ideas selected for further evaluation",
     "required": true,
     "used_templates": [
       "Ideation"
@@ -580,11 +598,11 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "Ideas selected for further evaluation"
+    ]
   },
   "Idea Rating": {
     "display_name": "Idea Rating",
+    "description": "Ratings assigned to evaluated ideas",
     "required": true,
     "used_templates": [
       "Idea Evaluation",
@@ -600,11 +618,11 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "Ratings assigned to evaluated ideas"
+    ]
   },
   "DFVS_Evaluation": {
     "display_name": "DVFS_Evaluation",
+    "description": "Evaluation of ideas using the DVFS framework",
     "required": true,
     "used_templates": [
       "Idea Evaluation",
@@ -620,11 +638,11 @@
       "documents",
       "website",
       "websearch"
-    ],
-    "description": "Evaluation of ideas using the DVFS framework"
+    ]
   },
   "ValuePropositionCanvas_Group": {
     "display_name": "Value Proposition Canvas",
+    "description": "A group of elements for the Value Proposition Canvas",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -647,41 +665,47 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements for the Value Proposition Canvas"
+    ]
   },
   "CustomerJobs": {
     "display_name": "Customer Jobs",
+    "description": "The tasks or jobs the customer needs to accomplish",
     "required": true,
     "max": 5
   },
   "CustomerPains": {
     "display_name": "Pains",
+    "description": "The challenges or difficulties faced by the customer",
     "required": true,
     "max": 5
   },
   "CustomerGains": {
     "display_name": "Gains",
+    "description": "The benefits or value the customer seeks",
     "required": true,
     "max": 5
   },
   "ProductsAndServices": {
     "display_name": "Products and Services",
+    "description": "The products and services offered to the customer",
     "required": true,
     "max": 5
   },
   "PainRelievers": {
     "display_name": "Pain Relievers",
+    "description": "Solutions that address customer pains",
     "required": true,
     "max": 5
   },
   "GainCreators": {
     "display_name": "Gain Creators",
+    "description": "Solutions that create value for the customer",
     "required": true,
     "max": 5
   },
   "BusinessModelCanvas_Group": {
     "display_name": "Business Model Canvas",
+    "description": "A group of elements for the Business Model Canvas",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -707,56 +731,65 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements for the Business Model Canvas"
+    ]
   },
   "KeyPartnerships": {
     "display_name": "Key Partnerships",
+    "description": "The key partnerships required for the business model",
     "required": true,
     "max": 5
   },
   "KeyActivities": {
     "display_name": "Key Activities",
+    "description": "The key activities required for the business model",
     "required": true,
     "max": 5
   },
   "KeyResources": {
     "display_name": "Key Resources",
+    "description": "The key resources required for the business model",
     "required": true,
     "max": 5
   },
   "ValuePropositionSummary": {
     "display_name": "Value Proposition Summary",
+    "description": "A summary of the value proposition",
     "required": true,
     "max": 5
   },
   "CustomerRelationships": {
     "display_name": "Customer Relationships",
+    "description": "The relationships maintained with customers",
     "required": true,
     "max": 5
   },
   "Channels": {
     "display_name": "Channels",
+    "description": "The channels used to reach customers",
     "required": true,
     "max": 5
   },
   "CustomerSegmentSummary": {
     "display_name": "Customer Segment Summary",
+    "description": "A summary of the customer segments",
     "required": true,
     "max": 5
   },
   "CostStructure": {
     "display_name": "Cost Structure",
+    "description": "The cost structure of the business model",
     "required": true,
     "max": 5
   },
   "RevenueStreams": {
     "display_name": "Revenue Streams",
+    "description": "The revenue streams of the business model",
     "required": true,
     "max": 5
   },
   "TestCard_Group": {
     "display_name": "Test Card",
+    "description": "A group of elements for the Test Card",
     "required": true,
     "type": "group",
     "used_templates": [
@@ -775,31 +808,35 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A group of elements for the Test Card"
+    ]
   },
   "Hypothesis": {
     "display_name": "Hypothesis",
+    "description": "The hypothesis to be tested",
     "required": true,
     "max": 5
   },
   "Test": {
     "display_name": "Test",
+    "description": "The test to validate the hypothesis",
     "required": true,
     "max": 5
   },
   "Metric": {
     "display_name": "Metric",
+    "description": "The metrics used to measure success",
     "required": true,
     "max": 5
   },
   "Criteria": {
     "display_name": "Criteria",
+    "description": "The criteria for evaluating success",
     "required": true,
     "max": 5
   },
   "ExperimentSummary": {
     "display_name": "Experiment Summary",
+    "description": "A summary of experiments conducted",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -814,11 +851,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "A summary of experiments conducted"
+    ]
   },
   "LikelyOutcome": {
     "display_name": "Likely Outcome",
+    "description": "The expected outcome of the experiments",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -833,11 +870,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "The expected outcome of the experiments"
+    ]
   },
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
+    "description": "Insights gained from the innovation journey",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -851,11 +888,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "Insights gained from the innovation journey"
+    ]
   },
   "Impact": {
     "display_name": "Impact on Business Model",
+    "description": "The impact of the solution on the business model",
     "required": true,
     "used_templates": [
       "Test Card",
@@ -870,11 +907,11 @@
     "resources": [
       "documents",
       "website"
-    ],
-    "description": "The impact of the solution on the business model"
+    ]
   },
   "Solution": {
     "display_name": "Solution",
+    "description": "The proposed solution to the problem",
     "required": true,
     "used_templates": [
       "Business Model Canvas",
@@ -887,7 +924,6 @@
     "schema_name_import": "schema_generic_array",
     "max": 1,
     "resources": [
-    ],
-    "description": "The proposed solution to the problem"
+    ]
   }
 }
