@@ -397,7 +397,7 @@
   },
   "ThinkFeel": {
     "display_name": "Think & Feel",
-    "description": "What the person thinks and feels",
+    "description": "What the customer is thinking and feeling, including their worries and aspirations",
     "required": true,
     "max": 5,
     "resources": [
@@ -408,7 +408,7 @@
   },
   "SayDo": {
     "display_name": "Say & Do",
-    "description": "What the person usually says and does",
+    "description": "What the customer says and does in public, including their behavior and statements",
     "required": true,
     "max": 5,
     "resources": [
@@ -419,7 +419,7 @@
   },
   "See": {
     "display_name": "See",
-    "description": "The individual's perspective",
+    "description": "What the customer sees in their environment, including trends and influences",
     "required": true,
     "max": 5,
     "resources": [
@@ -430,7 +430,7 @@
   },
   "Hear": {
     "display_name": "Hear",
-    "description": "How the person interprets things",
+    "description": "What the customer hears from others, including feedback, opinions, and advice",
     "required": true,
     "max": 5,
     "resources": [
