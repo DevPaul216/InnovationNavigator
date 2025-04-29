@@ -21,15 +21,19 @@
         "items": {
           "type": "string",
           "description": "A specific pain point."
-        }
+        },
+        "minItems": 10,
+        "maxItems": 10
       },
       "Gains": {
         "type": "array",
-        "description": "A list of (always) Ten (10) different gains dscribing What success or satisfaction looks like for the persona.",
+        "description": "A list of (always) Ten (10) different gains describing what success or satisfaction looks like for the persona.",
         "items": {
           "type": "string",
           "description": "A specific gain or benefit desired."
-        }
+        },
+        "minItems": 10,
+        "maxItems": 10
       },
       "Problem_Attitude": {
         "type": "string",
@@ -37,11 +41,13 @@
       },
       "Quote": {
         "type": "array",
-        "description": "An array of 5 differen trepresentative quotes that capture the persona’s mindset or experience.",
+        "description": "An array of 5 different representative quotes that capture the persona’s mindset or experience.",
         "items": {
           "type": "string",
           "description": "A representative quote that captures the persona’s mindset or experience."
-        }
+        },
+        "minItems": 5,
+        "maxItems": 5
       }
     },
     "required": [
