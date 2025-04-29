@@ -25,7 +25,7 @@
       },
       "Gains": {
         "type": "array",
-        "description": "10 different gains dscribing What success or satisfaction looks like for the persona.",
+        "description": "A list of (always) Ten (10) different gains dscribing What success or satisfaction looks like for the persona.",
         "items": {
           "type": "string",
           "description": "A specific gain or benefit desired."
@@ -33,7 +33,7 @@
       },
       "Problem_Attitude": {
         "type": "string",
-        "description": "10 different pains describing how the persona feels or behaves toward the problem or challenge they face."
+        "description": "A list of (always) Ten (10) different pains describing how the persona feels or behaves toward the problem or challenge they face."
       },
       "Quote": {
         "type": "array",
