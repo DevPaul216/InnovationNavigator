@@ -5,58 +5,58 @@
     "properties": {
       "Name": {
         "type": "array",
-        "description": "An array of names for the persona.",
+        "description": "An array of five different names for the persona.",
         "items": {
           "type": "string",
-          "description": "The name of the persona."
+          "description": "One possible name for the persona."
         }
       },
       "Demographics": {
         "type": "array",
-        "description": "An array of strings describing key demographic information.",
+        "description": "An array of five different strings describing key demographic information.",
         "items": {
           "type": "string",
-          "description": "A single string describing key demographic information (e.g., age, gender, location, occupation)."
+          "description": "One specific paragraphs describing key demographic information (always includes age, gender, location, occupation, others)."
         }
       },
       "About": {
         "type": "array",
-        "description": "An array of brief backgrounds or stories about the persona.",
+        "description": "An array of five different brief backgrounds or stories about the persona.",
         "items": {
           "type": "string",
-          "description": "A brief background or story about the persona."
+          "description": "One brief background or story about the persona."
         }
       },
       "Pains": {
         "type": "array",
-        "description": "An array of key frustrations or pain points of the persona.",
+        "description": "An array of five different key frustrations or pain points of the persona.",
         "items": {
           "type": "string",
-          "description": "A specific pain point."
+          "description": "One specific pain point."
         }
       },
       "Gains": {
         "type": "array",
-        "description": "An array of what success or satisfaction looks like for the persona.",
+        "description": "An array of five different descriptions of what success or satisfaction looks like for the persona.",
         "items": {
           "type": "string",
-          "description": "A specific gain or benefit desired."
+          "description": "One specific gain or benefit desired."
         }
       },
       "Problem_Attitude": {
         "type": "array",
-        "description": "An array describing how the persona feels or behaves toward the problem or challenge they face.",
+        "description": "An array of five different descriptions of how the persona feels or behaves toward the problem or challenge they face.",
         "items": {
           "type": "string",
-          "description": "How the persona feels or behaves toward the problem or challenge they face."
+          "description": "One description of how the persona feels or behaves toward the problem or challenge they face."
         }
       },
       "Quote": {
         "type": "array",
-        "description": "An array of representative quotes that capture the persona’s mindset or experience.",
+        "description": "An array of five different representative quotes that capture the persona’s mindset or experience.",
         "items": {
           "type": "string",
-          "description": "A representative quote that captures the persona’s mindset or experience."
+          "description": "One representative quote that captures the persona’s mindset or experience."
         }
       }
     },
