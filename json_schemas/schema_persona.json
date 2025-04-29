@@ -17,7 +17,7 @@
       },
       "Pains": {
         "type": "array",
-        "description": "Key frustrations or pain points of the persona.",
+        "description": "Six different Key frustrations or pain points of the persona.",
         "items": {
           "type": "string",
           "description": "A specific pain point."

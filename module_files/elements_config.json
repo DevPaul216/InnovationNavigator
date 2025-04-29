@@ -246,19 +246,19 @@
   },
   "Pains": {
     "display_name": "Pains",
-    "description": "Was die Person momentan belastet",
+    "description": "What currently burdens the person",
     "required": true,
     "max": 5
   },
   "Gains": {
     "display_name": "Gains",
-    "description": "Wo die Person ihre Stärken sieht",
+    "description": "Where the person sees their strengths",
     "required": true,
     "max": 5
   },
   "Quote": {
     "display_name": "Quote",
-    "description": "Ein typischer Ausspruch",
+    "description": "A typical statement",
     "required": true,
     "max": 1
   },
@@ -302,25 +302,25 @@
   },
   "ThinkFeel": {
     "display_name": "Think & Feel",
-    "description": "Was die Person denkt und fühlt",
+    "description": "What the person thinks and feels",
     "required": true,
     "max": 5
   },
   "SayDo": {
     "display_name": "Say & Do",
-    "description": "Was die Person normalerweise sagt und tut",
+    "description": "What the person usually says and does",
     "required": true,
     "max": 5
   },
   "See": {
     "display_name": "See",
-    "description": "Der individuelle Blickwinkel der Person",
+    "description": "The individual's perspective",
     "required": true,
     "max": 5
   },
   "Hear": {
     "display_name": "Hear",
-    "description": "Wie die Person Dinge interpretiert",
+    "description": "How the person interprets things",
     "required": true,
     "max": 5
   },
