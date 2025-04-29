@@ -657,7 +657,8 @@ def general_creation_view(assigned_elements):
     columns = st.columns([1, 1, 3], vertical_alignment="center")
     with columns[0]:
         element_selected = st.selectbox(label="Select Element to generate: ", options=assigned_elements,
-                                        format_func=element_selection_format_func)
+                                        format_func=element_selection_format_func,
+                                        help="Select the element to generate artifacts for PLACEHOLDER")
         # element_selected = "Portrait"
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Manual", help="Select the mode to create artifacts PLACEHOLDER")
@@ -751,8 +752,7 @@ def template_edit_subview():
 def special_view_idea_generation(assigned_elements):
     element_selected = st.selectbox(key="Select_Idea", label="Select Element to generate: ",
                                     options=assigned_elements,
-                                    format_func=element_selection_format_func,
-                                    help="Select the element to generate ideas for PLACEHOLDER")
+                                    format_func=element_selection_format_func)
     element_store = sst.data_store[sst.selected_template_name]
     selected_idea = idea_generation_view()
     st.divider()
