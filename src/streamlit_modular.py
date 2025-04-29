@@ -571,9 +571,9 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                     if len(artifact_text) > 0:
                                         text_to_show = artifact_text
                                     else:
-                                        text_to_show = "Keine Informationen verfügbar"
+                                        text_to_show = "Nothing here yet."
                                         if 'required' not in element_config or element_config['required']:
-                                            text_to_show = text_to_show + "  \n  \n:heavy_exclamation_mark: Wird benötigt"
+                                            text_to_show = text_to_show + "  \n  \n:heavy_exclamation_mark: Required :heavy_exclamation_mark:"
                                     st.markdown(text_to_show)
                             if element_name in artifact_images:
                                 if artifact_images[element_name] is not None:
