@@ -656,9 +656,9 @@ def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
     columns = st.columns([1, 1, 3], vertical_alignment="center")
     with columns[0]:
-        element_selected = st.selectbox(label="Select Element to generate: ", options=assigned_elements,
-                                        format_func=element_selection_format_func,
-                                        help="Select the element to generate artifacts for PLACEHOLDER")
+        element_selected = st.selectbox(label="Select Element to generate: ", help="Select the element to generate artifacts for PLACEHOLDER"
+                                        options=assigned_elements,
+                                        format_func=element_selection_format_func,)
         # element_selected = "Portrait"
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Manual", help="Select the mode to create artifacts PLACEHOLDER")
