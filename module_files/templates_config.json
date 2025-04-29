@@ -30,7 +30,7 @@
   },
   "Problem": {
     "display_name": "Problem",
-    "description": "Definition des Problems",
+    "description": "This template provides an overview of the problem you are trying to solve. It includes a human problem you are trying to solve, and a person (or a group of people) affected by the issue.",
     "required": true,
     "connects": [
       "Design Challenge"
