@@ -138,7 +138,7 @@ def load_schema(filename_pattern):
 
 def scrape_texts(query, num_results):
     texts = {}
-    st.subheader("Verwendete Webseiten")
+    st.subheader("Websites Used")
     for url in search(query, num_results=num_results):
         st.write(url)
         try:

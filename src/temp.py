@@ -61,7 +61,7 @@ def init_session_state():
 
 
 def init_page():
-    st.set_page_config(page_title="Innovation Assistant", layout="wide",
+    st.set_page_config(page_title="Innovation Navigator", layout="wide",
                        initial_sidebar_state=sst.sidebar_state)
     st.markdown(
         """
@@ -246,7 +246,7 @@ def resource_selection_view(element_name):
         used_resources = element_config["resources"]
     else:
         used_resources = ["documents", "web", "website"]
-    selected_option = st.segmented_control(label="Auswahl zusätzliche Ressourcen", options=used_resources,
+    selected_option = st.segmented_control(label="Select additional resources", options=used_resources,
                                            selection_mode='single',
                                            format_func=format_func)
     home_url = None

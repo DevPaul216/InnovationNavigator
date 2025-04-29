@@ -36,8 +36,13 @@
         "description": "How the persona feels or behaves toward the problem or challenge they face."
       },
       "Quote": {
-        "type": "string",
-        "description": "A representative quote that captures the persona’s mindset or experience."
+        "type": "array",
+        "description": "An array of up to five representative quotes that capture the persona’s mindset or experience.",
+        "items": {
+          "type": "string",
+          "description": "A specific representative quote."
+        },
+        "maxItems": 5
       }
     },
     "required": [

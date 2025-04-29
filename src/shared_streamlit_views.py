@@ -10,7 +10,7 @@ def prompting_view(base_path):
     all_options = ["Kein"] + file_names
     selected_file_name = st.selectbox(label="Preset Prompts", options=all_options, index=0)
     prompt_text = ""
-    if selected_file_name is not None and selected_file_name != "Kein":
+    if selected_file_name is not None and selected_file_name != "None":
         with open(f'{base_path}{selected_file_name}', 'r', encoding='utf8') as file:
             # Read the entire content of the file
             prompt_text = file.read()
@@ -21,12 +21,12 @@ def prompting_view(base_path):
 
 def additional_pdf(subheader):
     st.subheader(subheader)
-    uploaded_pdf_files = st.file_uploader(label="PDF Dokumente hochladen", type="pdf", accept_multiple_files=True)
+    uploaded_pdf_files = st.file_uploader(label="Upload PDF document", type="pdf", accept_multiple_files=True)
     text = ''
     if uploaded_pdf_files is not None and len(uploaded_pdf_files) > 0:
         reader = PyPDF2.PdfReader(uploaded_pdf_files[0])
         for page in reader.pages:
             text += page.extract_text()
-    with st.expander("Auszug"):
+    with st.expander("Expand"):
         st.write(text[0:5000])
     return text
