@@ -874,8 +874,10 @@ def about_view():
     st.title("About")
     st.markdown(
         "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
-        unsafe_allow_html=True,
-    )  
+        unsafe_allow_html=True)
+    st.markdown(
+        "<h2 style='font-size:18px;'>Here is some important information you need to know, but I will write it here later<",
+        unsafe_allow_html=True)  
 
     # Add a "Get Started" button in the middle of the page
     st.divider()
