@@ -63,7 +63,7 @@ def init_session_state():
         sst.selected_template_name = None
         sst.sidebar_state = "collapsed"
         sst.update_graph = True
-        sst.current_view = "About"
+        sst.current_view = "about"
         load_data_store()
         update_data_store()
 
