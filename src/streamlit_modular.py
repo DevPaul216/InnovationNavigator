@@ -605,7 +605,7 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns(3)
+    legend_cols = st.columns([1, 1, 1], gap="small")  # Adjusted gap to reduce horizontal space
     with legend_cols[0]:
         st.markdown(
             f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
