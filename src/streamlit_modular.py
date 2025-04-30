@@ -882,9 +882,12 @@ def about_view():
     # Add a "Get Started" button in the middle of the page
     st.divider()
     if st.button("Get Started", type="primary", use_container_width=True):
-        sst.selected_template_name = "Start"  # Set to "Start" to open the project creation screen
-        sst.current_view = "detail"  # Switch to the "Projects" view
-        st.experimental_rerun()
+        sst.selected_template_name = "Start"  # Set to "start" to open the project creation screen
+        sst.current_view = "detail"
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
+        st.rerun()
+
 
 
 def open_sidebar():
