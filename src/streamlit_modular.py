@@ -371,31 +371,38 @@ def generate_artifacts(element_name, is_image=False):
         default=required_items  # Preselect only the ones defined in the config
     )
     selected_elements = {}
-    columns = st.columns(2)
-    position = 0
-    for selected_key in selected_keys:
-        element_store = sst.data_store[selected_key]
-        with columns[position]:
-            element_names = [element for element in element_store.keys() if element != element_name]
-            selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                       options=element_names,
-                                       default=element_names, key=f"multiselect_{selected_key}")
-            selected_elements[selected_key] = selection
-            position += 1
-        if position >= 2:
-            position = 0
+    with st.expander("Choose individual elements from selected templates"):
+        columns = st.columns(2)
+        position = 0
+        for selected_key in selected_keys:
+            element_store = sst.data_store[selected_key]
+            with columns[position]:
+                element_names = [element for element in element_store.keys() if element != element_name]
+                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                           options=element_names,
+                                           default=element_names, key=f"multiselect_{selected_key}")
+                selected_elements[selected_key] = selection
+                position += 1
+            if position >= 2:
+                position = 0
 
-    for selected_key, selected_elements in selected_elements.items():
-        element_store = sst.data_store[selected_key]
-        for name in selected_elements:
-            resource_text = ""
-            element_value = element_store[name]
-            for value in element_value:
-                resource_text += f"- {value}\n"
-            if resource_text.strip() != "":
-                if "display_name" in sst.elements_config[name]:
-                    name = sst.elements_config[name]["display_name"]
-                selected_resources[name] = resource_text
+            for selected_key, selected_elements in selected_elements.items():
+                element_store = sst.data_store[selected_key]
+                for name in selected_elements:
+                    resource_text = ""
+                    element_value = element_store[name]
+                    for value in element_value:
+                        resource_text += f"- {value}\n"
+                    if resource_text.strip() != "":
+                        if "display_name" in sst.elements_config[name]:
+                            name_display = sst.elements_config[name]["display_name"]
+                        else:
+                            name_display = name
+                        # Add description to the resource text
+                        if "description" in sst.elements_config[name]:
+                            description = sst.elements_config[name]["description"]
+                            resource_text = f"**{description}**\n{resource_text}"
+                        selected_resources[name_display] = resource_text
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
@@ -600,7 +607,7 @@ def legend_subview():
     legend_cols = st.columns(3)
     with legend_cols[0]:
         st.markdown(
-            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Recommended prerequisites not met",
+            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
             unsafe_allow_html=True,
         )
     with legend_cols[1]:
