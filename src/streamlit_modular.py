@@ -875,7 +875,14 @@ def about_view():
     st.markdown(
         "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
         unsafe_allow_html=True,
-    )  # replaced header with this smaller text box.
+    )  
+
+    # Add a "Get Started" button in the middle of the page
+    st.divider()
+    if st.button("Get Started", type="primary", use_container_width=True):
+        sst.selected_template_name = "Start"  # Set to "Start" to open the project creation screen
+        sst.current_view = "detail"  # Switch to the "Projects" view
+        st.experimental_rerun()
 
 
 def open_sidebar():
