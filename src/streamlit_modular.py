@@ -394,11 +394,14 @@ def generate_artifacts(element_name, is_image=False):
                 for value in element_value:
                     resource_text += f"- {value}\n"
                 if resource_text.strip() != "":
-                    if "display_name" in sst.elements_config[name]:
-                        name = sst.elements_config[name]["display_name"]
-                        description = sst.elements_config[name]["description"]
-                        resource_text = f"{display_name}\n{description}\n{resource_text}"
-                    selected_resources[name] = resource_text
+                    # Get the display name and description
+                    name_display = sst.elements_config[name].get("display_name", name)
+                    description = sst.elements_config[name].get("description", "No description available.")
+                    
+                    # Format the resource text to include both name and description
+                    resource_text = f"**{name_display}**\n_{description}_\n{resource_text}"
+                    
+                    selected_resources[name_display] = resource_text
 
 
 
