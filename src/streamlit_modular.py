@@ -63,7 +63,7 @@ def init_session_state():
         sst.selected_template_name = None
         sst.sidebar_state = "collapsed"
         sst.update_graph = True
-        sst.current_view = "chart"
+        sst.current_view = "About"
         load_data_store()
         update_data_store()
 
@@ -872,7 +872,10 @@ def detail_view():
 
 def about_view():
     st.title("About")
-    st.markdown("PLACEHOLDER for general infor about the project and system and so on")
+    st.markdown(
+        "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
+        unsafe_allow_html=True,
+    )  # replaced header with this smaller text box.
 
 
 def open_sidebar():
