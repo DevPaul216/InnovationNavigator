@@ -398,8 +398,8 @@ def generate_artifacts(element_name, is_image=False):
                     name_display = sst.elements_config[name].get("display_name", name)
                     description = sst.elements_config[name].get("description", "No description available.")
                     
-                    # Format the resource text to include both name and description
-                    resource_text = f"**{name_display}**\n_{description}_\n{resource_text}"
+                    # Format the resource text to include only the description and values
+                    resource_text = f"_{description}_\n{resource_text}"
                     
                     selected_resources[name_display] = resource_text
 
