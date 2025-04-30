@@ -963,7 +963,7 @@ def start_sub_view():
         else:
             st.warning("A project with this name is already there")
     st.divider()
-    st.subheader("Switch/Delete Project")
+    st.subheader("Switch/Delete Project", help="Switch to another project or delete the current one.")
     selected_project_name = st.selectbox("Switch to another project:", options=project_names,
                                          index=project_names.index(sst.project_name))
     if selected_project_name != sst.project_name:
@@ -982,7 +982,7 @@ def start_sub_view():
                 time.sleep(1.0)
                 st.rerun()
     st.divider()
-    st.subheader("Export all projects")
+    st.subheader("Export all projects", help="Export all projects to a zip file.")
     if st.button("Export"):
         zip_directory_path = shutil.make_archive("stores", "zip", "./stores")
         now = datetime.now()
@@ -996,7 +996,7 @@ def start_sub_view():
                 type="primary"
             )
     st.divider()
-    st.subheader("Import projects")
+    st.subheader("Import projects", help="Import projects from a zip file. Needs to be in the correct format.")
     uploaded_file = st.file_uploader(label="Upload zip project folder",
                                      type=".zip",
                                      accept_multiple_files=False)
