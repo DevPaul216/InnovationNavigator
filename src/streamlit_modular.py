@@ -386,23 +386,21 @@ def generate_artifacts(element_name, is_image=False):
             if position >= 2:
                 position = 0
 
-            for selected_key, selected_elements in selected_elements.items():
-                element_store = sst.data_store[selected_key]
-                for name in selected_elements:
-                    resource_text = ""
-                    element_value = element_store[name]
-                    for value in element_value:
-                        resource_text += f"- {value}\n"
-                    if resource_text.strip() != "":
-                        if "display_name" in sst.elements_config[name]:
-                            name_display = sst.elements_config[name]["display_name"]
-                        else:
-                            name_display = name
-                        # Add description to the resource text
-                        if "description" in sst.elements_config[name]:
-                            description = sst.elements_config[name]["description"]
-                            resource_text = f"**{description}**\n{resource_text}"
-                        selected_resources[name_display] = resource_text
+        for selected_key, selected_elements in selected_elements.items():
+            element_store = sst.data_store[selected_key]
+            for name in selected_elements:
+                resource_text = ""
+                element_value = element_store[name]
+                for value in element_value:
+                    resource_text += f"- {value}\n"
+                if resource_text.strip() != "":
+                    if "display_name" in sst.elements_config[name]:
+                        name = sst.elements_config[name]["display_name"]
+                        description = sst.elements_config[name]["description"]
+                        resource_text = f"{display_name}\n{description}\n{resource_text}"
+                    selected_resources[name] = resource_text
+
+
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
