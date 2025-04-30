@@ -23,7 +23,7 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-COLOR_BLOCKED = "rgb(173, 200, 235)"
+COLOR_BLOCKED = "rgb(214, 0, 29)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
 
