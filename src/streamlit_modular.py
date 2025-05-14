@@ -23,7 +23,7 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-COLOR_BLOCKED = "rgb(255, 255, 255)"
+COLOR_BLOCKED = "rgb(250, 240, 220)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
 
@@ -625,8 +625,6 @@ def legend_subview():
 
 def chart_view():
     st.title("Innovation Navigator")
-
-    add_empty_lines(2)
     st.subheader("Project: " + sst.project_name)
     add_empty_lines(1)
 
