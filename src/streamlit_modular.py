@@ -635,20 +635,6 @@ def chart_view():
 
     legend_subview()
 
-<<<<<<< HEAD
-    updated_state = streamlit_flow(
-        key="ret_val_flow",
-        state=sst.flow_state,
-        height=800,  # Increased height for better visibility
-        layout=LayeredLayout(direction="right"),
-        fit_view=True,
-        get_node_on_click=True,
-        get_edge_on_click=False,
-        show_controls=True,
-        allow_zoom=True,
-        pan_on_drag=True,
-    )
-=======
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
             key="ret_val_flow",
@@ -662,7 +648,7 @@ def chart_view():
             allow_zoom=True,
             pan_on_drag=True,
         )
->>>>>>> f6e8f4c51ab86d75eeaf84a3ff158f9e1114b05d
+        
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
         sst.current_view = "detail"
