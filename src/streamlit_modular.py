@@ -274,7 +274,7 @@ def display_generated_artifacts_view(element_name):
 
 def format_func(option):
     options_display_dict = {
-        "documents": "Description",
+        "documents": "External Document",
         "websearch": "Google Search",
         "website": "Website"
     }
@@ -298,20 +298,19 @@ def resource_selection_view(element_name):
     number_entries_used = None
     uploaded_files = None
     if used_resources is not None and len(used_resources) > 0:
-        selected_option = st.segmented_control(
+        selected_option = st.radio(
             label="Add additional Resources",
             options=used_resources,
-            selection_mode='multi',
             format_func=format_func
         )
         if selected_option is not None:
-            if "website" in selected_option:
+            if selected_option == "website":
                 with st.container(border=True):
                     st.subheader(":material/home: Website")
                     home_url = st.text_input(label="Website URL").strip()
 
             number_entries_used = 0
-            if "websearch" in selected_option:
+            if selected_option == "websearch":
                 with st.container(border=True):
                     st.subheader(":material/globe: Google Search")
                     query = st.text_input(label="Search Query").strip()
@@ -321,7 +320,7 @@ def resource_selection_view(element_name):
                         max_value=10,
                         value=5
                     )
-            if "documents" in selected_option:
+            if selected_option == "documents":
                 with st.container(border=True):
                     st.subheader(":material/description: Documents")
                     uploaded_files = st.file_uploader(
