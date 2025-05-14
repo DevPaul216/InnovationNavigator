@@ -77,10 +77,17 @@ def init_page():
         """
             <style>
                 .block-container {
+<<<<<<< HEAD
                         padding-top: 2rem; /* Reduced padding to give more space to the graph */
                         padding-bottom: 2rem;
                         padding-left: 8rem; /* Adjusted for better layout */
                         padding-right: 8rem;
+=======
+                        padding-top: 5rem;
+                        padding-bottom: 5rem;
+                        padding-left: 2rem; /* Reduced left padding */
+                        padding-right: 2rem; /* Adjusted right padding for symmetry, can be changed if needed */
+>>>>>>> f6e8f4c51ab86d75eeaf84a3ff158f9e1114b05d
                     }
                       /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
@@ -630,6 +637,7 @@ def chart_view():
 
     legend_subview()
 
+<<<<<<< HEAD
     updated_state = streamlit_flow(
         key="ret_val_flow",
         state=sst.flow_state,
@@ -642,6 +650,21 @@ def chart_view():
         allow_zoom=True,
         pan_on_drag=True,
     )
+=======
+    with st.container(border=True):  # Add border to the container of the flow chart
+        updated_state = streamlit_flow(
+            key="ret_val_flow",
+            state=sst.flow_state,
+            height=700,  # Increased height
+            layout=LayeredLayout(direction="right", node_spacing=20, layer_spacing=50),  # Added node_spacing and layer_spacing
+            fit_view=True,
+            get_node_on_click=True,
+            get_edge_on_click=False,
+            show_controls=True,
+            allow_zoom=True,
+            pan_on_drag=True,
+        )
+>>>>>>> f6e8f4c51ab86d75eeaf84a3ff158f9e1114b05d
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
         sst.current_view = "detail"
