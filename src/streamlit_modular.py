@@ -77,10 +77,10 @@ def init_page():
         """
             <style>
                 .block-container {
-                        padding-top: 2rem; /* Reduced padding to give more space to the graph */
+                        padding-top: 0rem; /* Reduced padding to give more space to the graph */
                         padding-bottom: 2rem;
-                        padding-left: 8rem; /* Adjusted for better layout */
-                        padding-right: 8rem;
+                        padding-left: 2rem; /* Adjusted for better layout */
+                        padding-right: 2rem;
                     }
                       /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
@@ -634,7 +634,7 @@ def chart_view():
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
-            height=800,  # Adjusted height for better visibility
+            height=600,  # Adjusted height for better visibility
             layout=LayeredLayout(direction="right"),
             fit_view=True,
             get_node_on_click=True,
