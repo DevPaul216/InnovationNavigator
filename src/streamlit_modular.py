@@ -953,6 +953,7 @@ def start_sub_view():
             st.success("Project created")
             sst.sidebar_state = "expanded"
             sst.update_graph = True
+            sst.current_view = "chart"  # Transition to the overview screen
             time.sleep(1.0)
             st.rerun()
         else:
