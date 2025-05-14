@@ -404,8 +404,8 @@ def generate_artifacts(element_name, is_image=False):
                     selected_resources[name_display] = resource_text
 
     st.subheader("Adjust Generation Parameters")
-        temperature = st.slider("Temperature", min_value=0.0, max_value=2.0, value=1.0, step=0.1)
-        top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=1.0, step=0.1)
+    temperature = st.slider("Temperature", min_value=0.0, max_value=2.0, value=1.0, step=0.1)
+    top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=1.0, step=0.1)
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
