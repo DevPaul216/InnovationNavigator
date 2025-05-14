@@ -624,6 +624,7 @@ def legend_subview():
 
 
 def chart_view():
+    add_empty_lines(1)
     st.subheader("Project: " + sst.project_name)
     add_empty_lines(1)
 
