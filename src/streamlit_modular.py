@@ -77,17 +77,15 @@ def init_page():
         """
             <style>
                 .block-container {
-<<<<<<< HEAD
                         padding-top: 2rem; /* Reduced padding to give more space to the graph */
                         padding-bottom: 2rem;
                         padding-left: 8rem; /* Adjusted for better layout */
                         padding-right: 8rem;
-=======
                         padding-top: 5rem;
                         padding-bottom: 5rem;
                         padding-left: 2rem; /* Reduced left padding */
                         padding-right: 2rem; /* Adjusted right padding for symmetry, can be changed if needed */
->>>>>>> f6e8f4c51ab86d75eeaf84a3ff158f9e1114b05d
+
                     }
                       /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
