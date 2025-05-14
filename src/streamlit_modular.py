@@ -275,10 +275,15 @@ def display_generated_artifacts_view(element_name):
 def format_func(option):
     options_display_dict = {
         "documents": "Description",
-        "websearch": "globe",  # changed web to websearch
-        "website": "home"
+        "websearch": "Google Search",
+        "website": "Website"
     }
-    return f":material/{options_display_dict[option]}:"
+    icon_dict = {
+        "documents": ":material/description:",
+        "websearch": ":material/globe:",
+        "website": ":material/home:"
+    }
+    return f"{icon_dict[option]} {options_display_dict[option]}"
 
 
 def resource_selection_view(element_name):
@@ -293,9 +298,12 @@ def resource_selection_view(element_name):
     number_entries_used = None
     uploaded_files = None
     if used_resources is not None and len(used_resources) > 0:
-        selected_option = st.segmented_control(label="Add additional Resources", options=used_resources,
-                                               selection_mode='multi',
-                                               format_func=format_func)
+        selected_option = st.segmented_control(
+            label="Add additional Resources",
+            options=used_resources,
+            selection_mode='multi',
+            format_func=format_func
+        )
         if selected_option is not None:
             if "website" in selected_option:
                 with st.container(border=True):
@@ -307,14 +315,20 @@ def resource_selection_view(element_name):
                 with st.container(border=True):
                     st.subheader(":material/globe: Google Search")
                     query = st.text_input(label="Search Query").strip()
-                    number_entries_used = st.number_input(label="Number of websites searched (1-10)", min_value=1,
-                                                          max_value=10,
-                                                          value=5)
+                    number_entries_used = st.number_input(
+                        label="Number of websites searched (1-10)",
+                        min_value=1,
+                        max_value=10,
+                        value=5
+                    )
             if "documents" in selected_option:
                 with st.container(border=True):
                     st.subheader(":material/description: Documents")
-                    uploaded_files = st.file_uploader(label="Upload Relevant Documents", type="pdf",
-                                                      accept_multiple_files=True)
+                    uploaded_files = st.file_uploader(
+                        label="Upload Relevant Documents",
+                        type="pdf",
+                        accept_multiple_files=True
+                    )
     return home_url, query, number_entries_used, uploaded_files
 
 
