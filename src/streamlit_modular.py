@@ -299,20 +299,20 @@ def resource_selection_view(element_name):
         if selected_option is not None:
             if "website" in selected_option:
                 with st.container(border=True):
-                    st.subheader("Website")
+                    st.subheader(":material/home: Website")
                     home_url = st.text_input(label="Website URL").strip()
 
             number_entries_used = 0
             if "websearch" in selected_option:
                 with st.container(border=True):
-                    st.subheader("Google Search")
+                    st.subheader(":material/globe: Google Search")
                     query = st.text_input(label="Search Query").strip()
                     number_entries_used = st.number_input(label="Number of websites searched (1-10)", min_value=1,
                                                           max_value=10,
                                                           value=5)
             if "documents" in selected_option:
                 with st.container(border=True):
-                    st.subheader("Documents")
+                    st.subheader(":material/description: Documents")
                     uploaded_files = st.file_uploader(label="Upload Relevant Documents", type="pdf",
                                                       accept_multiple_files=True)
     return home_url, query, number_entries_used, uploaded_files
@@ -442,7 +442,7 @@ def generate_artifacts(element_name, is_image=False):
         st.session_state.setdefault("top_p", 1.0)
 
         # --- preset buttons ---
-        cols = st.columns(1,1,1,1,1,1,1)
+        cols = st.columns(3)
         if cols[0].button("Creative", key="creative_button"):
             st.session_state.update(temperature=1.6, top_p=1.0)
         if cols[1].button("Logic", key="logic_button"):
