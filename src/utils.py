@@ -59,9 +59,9 @@ def make_request(prompt_text, additional_information_list=None, image_paths=None
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=messages,
-        temperature=1.9,
+        temperature=2.0,
         top_p=1.0,
-        max_tokens=10
+        max_tokens=2048
     )
     return completion.choices[0].message.content
 
@@ -84,9 +84,9 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
         completion = client.beta.chat.completions.parse(
             model="gpt-4o-mini",
             messages=messages,
-            temperature=1.9,
+            temperature=2.0,
             top_p=1.0,
-            max_tokens=10
+            max_tokens=2048
         )
     else:
         completion = client.beta.chat.completions.parse(
@@ -96,9 +96,9 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
                 "type": "json_schema",
                 "json_schema": json_schema
             },
-            temperature=1.9,
+            temperature=2.0,
             top_p=1.0,
-            max_tokens=10
+            max_tokens=2048
         )
     return completion.choices[0].message.content
 
