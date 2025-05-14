@@ -434,48 +434,49 @@ def generate_artifacts(element_name, is_image=False):
             st.markdown("**Schema:** " + schema_name + ".json")
             st.json(schema)
 
-    # Wrap the generation parameters in an expander
+   
     with st.expander("Adjust Generation Parameters", expanded=False):
-        # Initialize session state for sliders
-        if "temperature" not in st.session_state:
-            st.session_state.temperature = 1.0
-        if "top_p" not in st.session_state:
-            st.session_state.top_p = 1.0
 
-        # Function to update sliders based on preset button clicks
-        def update_sliders(temperature, top_p):
-            st.session_state.temperature = temperature
-            st.session_state.top_p = top_p
+        # --- initialise defaults once ---
+        st.session_state.setdefault("temperature", 1.0)
+        st.session_state.setdefault("top_p", 1.0)
 
-        # Sliders
+        # --- preset buttons ---
+        cols = st.columns(3)
+        if cols[0].button("Creative"):
+            st.session_state.update(temperature=1.5, top_p=1.0)
+        if cols[1].button("Logic"):
+            st.session_state.update(temperature=0.2, top_p=1.0)
+        if cols[2].button("Simple"):
+            st.session_state.update(temperature=0.5, top_p=0.2)
+
+        # --- sliders (keys match session state) ---
         temperature = st.slider(
             "Temperature",
             min_value=0.0,
             max_value=2.0,
-            value=st.session_state.temperature,
             step=0.1,
-            key="temperature_slider"
+            key="temperature"
         )
         top_p = st.slider(
-            "Top P",
+            "Top-P",
             min_value=0.0,
             max_value=1.0,
-            value=st.session_state.top_p,
             step=0.1,
-            key="top_p_slider"
+            key="top_p"
         )
 
-        # Add preset buttons
-        preset_columns = st.columns(3)
-        with preset_columns[0]:
-            if st.button("Creative"):
-                update_sliders(1.5, 1.0)
-        with preset_columns[1]:
-            if st.button("Logic"):
-                update_sliders(0.2, 1.0)
-        with preset_columns[2]:
-            if st.button("Simple"):
-                update_sliders(0.5, 0.2)
+    # --- generate ---
+    if st.button("Generate now!", type="primary"):
+        with st.spinner("Processing..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not is_image:
+                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_name, prompt, selected_resources)
+
+
+
 
         # Synchronize sliders with session state
         temperature = st.session_state.temperature
