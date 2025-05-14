@@ -442,7 +442,7 @@ def generate_artifacts(element_name, is_image=False):
         st.session_state.setdefault("top_p", 1.0)
 
         # --- preset buttons ---
-        cols = st.columns(3)
+        cols = st.columns(1,1,1,1,1,1,1)
         if cols[0].button("Creative", key="creative_button"):
             st.session_state.update(temperature=1.6, top_p=1.0)
         if cols[1].button("Logic", key="logic_button"):
