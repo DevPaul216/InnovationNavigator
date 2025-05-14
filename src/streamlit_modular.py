@@ -442,13 +442,13 @@ def generate_artifacts(element_name, is_image=False):
         st.session_state.setdefault("top_p", 1.0)
 
         # --- preset buttons ---
-    cols = st.columns(3)
-    if cols[0].button("Creative", key="creative_button"):
-        st.session_state.update(temperature=1.5, top_p=1.0)
-    if cols[1].button("Logic", key="logic_button"):
-        st.session_state.update(temperature=0.2, top_p=1.0)
-    if cols[2].button("Simple", key="simple_button"):
-        st.session_state.update(temperature=0.5, top_p=0.2)
+        cols = st.columns(3)
+        if cols[0].button("Creative", key="creative_button"):
+            st.session_state.update(temperature=1.5, top_p=1.0)
+        if cols[1].button("Logic", key="logic_button"):
+            st.session_state.update(temperature=0.2, top_p=1.0)
+        if cols[2].button("Simple", key="simple_button"):
+            st.session_state.update(temperature=0.5, top_p=0.2)
 
         # --- sliders (keys match session state) ---
         temperature = st.slider(
