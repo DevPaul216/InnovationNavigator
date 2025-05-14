@@ -45,7 +45,7 @@ def append_image_messages(image_paths, messages):
             })
 
 
-def make_request(prompt_text, additional_information_list=None, image_paths=None):
+def make_request(prompt_text, additional_information_list=None, image_paths=None, temperature=1.0, top_p=1.0):
     messages = [
         {"role": "system", "content": prompt_text},
     ]
@@ -59,14 +59,14 @@ def make_request(prompt_text, additional_information_list=None, image_paths=None
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=messages,
-        temperature=2.0,
-        top_p=1.0,
+        temperature=temperature,
+        top_p=top_p,
         max_tokens=2048
     )
     return completion.choices[0].message.content
 
 
-def make_request_structured(prompt_text, additional_information_dict=None, image_paths=None, json_schema=None):
+def make_request_structured(prompt_text, additional_information_dict=None, image_paths=None, json_schema=None, temperature=1.0, top_p=1.0):
     if additional_information_dict is None:
         additional_information_dict = {}
     messages = [
@@ -84,8 +84,8 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
         completion = client.beta.chat.completions.parse(
             model="gpt-4o-mini",
             messages=messages,
-            temperature=2.0,
-            top_p=1.0,
+            temperature=temperature,
+            top_p=top_p,
             max_tokens=2048
         )
     else:
@@ -96,8 +96,8 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
                 "type": "json_schema",
                 "json_schema": json_schema
             },
-            temperature=2.0,
-            top_p=1.0,
+            temperature=temperature,
+            top_p=top_p,
             max_tokens=2048
         )
     return completion.choices[0].message.content

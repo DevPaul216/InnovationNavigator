@@ -328,8 +328,8 @@ def add_to_generated_artifacts(element_name, values):
     sst.confirmed_artifacts[element_name] = {}
 
 
-def handle_response(element_name, prompt, schema, selected_resources):
-    response = make_request_structured(prompt, selected_resources, json_schema=schema)
+def handle_response(element_name, prompt, schema, selected_resources, temperature, top_p):
+    response = make_request_structured(prompt, selected_resources, json_schema=schema, temperature=temperature, top_p=top_p)
     if response is not None and str(response).strip() != "":
         try:
             sst.generated_artifacts = {}
@@ -403,7 +403,15 @@ def generate_artifacts(element_name, is_image=False):
                     
                     selected_resources[name_display] = resource_text
 
+    st.subheader("Adjust Generation Parameters")
+        temperature = st.slider("Temperature", min_value=0.0, max_value=2.0, value=1.0, step=0.1)
+        top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=1.0, step=0.1)
 
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    if prompt is None:
+        st.error("There is no prompt assigned")
+        return
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
