@@ -624,7 +624,6 @@ def legend_subview():
 
 
 def chart_view():
-    st.title("Innovation Navigator")
     st.subheader("Project: " + sst.project_name)
     add_empty_lines(1)
 
