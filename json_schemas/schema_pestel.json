@@ -11,7 +11,7 @@
           "description": "A political factor."
         }
       },
-      "Economic": {
+      "Economical": {
         "type": "array",
         "description": "Economic factors (e.g., inflation, interest rates, economic growth).",
         "items": {

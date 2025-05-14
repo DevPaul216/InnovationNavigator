@@ -50,20 +50,20 @@ def prompt_editor_view(folder_path):
                     st.rerun()
 
         # --- Rename file ---
-        if selected_file:
-            new_name = st.text_input("Rename to", value=selected_file, key="rename")
-            if st.button("Rename"):
-                if new_name == selected_file:
-                    st.warning("New name is the same.")
-                elif not new_name.endswith(".txt"):
-                    st.error("File name must end with .txt")
-                elif os.path.exists(os.path.join(folder_path, new_name)):
-                    st.error("A file with that name already exists.")
-                else:
-                    os.rename(os.path.join(folder_path, selected_file), os.path.join(folder_path, new_name))
-                    st.success(f"Renamed to {new_name}")
-                    st.session_state.selected_file = new_name
-                    st.rerun()
+        # if selected_file:
+        #     new_name = st.text_input("Rename to", value=selected_file, key="rename")
+        #     if st.button("Rename"):
+        #         if new_name == selected_file:
+        #             st.warning("New name is the same.")
+        #         elif not new_name.endswith(".txt"):
+        #             st.error("File name must end with .txt")
+        #         elif os.path.exists(os.path.join(folder_path, new_name)):
+        #             st.error("A file with that name already exists.")
+        #         else:
+        #             os.rename(os.path.join(folder_path, selected_file), os.path.join(folder_path, new_name))
+        #             st.success(f"Renamed to {new_name}")
+        #             st.session_state.selected_file = new_name
+        #             st.rerun()
 
             # --- Delete file ---
             if st.button("Delete"):
