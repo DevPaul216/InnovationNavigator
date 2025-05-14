@@ -1,2 +1,3 @@
 Create a portrait photo of a person in the style of a job application photo.
-The photo should look realistic and therefore not cartoonish or stylized
+The photo should look realistic and therefore not cartoonish or stylized.
+Do not include any text in the image, just generate the person described.

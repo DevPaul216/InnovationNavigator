@@ -58,7 +58,10 @@ def make_request(prompt_text, additional_information_list=None, image_paths=None
     client = OpenAI(api_key=openai_api_key)
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=messages
+        messages=messages,
+        temperature=1.9,
+        top_p=1.0,
+        max_tokens=2048
     )
     return completion.choices[0].message.content
 
@@ -80,7 +83,10 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
     if json_schema is None:
         completion = client.beta.chat.completions.parse(
             model="gpt-4o-mini",
-            messages=messages
+            messages=messages,
+            temperature=1.9,
+            top_p=1.0,
+            max_tokens=2048
         )
     else:
         completion = client.beta.chat.completions.parse(
@@ -89,7 +95,10 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
             response_format={
                 "type": "json_schema",
                 "json_schema": json_schema
-            }
+            },
+            temperature=1.9,
+            top_p=1.0,
+            max_tokens=2048
         )
     return completion.choices[0].message.content
 
