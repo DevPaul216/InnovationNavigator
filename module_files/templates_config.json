@@ -55,8 +55,8 @@
     "connects": ["Empathy Map", "Problem Statement"],
     "elements": ["Portrait", "Persona_Group"],
     "display": [
-      { "format": [1, 1, 1], "height": 300 },
-      { "format": [2, 2, 1], "height": 500 }
+      { "format": [1, 2, 2], "height": 600 },
+      { "format": [1, 1, 1], "height": 300 }
     ]
   },
   "Empathy Map": {
