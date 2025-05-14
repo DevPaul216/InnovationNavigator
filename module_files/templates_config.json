@@ -10,7 +10,7 @@
     "required": false,
     "connects": ["Idea Evaluation"],
     "elements": ["SelectedIdea"],
-    "display": [{ "format": [1], "height": 200, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [1], "height": 200 }]
   },
   "Problem": {
     "display_name": "Problem",
@@ -18,7 +18,7 @@
     "required": true,
     "connects": ["Design Challenge"],
     "elements": ["InnovationIssue", "TargetGroup"],
-    "display": [{ "format": [1, 1], "height": 200, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [1, 1], "height": 200 }]
   },
   "Resources": {
     "display_name": "Resources",
@@ -26,7 +26,7 @@
     "required": false,
     "connects": ["Design Challenge"],
     "elements": ["Resource_Group"],
-    "display": [{ "format": [5], "height": 1000, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [5], "height": 1000 }]
   },
   "Strategic Foundation": {
     "display_name": "Strategic Foundation",
@@ -34,8 +34,8 @@
     "connects": ["Design Challenge"],
     "elements": ["StrategicFoundation_Group"],
     "display": [
-      { "format": [1, 1], "height": 400, "background-color": "yellow", "font-color": "black" },
-      { "format": [1, 1], "height": 400, "background-color": "yellow", "font-color": "black" }
+      { "format": [1, 1], "height": 400 },
+      { "format": [1, 1], "height": 400 }
     ]
   },
   "Design Challenge": {
@@ -45,8 +45,8 @@
     "connects": ["Customer Persona", "PESTEL-Analysis"],
     "elements": ["HowMightWe", "ResourcesCombined", "StrategyCombined"],
     "display": [
-      { "format": [1], "height": 200, "background-color": "yellow", "font-color": "black" },
-      { "format": [1, 1], "height": 400, "background-color": "yellow", "font-color": "black" }
+      { "format": [1], "height": 200 },
+      { "format": [1, 1], "height": 400 }
     ]
   },
   "Customer Persona": {
@@ -55,8 +55,8 @@
     "connects": ["Empathy Map", "Problem Statement"],
     "elements": ["Persona_Group", "Portrait"],
     "display": [
-      { "format": [1, 1, 1], "height": 300, "background-color": "yellow", "font-color": "black" },
-      { "format": [2, 2, 1], "height": 500, "background-color": "yellow", "font-color": "black" }
+      { "format": [1, 1, 1], "height": 300 },
+      { "format": [2, 2, 1], "height": 500 }
     ]
   },
   "Empathy Map": {
@@ -65,9 +65,9 @@
     "connects": ["Problem Statement"],
     "elements": ["EmpathyMap_Group"],
     "display": [
-      { "format": [1, 1], "height": 200, "background-color": "yellow", "font-color": "black" },
-      { "format": [1, 1], "height": 200, "background-color": "yellow", "font-color": "black" },
-      { "format": [1, 1], "height": 200, "background-color": "yellow", "font-color": "black" }
+      { "format": [1, 1], "height": 200 },
+      { "format": [1, 1], "height": 200 },
+      { "format": [1, 1], "height": 200 }
     ]
   },
   "PESTEL-Analysis": {
@@ -75,7 +75,7 @@
     "description": "Analyzes external macro-environmental factors, including Political, Economic, Social, Technological, Environmental, and Legal influences, that impact the project.",
     "connects": ["SWOT-Analysis", "Jobs-To-Be-Done"],
     "elements": ["PESTEL_Group"],
-    "display": [{ "format": [3, 3], "height": 800, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [3, 3], "height": 800 }]
   },
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",
@@ -83,8 +83,8 @@
     "connects": ["IdeaGeneration", "Ideation"],
     "elements": ["SWOT_Group"],
     "display": [
-      { "format": [1, 1], "height": 400, "background-color": "yellow", "font-color": "black" },
-      { "format": [1, 1], "height": 400, "background-color": "yellow", "font-color": "black" }
+      { "format": [1, 1], "height": 400 },
+      { "format": [1, 1], "height": 400 }
     ]
   },
   "Jobs-To-Be-Done": {
@@ -92,35 +92,35 @@
     "description": "Identifies the specific tasks or goals customers aim to achieve with the proposed solution, providing clarity on their expectations and priorities.",
     "connects": ["IdeaGeneration", "Ideation"],
     "elements": ["JTBD_Group"],
-    "display": [{ "format": [1, 1, 1, 1], "height": 400, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [1, 1, 1, 1], "height": 400 }]
   },
   "Problem Statement": {
     "display_name": "Problem Statement",
     "description": "Articulates the core problem in a concise and actionable statement, serving as a foundation for developing solutions.",
     "connects": ["Jobs-To-Be-Done"],
     "elements": ["ProblemStatement_Group"],
-    "display": [{ "format": [1, 1, 1], "height": 400, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [1, 1, 1], "height": 400 }]
   },
   "Ideation": {
     "display_name": "Ideation",
     "description": "Facilitates brainstorming sessions to generate, organize, and refine innovative ideas that address the defined problem or challenge.",
     "connects": ["Idea Evaluation"],
     "elements": ["IdeasSimple", "IdeasABC", "Ideas3"],
-    "display": [{ "format": [1, 1, 1], "height": 400, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [1, 1, 1], "height": 400 }]
   },
   "Idea Evaluation": {
     "display_name": "Idea Evaluation",
     "description": "Provides a framework for assessing and prioritizing ideas based on their feasibility, impact, and alignment with project goals.",
     "connects": ["Value Proposition Canvas"],
     "elements": ["IdeasToEvaluate", "DFVS_Evaluation"],
-    "display": [{ "format": [1, 1], "height": 300, "background-color": "yellow", "font-color": "black" }]
+    "display": [{ "format": [1, 1], "height": 300 }]
   },
   "Value Proposition Canvas": {
     "display_name": "Value Proposition Canvas",
     "description": "Aligns customer needs and pain points with the value offered by the solution, ensuring a strong product-market fit.",
     "connects": ["Business Model Canvas"],
     "elements": ["ValuePropositionCanvas_Group"],
-    "display": [{ "format": [3, 3], "height": 600, "background-color": "lightblue", "font-color": "black" }]
+    "display": [{ "format": [3, 3], "height": 600 }]
   },
   "Business Model Canvas": {
     "display_name": "Business Model Canvas",
@@ -128,8 +128,8 @@
     "connects": ["Test Card"],
     "elements": ["BusinessModelCanvas_Group"],
     "display": [
-      { "format": [1, 2, 1, 2, 1], "height": 600, "background-color": "lightgray", "font-color": "black" },
-      { "format": [1, 1], "height": 300, "background-color": "lightgray", "font-color": "black" }
+      { "format": [1, 2, 1, 2, 1], "height": 600 },
+      { "format": [1, 1], "height": 300 }
     ]
   },
   "Test Card": {
@@ -137,28 +137,28 @@
     "description": "Designs and documents hypotheses and experiments to validate assumptions, enabling data-driven decision-making.",
     "connects": ["ExperimentSimulation"],
     "elements": ["TestCard_Group"],
-    "display": [{ "format": [1, 1, 1, 1], "height": 600, "background-color": "lightgray", "font-color": "black" }]
+    "display": [{ "format": [1, 1, 1, 1], "height": 600 }]
   },
   "ExperimentSimulation": {
     "display_name": "Experiment Simulations",
     "description": "Simulates experiments to predict outcomes, refine solutions, and assess the feasibility of proposed ideas.",
     "connects": ["InnovationLearnings"],
     "elements": ["ExperimentSummary", "LikelyOutcome"],
-    "display": [{ "format": [1, 1], "height": 600, "background-color": "lightgray", "font-color": "black" }]
+    "display": [{ "format": [1, 1], "height": 600 }]
   },
   "InnovationLearnings": {
     "display_name": "Learnings",
     "description": "Captures and organizes key insights, lessons, and feedback from the innovation process to inform future projects.",
     "connects": ["End"],
     "elements": ["Learnings", "Impact"],
-    "display": [{ "format": [1, 1], "height": 600, "background-color": "lightgray", "font-color": "black" }]
+    "display": [{ "format": [1, 1], "height": 600 }]
   },
   "End": {
     "display_name": "Solution Summary",
     "description": "Summarizes the final solution, highlighting its key components, benefits, and alignment with the project's objectives.",
     "connects": [],
     "elements": ["Solution"],
-    "display": [{ "format": [1], "height": 600, "background-color": "lightgray", "font-color": "black" }]
+    "display": [{ "format": [1], "height": 600 }]
   }
 }
 
