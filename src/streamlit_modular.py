@@ -444,11 +444,11 @@ def generate_artifacts(element_name, is_image=False):
         # --- preset buttons ---
         cols = st.columns(3)
         if cols[0].button("Creative", key="creative_button"):
-            st.session_state.update(temperature=1.5, top_p=1.0)
+            st.session_state.update(temperature=1.6, top_p=1.0)
         if cols[1].button("Logic", key="logic_button"):
             st.session_state.update(temperature=0.2, top_p=1.0)
-        if cols[2].button("Simple", key="simple_button"):
-            st.session_state.update(temperature=0.5, top_p=0.2)
+        if cols[2].button("Simplify", key="simple_button"):
+            st.session_state.update(temperature=1.0, top_p=0.1)
 
         # --- sliders (keys match session state) ---
         temperature = st.slider(
@@ -646,21 +646,14 @@ def display_template_view(selected_template_name):
 
 
 def legend_subview():
-    # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1], gap="small")  # Adjusted gap to reduce horizontal space
-    with legend_cols[0]:
+    # Add a legend for the graph colors aligned to the left of the screen
+    with st.container():
         st.markdown(
-            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
-            unsafe_allow_html=True,
-        )
-    with legend_cols[1]:
-        st.markdown(
-            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed/Optional",
-            unsafe_allow_html=True,
-        )
-    with legend_cols[2]:
-        st.markdown(
-            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
+            f"<div style='display: flex; flex-direction: column; align-items: flex-start;'>"
+            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block; margin-bottom: 5px;'></div> Requirements not met"
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block; margin-bottom: 5px;'></div> Completed/Optional"
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step"
+            f"</div>",
             unsafe_allow_html=True,
         )
 
