@@ -464,17 +464,7 @@ def generate_artifacts(element_name, is_image=False):
             max_value=1.0,
             step=0.1,
             key="top_p"
-        )
-
-    # --- generate ---
-    if st.button("Generate now!", type="primary"):
-        with st.spinner("Processing..."):
-            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
-            if not is_image:
-                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
-            else:
-                handle_response_image(element_name, prompt, selected_resources)
-
+    )
 
 
 
