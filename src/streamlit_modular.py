@@ -403,9 +403,30 @@ def generate_artifacts(element_name, is_image=False):
                     
                     selected_resources[name_display] = resource_text
 
+    # Initialize session state for sliders
+    if "temperature" not in st.session_state:
+        st.session_state.temperature = 1.0
+    if "top_p" not in st.session_state:
+        st.session_state.top_p = 1.0
+
     st.subheader("Adjust Generation Parameters")
-    temperature = st.slider("Temperature", min_value=0.0, max_value=2.0, value=1.0, step=0.1)
-    top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=1.0, step=0.1)
+    temperature = st.slider("Temperature", min_value=0.0, max_value=2.0, value=st.session_state.temperature, step=0.1, key="temperature_slider")
+    top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=st.session_state.top_p, step=0.1, key="top_p_slider")
+
+    # Add preset buttons
+    preset_columns = st.columns(3)
+    with preset_columns[0]:
+        if st.button("Creative"):
+            st.session_state.temperature = 1.5
+            st.session_state.top_p = 1.0
+    with preset_columns[1]:
+        if st.button("Logic"):
+            st.session_state.temperature = 0.2
+            st.session_state.top_p = 1.0
+    with preset_columns[2]:
+        if st.button("Simple"):
+            st.session_state.temperature = 0.5
+            st.session_state.top_p = 0.2
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
