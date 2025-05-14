@@ -61,7 +61,7 @@ def make_request(prompt_text, additional_information_list=None, image_paths=None
         messages=messages,
         temperature=1.9,
         top_p=1.0,
-        max_tokens=2048
+        max_tokens=10
     )
     return completion.choices[0].message.content
 
@@ -86,7 +86,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
             messages=messages,
             temperature=1.9,
             top_p=1.0,
-            max_tokens=2048
+            max_tokens=10
         )
     else:
         completion = client.beta.chat.completions.parse(
@@ -98,7 +98,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
             },
             temperature=1.9,
             top_p=1.0,
-            max_tokens=2048
+            max_tokens=10
         )
     return completion.choices[0].message.content
 
