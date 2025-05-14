@@ -81,11 +81,6 @@ def init_page():
                         padding-bottom: 2rem;
                         padding-left: 8rem; /* Adjusted for better layout */
                         padding-right: 8rem;
-                        padding-top: 5rem;
-                        padding-bottom: 5rem;
-                        padding-left: 2rem; /* Reduced left padding */
-                        padding-right: 2rem; /* Adjusted right padding for symmetry, can be changed if needed */
-
                     }
                       /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
