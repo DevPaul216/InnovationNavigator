@@ -95,9 +95,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
 
 
 def make_request_image(prompt, model="dall-e-3", additional_information_dict=None):
-    with open("./config/keys.json") as f:
-        config = json.load(f)
-    openai_api_key = config["openai_api_key"]
+    openai_api_key = get_openai_api_key()
     if additional_information_dict is not None and len(additional_information_dict) > 0:
         prompt += "\nPlease also consider the following pieces of information for this task:\n"
         for source, text in additional_information_dict.items():
