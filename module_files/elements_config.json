@@ -442,7 +442,7 @@
   "PESTEL_Group": {
     "display_name": "PESTEL-Analysis",
     "description": "A group of elements analyzing external factors affecting the innovation environment",
-    "required": true,
+    "required": false,
     "type": "group",
     "used_templates": [
       "Resources",

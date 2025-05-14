@@ -23,7 +23,7 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-COLOR_BLOCKED = "rgb(240, 0, 29)"
+COLOR_BLOCKED = "rgb(255, 255, 255)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
 
@@ -626,10 +626,6 @@ def legend_subview():
 def chart_view():
     st.title("Innovation Navigator")
 
-    st.markdown(
-        "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
-        unsafe_allow_html=True,
-    )  # replaced header with this smaller text box.
     add_empty_lines(2)
     st.subheader("Project: " + sst.project_name)
     add_empty_lines(1)
