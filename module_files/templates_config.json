@@ -53,7 +53,7 @@
     "display_name": "Customer Persona",
     "description": "Develops a detailed profile of the target customer, including demographics, behaviors, and needs, to guide design and decision-making processes.",
     "required": true,
-    "connects": ["Empathy Map", "Problem Statement"],
+    "connects": ["Empathy Map", "ProblemsAndJobs"],
     "elements": ["Portrait", "Persona_Group"],
     "display": [
       { "format": [1, 2, 2], "height": 600 },
@@ -63,7 +63,7 @@
     "display_name": "Empathy Map",
     "description": "Captures insights into customer thoughts, feelings, and behaviors to foster a deeper understanding and empathy for their experiences.",
     "required": true,
-    "connects": ["Problem Statement"],
+    "connects": ["ProblemsAndJobs"],
     "elements": ["EmpathyMap_Group"],
     "display": [
       { "format": [1, 1], "height": 200 },
@@ -97,7 +97,7 @@
       { "format": [1, 1], "height": 400 }]
   },
   "ProblemsAndJobs": {
-    "display_name": "Customer Problems and Jobs-to-be-Done",
+    "display_name": "Problems & Jobs-to-be-Done",
     "description": "Defines the Jobs-to-be-done (JTBD) and the associated problems that the target customer faces, guiding the innovation process.",
     "required": true,
     "connects": ["IdeaGeneration", "Ideation"],
