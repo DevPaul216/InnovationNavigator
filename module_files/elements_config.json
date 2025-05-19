@@ -720,18 +720,6 @@
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
-  "ExperimentSummary": { 
-    "display_name": "Experiment Summary",
-    "description": "A summary of experiments conducted to validate hypotheses",
-    "required": true,
-    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
-    "prompt_name": "prompt_experimentsummary",
-    "schema_name": "schema_generic_object",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_object",
-    "max": 5,
-    "resources": ["documents","websearch","website"]
-  },
   "LikelyOutcome": {
     "display_name": "Likely Outcome",
     "description": "The expected results or outcomes of the conducted experiments",

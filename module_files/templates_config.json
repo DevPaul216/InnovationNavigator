@@ -118,8 +118,8 @@
     "required": true,
     "connects": ["Value Proposition Canvas"],
     "elements": ["IdeasToEvaluate", "DFVS_Evaluation_Group"],
-    "display": [{ "format": [1, 4], "height": 400 },
-                { "format": [1], "height": 200 }]
+    "display": [{ "format": [1, 4], "height": 600 },
+          { "format": [1], "height": 200 }]
   },
   "Value Proposition Canvas": {
     "display_name": "Value Proposition Canvas",
@@ -148,14 +148,6 @@
     "elements": ["TestCard_Group","LikelyOutcome"],
     "display": [{ "format": [1, 1, 1, 1], "height": 600 },
                 { "format": [1], "height": 200 }]
-  },
-  "ExperimentSimulation": {
-    "display_name": "Experiment Simulations",
-    "description": "Simulates experiments to predict outcomes, refine solutions, and assess the feasibility of proposed ideas.",
-    "required": true,
-    "connects": ["InnovationLearnings"],
-    "elements": ["ExperimentSummary", "LikelyOutcome"],
-    "display": [{ "format": [1, 1], "height": 600 }]
   },
   "InnovationLearnings": {
     "display_name": "Learnings",
