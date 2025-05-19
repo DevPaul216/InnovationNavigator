@@ -93,7 +93,7 @@
     "display_name": "Problems & Jobs-to-be-Done",
     "description": "This template focuses on the core tasks and challenges your customers face, known as Jobs-to-be-Done. Clearly outlining these helps your team prioritize features and solutions that address genuine customer needs rather than superficial preferences.",
     "required": true,
-    "connects": ["Ideation"],
+    "connects": ["IdeaGeneration", "Ideation"],
     "elements": ["ProblemStatement", "JobsToBeDone"],
     "display": [{ "format": [1, 1], "height": 400 }]
   },  
@@ -104,6 +104,13 @@
     "connects": ["Idea Evaluation"],
     "elements": ["IdeasSimple", "IdeasABC", "Ideas3"],
     "display": [{ "format": [1, 1, 1], "height": 400 }]
+  },
+  "IdeaGeneration": {
+    "display_name": "Ideen-Generierung",
+    "description": "Facilitates the generation of innovative and creative ideas to address specific challenges identified in earlier stages of the project.",
+    "required": false,
+    "elements": ["SelectedIdea"],
+    "display": [{ "format": [1], "height": 200 }]
   },
   "Idea Evaluation": {
     "display_name": "Idea Evaluation",
