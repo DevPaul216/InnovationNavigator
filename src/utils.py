@@ -76,7 +76,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
         messages.append({"role": "system", "content": "Please also consider the following pieces of information for this task:"})
         for source, text in additional_information_dict.items():
             additional_information = f"Source: {source}\nContent: {text}"
-            messages.append({"role": "system", "content": additional_information})
+            messages.append({"role": "user", "content": additional_information}) #changed this from system to user.
     append_image_messages(image_paths, messages)
     openai_api_key = get_openai_api_key()
     client = OpenAI(api_key=openai_api_key)
