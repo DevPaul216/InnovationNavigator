@@ -21,7 +21,7 @@ def init_idea_session_state():
         sst.response_dict = {}
         sst.selected_id = None
         sst.selected_mode = "Manual"
-        sst.root_node_id = None
+        sst.root_node_id = "Solve world Hunger"
 
 
 init_idea_session_state()
@@ -109,7 +109,7 @@ def clean_dangling():
 
 
 def idea_generation_view():
-    theme = st.text_input("Idea", placeholder=r"e.g. Solve word Hunger")
+    theme = st.text_input("Idea", placeholder=r"e.g. Solve world Hunger")
     if st.button("New Idea Tree", disabled=str(theme).strip() == ""):
         sst.position = 0
         node_id = "0"
