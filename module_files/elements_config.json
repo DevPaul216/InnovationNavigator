@@ -485,18 +485,6 @@
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
-  "Idea Rating": {
-    "display_name": "Idea Rating",
-    "description": "Ratings assigned to evaluated ideas",
-    "required": true,
-    "used_templates": ["Idea Evaluation","Strategic Foundation","SWOT-Analysis"],
-    "prompt_name": "prompt_idearating",
-    "schema_name": "schema_generic_array",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_array",
-    "max": 10,
-    "resources": ["documents","websearch","website"]
-  },
   "DFVS_Evaluation_Group": {
     "display_name": "Idea Evaluation",
     "description": "Evaluation of ideas using the DVFS framework",
@@ -505,9 +493,9 @@
     "used_templates": ["Idea Evaluation","Strategic Foundation","SWOT-Analysis"],
     "elements": ["Desireability","Feasibility","Viability","Sustainability"],
     "prompt_name": "prompt_dfvs",
-    "schema_name": "schema_generic_array",
+    "schema_name": "schema_dfvs",
     "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_array",
+    "schema_name_import": "schema_dfvs",
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
