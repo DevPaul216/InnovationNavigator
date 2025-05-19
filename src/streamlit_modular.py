@@ -266,7 +266,7 @@ def display_generated_artifacts_view(element_name):
                 else:
                     st.image(artifact)
             with columns[3]:
-                st.toggle("Übernehmen", key=f"button_{artifact}_check",
+                st.toggle("Add", key=f"button_{artifact}_check",
                           on_change=add_artifact,
                           kwargs={"toggle_key": f"button_{artifact}_check", "element_name": element_name,
                                   "artifact_id": artifact_id, "artifact": artifact})
@@ -571,9 +571,9 @@ def display_artifacts_view(element_selected, element_store):
 
 
 def display_artifact_view_image(element_selected, element_store):
-    st.subheader("Verfügbares Artefakt")
+    st.subheader("Available Artifacts")
     if element_selected not in element_store or len(element_store[element_selected]) == 0:
-        st.write("Nichts vorhanden zum Anzeigen")
+        st.write("Nothing here to show")
     else:
         columns = st.columns([1, 3, 1, 1], vertical_alignment="center")
         with columns[1]:
@@ -862,7 +862,7 @@ def check_can_add(element_store, element_selected, elements_to_add):
         if "max" in element_config:
             max_entries = element_config["max"]
             if number_current_entries + len(elements_to_add) > max_entries:
-                return f"Maximal '{max_entries}' Einträge erlaubt. Weniger Artefakte auswählen zum Hinzufügen oder zuvor bestehende löschen!"
+                return f"Maximum of '{max_entries}' entries allowed. Remove some existing artifacts or choose less to continue."
     return None
 
 

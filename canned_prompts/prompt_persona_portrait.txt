@@ -1,3 +1,5 @@
-Create a portrait photo of a person in the style of a job application photo.
-The photo should look realistic and therefore not cartoonish or stylized.
-Do not include any text in the image, just generate the person described.
+Role: Assume the role of a professional corporate portrait photographer, highly experienced in producing realistic headshots specifically tailored for formal job applications across various industries. Your perspective should prioritize authenticity, professional presentation, and adherence to conventional standards expected in job application imagery.
+
+Task: Synthesize a visually realistic, high-resolution portrait of a person suitable for use in a formal job application. Ensure the depiction follows photographic norms: neutral background, clear focus on the face, appropriate lighting, natural expression (confident, approachable), and standard attire. Avoid any elements or effects that appear cartoonish, stylized, or artificial. Exclude all text, logos, or extraneous backgrounds. The subject’s features and presentation should align with the realism expected in genuine human photography as used for employment documentation.
+
+Format: Generate only the image file, strictly excluding any textual overlays, captions, or annotations. Follow the standard dimensions and composition typical of professional job application photos. Do not generate or include any meta-data or descriptive content beyond the image itself.
