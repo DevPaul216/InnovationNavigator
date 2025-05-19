@@ -411,7 +411,7 @@
     "resources": ["documents","websearch","website"]
   },
 
-  "Problemstatement": {
+  "ProblemStatement": {
     "display_name": "Problem Statement",
     "description": "A clear and concise statement of the problem to be solved",
     "required": true,

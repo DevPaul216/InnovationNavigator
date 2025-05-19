@@ -83,7 +83,7 @@
     "description": "Identifies and analyzes current trends that may influence the project, providing insights into potential opportunities and challenges.",
     "required": false,
     "connects": ["SWOT-Analysis"],
-    "elements": ["Trends_Group"],
+    "elements": ["Trend_Group"],
     "display": [{ "format": [4], "height": 1200 }]
   },
   "SWOT-Analysis": {
@@ -96,7 +96,7 @@
       { "format": [1, 1], "height": 400 },
       { "format": [1, 1], "height": 400 }]
   },
-  "JobsAndProblems": {
+  "ProblemsAndJobs": {
     "display_name": "Customer Problems and Jobs-to-be-Done",
     "description": "Defines the Jobs-to-be-done (JTBD) and the associated problems that the target customer faces, guiding the innovation process.",
     "required": true,
