@@ -5,7 +5,7 @@
     "properties": {
       "points": {
         "type": "array",
-        "description": "A list of information units.",
+        "description": "A list of different information units.",
         "items": {
           "type": "string",
           "description": "Piece of information which can stand by itself."

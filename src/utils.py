@@ -107,7 +107,7 @@ def make_request_image(prompt, model="dall-e-3", additional_information_dict=Non
     response = client.images.generate(
         model=model,
         prompt=prompt,
-        size="512x512",
+        size="1024x1024",
         quality="standard",
         n=1
     )

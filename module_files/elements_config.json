@@ -96,7 +96,7 @@
   "ResourcesCombined": {
     "display_name": "Summary of available resources",
     "description": "A summary of all available resources",
-    "required": true,
+    "required": false,
     "used_templates": ["Resources"],
     "prompt_name": "prompt_resourcescombined",
     "schema_name": "schema_generic_object",
@@ -108,7 +108,7 @@
   "StrategyCombined": {
     "display_name": "Strategic Foundation of Organization",
     "description": "The strategic foundation of the organization",
-    "required": true,
+    "required": false,
     "used_templates": ["Strategic Foundation"],
     "prompt_name": "prompt_strategycombined",
     "schema_name": "schema_generic_object",

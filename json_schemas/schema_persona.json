@@ -17,7 +17,7 @@
       },
       "Pains": {
         "type": "array",
-        "description": "An array of around ten key frustrations or pain points of the persona, suitable for structured output in an API request.",
+        "description": "An array of around ten different key frustrations or pain points of the persona, suitable for structured output in an API request.",
         "items": {
           "type": "string",
           "description": "A specific pain point."
@@ -25,7 +25,7 @@
       },
       "Gains": {
         "type": "array",
-        "description": "An array of around ten items describing what success or satisfaction looks like for the persona, suitable for structured output in an API request.",
+        "description": "An array of around ten different items describing what success or satisfaction looks like for the persona, suitable for structured output in an API request.",
         "items": {
           "type": "string",
           "description": "A specific gain or benefit desired."
@@ -33,7 +33,7 @@
       },
       "Problem_Attitude": {
         "type": "array",
-        "description": "An array of up to five items describing how the persona feels or behaves toward the problem or challenge they face.",
+        "description": "An array of up to five different items describing how the persona feels or behaves toward the problem or challenge they face.",
         "items": {
           "type": "string",
           "description": "A specific attitude or behavior toward the problem."

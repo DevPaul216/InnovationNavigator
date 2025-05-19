@@ -869,7 +869,7 @@ def check_can_add(element_store, element_selected, elements_to_add):
 def artifact_input_subview(element_selected, element_store):
     input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}",
                               label_visibility="collapsed")
-    if st.button("Bestätigen", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
+    if st.button("Confirm", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
         check = check_can_add(element_store, element_selected, [input_text])
         if check is None:
             element_store[element_selected].append(input_text)
