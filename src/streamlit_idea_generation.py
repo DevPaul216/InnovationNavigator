@@ -21,7 +21,7 @@ def init_idea_session_state():
         sst.response_dict = {}
         sst.selected_id = None
         sst.selected_mode = "Manual"
-        sst.root_node_id = "Solve world Hunger"
+        sst.root_node_id = None
 
 
 init_idea_session_state()

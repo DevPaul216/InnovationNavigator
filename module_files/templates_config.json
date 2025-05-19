@@ -83,7 +83,7 @@
     "display_name": "SWOT-Analysis",
     "description": "SWOT Analysis evaluates your project's internal strengths and weaknesses alongside external opportunities and threats. This structured approach supports informed decision-making and strategic positioning of your innovation.",
     "required": false,
-    "connects": ["IdeaGeneration", "Ideation"],
+    "connects": ["Ideation"],
     "elements": ["SWOT_Group"],
     "display": [
       { "format": [1, 1], "height": 400 },
@@ -93,7 +93,7 @@
     "display_name": "Problems & Jobs-to-be-Done",
     "description": "This template focuses on the core tasks and challenges your customers face, known as Jobs-to-be-Done. Clearly outlining these helps your team prioritize features and solutions that address genuine customer needs rather than superficial preferences.",
     "required": true,
-    "connects": ["IdeaGeneration", "Ideation"],
+    "connects": ["Ideation"],
     "elements": ["ProblemStatement", "JobsToBeDone"],
     "display": [{ "format": [1, 1], "height": 400 }]
   },  
@@ -104,14 +104,6 @@
     "connects": ["Idea Evaluation"],
     "elements": ["IdeasSimple", "IdeasABC", "Ideas3"],
     "display": [{ "format": [1, 1, 1], "height": 400 }]
-  },
-  "IdeaGeneration": {
-    "display_name": "Idea Tree",
-    "description": "An Idea Tree visually structures your brainstorming sessions by branching broad themes into specific, manageable ideas. This organized approach helps teams clearly map and explore possibilities systematically.",
-    "required": false,
-    "connects": ["Idea Evaluation"],
-    "elements": ["SelectedIdea"],
-    "display": [{ "format": [1], "height": 200 }]
   },
   "Idea Evaluation": {
     "display_name": "Idea Evaluation",
