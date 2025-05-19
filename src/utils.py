@@ -50,7 +50,7 @@ def make_request(prompt_text, additional_information_list=None, image_paths=None
 
     client = OpenAI(api_key=openai_api_key)
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4.1",
         messages=messages,
         temperature=temperature,
         top_p=top_p,
@@ -75,7 +75,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
     client = OpenAI(api_key=openai_api_key)
     if json_schema is None:
         completion = client.beta.chat.completions.parse(
-            model="gpt-4o-mini",
+            model="gpt-4.1",
             messages=messages,
             temperature=temperature,
             top_p=top_p,
@@ -83,7 +83,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
         )
     else:
         completion = client.beta.chat.completions.parse(
-            model="gpt-4o-mini",
+            model="gpt-4.1",
             messages=messages,
             response_format={
                 "type": "json_schema",
@@ -107,7 +107,7 @@ def make_request_image(prompt, model="dall-e-3", additional_information_dict=Non
     response = client.images.generate(
         model=model,
         prompt=prompt,
-        size="1024x1024",
+        size="512x512",
         quality="standard",
         n=1
     )
