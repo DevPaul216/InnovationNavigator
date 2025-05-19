@@ -109,8 +109,8 @@ def clean_dangling():
 
 
 def idea_generation_view():
-    theme = st.text_input("Thema", placeholder=r"z.B. Zeitfresser im Alltag enttarnen")
-    if st.button("Neues Thema", disabled=str(theme).strip() == ""):
+    theme = st.text_input("Idea", placeholder=r"e.g. Solve word Hunger")
+    if st.button("New Idea Tree", disabled=str(theme).strip() == ""):
         sst.position = 0
         node_id = "0"
         sst.layers = {node_id: {"value": theme, "children": []}}
