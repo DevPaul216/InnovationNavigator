@@ -54,7 +54,7 @@
     },
     "required": [
       "Political",
-      "Economic",
+      "Economical",
       "Social",
       "Technological",
       "Environmental",
