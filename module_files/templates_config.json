@@ -109,6 +109,7 @@
     "display_name": "Ideen-Generierung",
     "description": "Facilitates the generation of innovative and creative ideas to address specific challenges identified in earlier stages of the project.",
     "required": false,
+    "connects": [],
     "elements": ["SelectedIdea"],
     "display": [{ "format": [1], "height": 200 }]
   },
