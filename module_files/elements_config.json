@@ -491,7 +491,7 @@
     "required": true,
     "type": "group",
     "used_templates": ["Idea Evaluation","Strategic Foundation","SWOT-Analysis"],
-    "elements": ["Desireability","Feasibility","Viability","Sustainability"],
+    "elements": ["Desireability","Feasibility","Viability","Sustainability,IdeaRating"],
     "prompt_name": "prompt_dvfs",
     "schema_name": "schema_dvfs",
     "prompt_name_import": "prompt_import",
