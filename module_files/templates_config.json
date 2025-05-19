@@ -1,13 +1,14 @@
 {
   "Start": {
     "display_name": "Create Project",
+    "description": "This step marks the start of your innovation project. You create a new project file, specify the project scope, objectives, and initial ideas, and ensure all stakeholders share a common understanding of the project's purpose and direction.",
     "required": true,
     "connects": ["Problem", "Resources", "Strategic Foundation"],
     "elements": []
   },
   "Problem": {
     "display_name": "Innovation Problem",
-    "description": "Provides a structured overview of the core issue being addressed, including the human problem and the individuals or groups affected by it.",
+    "description": "This template clearly identifies and describes the core issue your innovation seeks to address, emphasizing who it affects and why solving it matters. Clearly defining the problem ensures your project remains focused, relevant, and impactful.",
     "required": true,
     "connects": ["Design Challenge"],
     "elements": ["InnovationIssue", "TargetGroup"],
@@ -15,7 +16,7 @@
   },
   "Resources": {
     "display_name": "Organizational Resources",
-    "description": "Organizes and categorizes the available resources, such as tools, materials, and expertise, to support project execution effectively.",
+    "description": "This template maps out the available resources within your organization, including people, finances, equipment, knowledge, and intellectual property. Understanding these assets helps you realistically plan and execute your innovation strategy.",
     "required": false,
     "connects": ["Design Challenge"],
     "elements": ["Resource_Group"],
@@ -23,7 +24,7 @@
   },
   "Strategic Foundation": {
     "display_name": "Strategic Foundation",
-    "description": "Defines the strategic goals, objectives, and guiding principles that align the project with broader organizational or team priorities.",
+    "description": "The Strategic Foundation template connects your project with the broader goals, mission, vision, and values of your organization. This alignment ensures that your innovation efforts support and enhance long-term organizational objectives.",
     "required": false,
     "connects": ["Design Challenge"],
     "elements": ["StrategicFoundation_Group"],
@@ -33,7 +34,7 @@
   },
   "Design Challenge": {
     "display_name": "Design Challenge",
-    "description": "Frames the problem-solving approach by clearly defining the design challenge, ensuring alignment with the project's goals and constraints.",
+    "description": "This template translates your innovation problem into clear and actionable \"How Might We\" questions. These questions set the stage for creative exploration, guiding your team’s brainstorming while ensuring relevance to the original issue.",
     "required": true,
     "connects": ["Customer Persona", "PESTEL-Analysis", "Trends"],
     "elements": ["HowMightWe", "ResourcesCombined", "StrategyCombined"],
@@ -43,7 +44,7 @@
   },
   "Customer Persona": {
     "display_name": "Customer Persona",
-    "description": "Develops a detailed profile of the target customer, including demographics, behaviors, and needs, to guide design and decision-making processes.",
+    "description": "Customer Personas provide detailed profiles of your target audience, capturing their demographics, behaviors, needs, and attitudes. Developing personas fosters empathy within your team and ensures your solutions are tailored precisely to user needs.",
     "required": true,
     "connects": ["Empathy Map", "ProblemsAndJobs"],
     "elements": ["Portrait", "Persona_Group"],
@@ -53,7 +54,7 @@
   },
   "Empathy Map": {
     "display_name": "Empathy Map",
-    "description": "Captures insights into customer thoughts, feelings, and behaviors to foster a deeper understanding and empathy for their experiences.",
+    "description": "An Empathy Map documents the experiences, thoughts, emotions, and behaviors of your target customers. This deeper understanding allows your team to identify meaningful opportunities and design solutions that resonate genuinely with users.",
     "required": true,
     "connects": ["ProblemsAndJobs"],
     "elements": ["EmpathyMap_Group"],
@@ -64,7 +65,7 @@
   },
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
-    "description": "Analyzes external macro-environmental factors, including Political, Economic, Social, Technological, Environmental, and Legal influences, that impact the project.",
+    "description": "PESTEL Analysis examines external factors (Political, Economic, Social, Technological, Environmental, Legal) influencing your innovation. Understanding these factors helps anticipate potential challenges and opportunities, guiding strategic planning.",
     "required": false,
     "connects": ["SWOT-Analysis"],
     "elements": ["PESTEL_Group"],
@@ -72,7 +73,7 @@
   },
   "Trends": {
     "display_name": "Trend Radar",
-    "description": "Identifies and analyzes current trends that may influence the project, providing insights into potential opportunities and challenges.",
+    "description": "Trend Radar helps identify and analyze trends at various levels (Mega, Macro, Meso, Micro) that could impact your innovation project. This awareness ensures your solutions remain relevant and aligned with evolving market dynamics.",
     "required": false,
     "connects": ["SWOT-Analysis"],
     "elements": ["Trend_Group"],
@@ -80,7 +81,7 @@
   },
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",
-    "description": "Evaluates the project's internal strengths and weaknesses, as well as external opportunities and threats, to inform strategic planning.",
+    "description": "SWOT Analysis evaluates your project's internal strengths and weaknesses alongside external opportunities and threats. This structured approach supports informed decision-making and strategic positioning of your innovation.",
     "required": false,
     "connects": ["IdeaGeneration", "Ideation"],
     "elements": ["SWOT_Group"],
@@ -90,7 +91,7 @@
   },
   "ProblemsAndJobs": {
     "display_name": "Problems & Jobs-to-be-Done",
-    "description": "Defines the Jobs-to-be-done (JTBD) and the associated problems that the target customer faces, guiding the innovation process.",
+    "description": "This template focuses on the core tasks and challenges your customers face, known as Jobs-to-be-Done. Clearly outlining these helps your team prioritize features and solutions that address genuine customer needs rather than superficial preferences.",
     "required": true,
     "connects": ["IdeaGeneration", "Ideation"],
     "elements": ["ProblemStatement", "JobsToBeDone"],
@@ -98,7 +99,7 @@
   },  
   "Ideation": {
     "display_name": "Ideation",
-    "description": "Facilitates brainstorming sessions to generate, organize, and refine innovative ideas that address the defined problem or challenge.",
+    "description": "Ideation involves generating a diverse range of ideas through structured brainstorming methods, including basic idea generation, the ABC method, and lateral thinking. This process ensures a comprehensive exploration of potential solutions.",
     "required": true,
     "connects": ["Idea Evaluation"],
     "elements": ["IdeasSimple", "IdeasABC", "Ideas3"],
@@ -106,7 +107,7 @@
   },
   "IdeaGeneration": {
     "display_name": "Idea Tree",
-    "description": "Facilitates the generation of innovative and creative ideas to address specific challenges identified in earlier stages of the project.",
+    "description": "An Idea Tree visually structures your brainstorming sessions by branching broad themes into specific, manageable ideas. This organized approach helps teams clearly map and explore possibilities systematically.",
     "required": false,
     "connects": ["Idea Evaluation"],
     "elements": ["SelectedIdea"],
@@ -114,7 +115,7 @@
   },
   "Idea Evaluation": {
     "display_name": "Idea Evaluation",
-    "description": "Provides a framework for assessing and prioritizing ideas based on their desirability, feasibility, viability, and sustainability, as well as their overall impact and alignment with project goals.",
+    "description": "Idea Evaluation systematically assesses potential solutions using criteria such as desirability, feasibility, viability, and sustainability (DFVS). This structured approach prioritizes ideas with the highest potential impact and practicality.",
     "required": true,
     "connects": ["Value Proposition Canvas"],
     "elements": ["IdeasToEvaluate", "DFVS_Evaluation_Group"],
@@ -123,7 +124,7 @@
   },
   "Value Proposition Canvas": {
     "display_name": "Value Proposition Canvas",
-    "description": "Aligns customer needs and pain points with the value offered by the solution, ensuring a strong product-market fit.",
+    "description": "This template clarifies the fit between your solution and customer needs, explicitly connecting customer pains and gains to the benefits your solution provides. It ensures your innovation effectively meets user requirements and delivers clear value.",
     "required": true,
     "connects": ["Business Model Canvas"],
     "elements": ["ValuePropositionCanvas_Group"],
@@ -131,7 +132,7 @@
   },
   "Business Model Canvas": {
     "display_name": "Business Model Canvas",
-    "description": "Outlines the project's business model, detailing key activities, resources, value propositions, customer segments, and revenue streams.",
+    "description": "The Business Model Canvas clearly outlines how your innovation will deliver value, detailing essential elements such as customer segments, value propositions, key activities, resources, partnerships, cost structures, and revenue streams. It ensures your innovation has a viable and sustainable business model.",
     "required": true,
     "connects": ["Test Card"],
     "elements": ["BusinessModelCanvas_Group"],
@@ -142,7 +143,7 @@
   },
   "Test Card": {
     "display_name": "Hypothesis-Experiment Test Card",
-    "description": "Designs and documents hypotheses and experiments to validate assumptions, enabling data-driven decision-making.",
+    "description": "This template documents your team's hypotheses and outlines structured experiments to test these assumptions. By providing clear metrics and evaluation criteria, it supports evidence-based decision-making and rapid learning cycles.",
     "required": true,
     "connects": ["InnovationLearnings"],
     "elements": ["TestCard_Group","LikelyOutcome"],
@@ -151,7 +152,7 @@
   },
   "InnovationLearnings": {
     "display_name": "Learnings",
-    "description": "Captures and organizes key insights, lessons, and feedback from the innovation process to inform future projects.",
+    "description": "The Learnings template captures important insights, lessons, and feedback gained throughout the innovation process. This documentation supports continuous improvement, helping future innovation projects benefit from past experiences.",
     "required": false,
     "connects": ["End"],
     "elements": ["Learnings", "Impact"],
@@ -159,7 +160,7 @@
   },
   "End": {
     "display_name": "Solution Summary",
-    "description": "Summarizes the final solution, highlighting its key components, benefits, and alignment with the project's objectives.",
+    "description": "This template summarizes and visualizes all key elements and insights from the completed templates. It provides a consolidated view of your final innovation, clearly illustrating how it addresses the original problem and aligns with strategic goals, aiding effective communication with stakeholders.",
     "required": false,
     "connects": [],
     "elements": ["Solution"],
