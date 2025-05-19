@@ -93,7 +93,7 @@
     "display_name": "Problems & Jobs-to-be-Done",
     "description": "This template focuses on the core tasks and challenges your customers face, known as Jobs-to-be-Done. Clearly outlining these helps your team prioritize features and solutions that address genuine customer needs rather than superficial preferences.",
     "required": true,
-    "connects": ["IdeaGeneration", "Ideation"],
+    "connects": ["Ideation"],
     "elements": ["ProblemStatement", "JobsToBeDone"],
     "display": [{ "format": [1, 1], "height": 400 }]
   },  
