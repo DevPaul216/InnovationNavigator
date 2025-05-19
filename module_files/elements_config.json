@@ -495,7 +495,7 @@
     "prompt_name": "prompt_dvfs",
     "schema_name": "schema_dvfs",
     "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_dfvs",
+    "schema_name_import": "schema_dvfs",
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
