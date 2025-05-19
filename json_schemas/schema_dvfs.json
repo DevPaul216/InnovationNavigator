@@ -3,40 +3,24 @@
         "type": "object",
         "properties": {
             "Desirability": {
-                "type": "array",
-                "description": "An evaluation of how appealing the product concept is to the target audience, considering factors such as user needs, preferences, and market demand.",
-                "items": {
-                    "type": "string",
-                    "description": "A specific aspect of desirability, such as user needs, preferences, or market demand."
-                }
+                "type": "string",
+                "description": "An evaluation of how appealing the product concept is to the target audience, considering factors such as user needs, preferences, and market demand. This should end with a rating of 1 out of 10."
             },
             "Viability": {
-                "type": "array",
-                "description": "An evaluation of the business viability of the product concept, including its potential profitability, market fit, and alignment with organizational goals.",
-                "items": {
-                    "type": "string",
-                    "description": "A specific aspect of viability, such as profitability, market fit, or alignment with goals."
-                }
+                "type": "string",
+                "description": "An evaluation of the business viability of the product concept, including its potential profitability, market fit, and alignment with organizational goals. This should end with a rating of 1 out of 10."
             },
             "Feasibility": {
-                "type": "array",
-                "description": "An evaluation of the technical and operational feasibility of the product concept, assessing whether it can be realistically developed and implemented.",
-                "items": {
-                    "type": "string",
-                    "description": "A specific aspect of feasibility, such as technical challenges, resource availability, or timeline constraints."
-                }
+                "type": "string",
+                "description": "An evaluation of the technical and operational feasibility of the product concept, assessing whether it can be realistically developed and implemented. This should end with a rating of 1 out of 10."
             },
             "Sustainability": {
-                "type": "array",
-                "description": "An evaluation of the sustainability of the product concept, focusing on its long-term environmental, social, and economic impact.",
-                "items": {
-                    "type": "string",
-                    "description": "A specific aspect of sustainability, such as environmental impact, ethical considerations, or resource efficiency."
-                }
+                "type": "string",
+                "description": "An evaluation of the sustainability of the product concept, focusing on its long-term environmental, social, and economic impact. This should end with a rating of 1 out of 10."
             },
             "IdeaRating": {
                 "type": "string",
-                "description": "A summary score that reflects the overall assessment of the product concept based on the evaluations of desirability, viability, feasibility, and sustainability.",
+                "description": "A summary score that reflects the overall assessment of the product concept based on the evaluations of desirability, viability, feasibility, and sustainability."
             }
         },
         "required": [
@@ -44,7 +28,7 @@
             "Viability",
             "Feasibility",
             "Sustainability",
-            "Overall Rating"
+            "IdeaRating"
         ],
         "additionalProperties": false,
         "strict": false

@@ -32,8 +32,12 @@
         }
       },
       "Problem_Attitude": {
-        "type": "string",
-        "description": "How the persona feels or behaves toward the problem or challenge they face."
+        "type": "array",
+        "description": "An array of up to five items describing how the persona feels or behaves toward the problem or challenge they face.",
+        "items": {
+          "type": "string",
+          "description": "A specific attitude or behavior toward the problem."
+        }
       },
       "Quote": {
         "type": "array",

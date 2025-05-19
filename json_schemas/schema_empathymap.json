@@ -5,7 +5,7 @@
     "properties": {
       "SayDo": {
         "type": "array",
-        "description": "What the persona says and does.",
+        "description": "A list of up to 10 different statements describing what the persona says and does.",
         "items": {
           "type": "string",
           "description": "An action or statement of the persona."
@@ -13,7 +13,7 @@
       },
       "See": {
         "type": "array",
-        "description": "The viewpoint of the persona.",
+        "description": "A list of up to 10 different viewpoints of the persona.",
         "items": {
           "type": "string",
           "description": "A viewpoint of the persona."
@@ -21,7 +21,7 @@
       },
       "Pains": {
         "type": "array",
-        "description": "The challenges or frustrations of the persona.",
+        "description": "A list of up to 10 different challenges or frustrations of the persona.",
         "items": {
           "type": "string",
           "description": "A challenge or frustration of the persona."
@@ -29,7 +29,7 @@
       },
       "ThinkFeel": {
         "type": "array",
-        "description": "What the persona thinks and feels.",
+        "description": "A list of up to 10 different things the persona thinks and feels.",
         "items": {
           "type": "string",
           "description": "A thought or feeling of the persona."
@@ -37,7 +37,7 @@
       },
       "Hear": {
         "type": "array",
-        "description": "What the persona usually hears in a day.",
+        "description": "A list of up to 10 different things the persona usually hears in a day.",
         "items": {
           "type": "string",
           "description": "Something the persona hears."
@@ -45,7 +45,7 @@
       },
       "Gains": {
         "type": "array",
-        "description": "The benefits or aspirations of the persona.",
+        "description": "A list of up to 10 different benefits or aspirations of the persona.",
         "items": {
           "type": "string",
           "description": "A benefit or aspiration of the persona."
