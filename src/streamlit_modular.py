@@ -16,7 +16,7 @@ from streamlit_flow.layouts import LayeredLayout
 from streamlit_flow.state import StreamlitFlowState
 
 from experimental.streamlit_artifact_generation import scrape_texts
-from streamlit_idea_generation import idea_generation_view
+# from streamlit_idea_generation import idea_generation_view  # commented out
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
@@ -810,18 +810,18 @@ def template_edit_subview():
         st.warning("No functions available. Check configuration!")
 
 
-def special_view_idea_generation(assigned_elements):
-    element_selected = st.selectbox(key="Select_Idea", label="Select Element to generate: ",
-                                    options=assigned_elements,
-                                    format_func=element_selection_format_func)
-    element_store = sst.data_store[sst.selected_template_name]
-    selected_idea = idea_generation_view()
-    st.divider()
-    display_artifacts_view(element_selected, element_store)
-    if selected_idea is not None:
-        element_store[element_selected] = [selected_idea]
-        update_data_store()
-        st.rerun()
+# def special_view_idea_generation(assigned_elements):
+#     element_selected = st.selectbox(key="Select_Idea", label="Select Element to generate: ",
+#                                     options=assigned_elements,
+#                                     format_func=element_selection_format_func)
+#     element_store = sst.data_store[sst.selected_template_name]
+#     selected_idea = idea_generation_view()
+#     st.divider()
+#     display_artifacts_view(element_selected, element_store)
+#     if selected_idea is not None:
+#         element_store[element_selected] = [selected_idea]
+#         update_data_store()
+#         st.rerun()
 
 
 def confirm_single_subview(element_selected, element_store):
@@ -1143,8 +1143,7 @@ def start_sub_view():
             st.rerun()
 
 
-view_assignment_dict = {"general": general_creation_view,
-                        "IdeaGeneration": special_view_idea_generation}
+view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()

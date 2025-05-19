@@ -15,13 +15,13 @@ def init_idea_session_state():
         sst.init_idea_generation = True
         sst.response_dict = None
         sst.update_idea_graph = False
-        sst.layers = {}  # <-- FIX: use dict, not list
+        sst.layers = []
         sst.position = 0
         sst.flow_state_idea_graph = StreamlitFlowState([], [])
         sst.response_dict = {}
         sst.selected_id = None
         sst.selected_mode = "Manual"
-        sst.root_node_id = None
+        sst.root_node_id = "Solve world Hunger"
 
 
 init_idea_session_state()
