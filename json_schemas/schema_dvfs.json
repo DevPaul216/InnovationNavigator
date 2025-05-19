@@ -33,13 +33,18 @@
                     "type": "string",
                     "description": "A specific aspect of sustainability, such as environmental impact, ethical considerations, or resource efficiency."
                 }
+            },
+            "IdeaRating": {
+                "type": "string",
+                "description": "A summary score that reflects the overall assessment of the product concept based on the evaluations of desirability, viability, feasibility, and sustainability.",
             }
         },
         "required": [
             "Desirability",
             "Viability",
             "Feasibility",
-            "Sustainability"
+            "Sustainability",
+            "Overall Rating"
         ],
         "additionalProperties": false,
         "strict": false

@@ -1,11 +1,12 @@
 {
   "Start": {
     "display_name": "Create Project",
+    "required": true,
     "connects": ["Problem", "Resources", "Strategic Foundation"],
     "elements": []
   },
   "IdeaGeneration": {
-    "display_name": "Ideen-Generierung",
+    "display_name": "Idea Tree",
     "description": "Facilitates the generation of innovative and creative ideas to address specific challenges identified in earlier stages of the project.",
     "required": false,
     "connects": ["Idea Evaluation"],
@@ -13,7 +14,7 @@
     "display": [{ "format": [1], "height": 200 }]
   },
   "Problem": {
-    "display_name": "Problem",
+    "display_name": "Innovation Problem",
     "description": "Provides a structured overview of the core issue being addressed, including the human problem and the individuals or groups affected by it.",
     "required": true,
     "connects": ["Design Challenge"],
@@ -21,7 +22,7 @@
     "display": [{ "format": [1, 1], "height": 200 }]
   },
   "Resources": {
-    "display_name": "Resources",
+    "display_name": "Organizational Resources",
     "description": "Organizes and categorizes the available resources, such as tools, materials, and expertise, to support project execution effectively.",
     "required": false,
     "connects": ["Design Challenge"],
@@ -31,93 +32,99 @@
   "Strategic Foundation": {
     "display_name": "Strategic Foundation",
     "description": "Defines the strategic goals, objectives, and guiding principles that align the project with broader organizational or team priorities.",
+    "required": false,
     "connects": ["Design Challenge"],
     "elements": ["StrategicFoundation_Group"],
     "display": [
       { "format": [1, 1], "height": 400 },
-      { "format": [1, 1], "height": 400 }
-    ]
+      { "format": [1, 1], "height": 400 } ]
   },
   "Design Challenge": {
     "display_name": "Design Challenge",
     "description": "Frames the problem-solving approach by clearly defining the design challenge, ensuring alignment with the project's goals and constraints.",
     "required": true,
-    "connects": ["Customer Persona", "PESTEL-Analysis"],
+    "connects": ["Customer Persona", "PESTEL-Analysis", "Trends"],
     "elements": ["HowMightWe", "ResourcesCombined", "StrategyCombined"],
     "display": [
       { "format": [1], "height": 200 },
-      { "format": [1, 1], "height": 400 }
-    ]
+      { "format": [1, 1], "height": 400 }]
   },
   "Customer Persona": {
     "display_name": "Customer Persona",
     "description": "Develops a detailed profile of the target customer, including demographics, behaviors, and needs, to guide design and decision-making processes.",
+    "required": true,
     "connects": ["Empathy Map", "Problem Statement"],
     "elements": ["Portrait", "Persona_Group"],
     "display": [
       { "format": [1, 2, 2], "height": 600 },
-      { "format": [1, 1, 1], "height": 300 }
-    ]
+      { "format": [1, 1, 1], "height": 300 }]
   },
   "Empathy Map": {
     "display_name": "Empathy Map",
     "description": "Captures insights into customer thoughts, feelings, and behaviors to foster a deeper understanding and empathy for their experiences.",
+    "required": true,
     "connects": ["Problem Statement"],
     "elements": ["EmpathyMap_Group"],
     "display": [
       { "format": [1, 1], "height": 200 },
       { "format": [1, 1], "height": 200 },
-      { "format": [1, 1], "height": 200 }
-    ]
+      { "format": [1, 1], "height": 200 }]
   },
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
     "description": "Analyzes external macro-environmental factors, including Political, Economic, Social, Technological, Environmental, and Legal influences, that impact the project.",
+    "required": false,
     "connects": ["SWOT-Analysis", "Jobs-To-Be-Done"],
     "elements": ["PESTEL_Group"],
     "display": [{ "format": [3, 3], "height": 800 }]
   },
+  "Trends": {
+    "display_name": "Trend Radar",
+    "description": "Identifies and analyzes current trends that may influence the project, providing insights into potential opportunities and challenges.",
+    "required": false,
+    "connects": ["SWOT-Analysis"],
+    "elements": ["Trends_Group"],
+    "display": [{ "format": [4], "height": 1200 }]
+  },
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",
     "description": "Evaluates the project's internal strengths and weaknesses, as well as external opportunities and threats, to inform strategic planning.",
+    "required": false,
     "connects": ["IdeaGeneration", "Ideation"],
     "elements": ["SWOT_Group"],
     "display": [
       { "format": [1, 1], "height": 400 },
-      { "format": [1, 1], "height": 400 }
-    ]
+      { "format": [1, 1], "height": 400 }]
   },
-  "Jobs-To-Be-Done": {
-    "display_name": "Jobs-to-be-done statement",
-    "description": "Identifies the specific tasks or goals customers aim to achieve with the proposed solution, providing clarity on their expectations and priorities.",
+  "JobsAndProblems": {
+    "display_name": "Customer Problems and Jobs-to-be-Done",
+    "description": "Defines the Jobs-to-be-done (JTBD) and the associated problems that the target customer faces, guiding the innovation process.",
+    "required": true,
     "connects": ["IdeaGeneration", "Ideation"],
-    "elements": ["JTBD_Group"],
-    "display": [{ "format": [1, 1, 1, 1], "height": 400 }]
-  },
-  "Problem Statement": {
-    "display_name": "Problem Statement",
-    "description": "Articulates the core problem in a concise and actionable statement, serving as a foundation for developing solutions.",
-    "connects": ["Jobs-To-Be-Done"],
-    "elements": ["ProblemStatement_Group"],
-    "display": [{ "format": [1, 1, 1], "height": 400 }]
-  },
+    "elements": ["ProblemStatement", "JobsToBeDone"],
+    "display": [{ "format": [1, 1], "height": 400 }]
+  },  
   "Ideation": {
     "display_name": "Ideation",
     "description": "Facilitates brainstorming sessions to generate, organize, and refine innovative ideas that address the defined problem or challenge.",
+    "required": true,
     "connects": ["Idea Evaluation"],
     "elements": ["IdeasSimple", "IdeasABC", "Ideas3"],
     "display": [{ "format": [1, 1, 1], "height": 400 }]
   },
   "Idea Evaluation": {
     "display_name": "Idea Evaluation",
-    "description": "Provides a framework for assessing and prioritizing ideas based on their feasibility, impact, and alignment with project goals.",
+    "description": "Provides a framework for assessing and prioritizing ideas based on their desirability, feasibility, viability, and sustainability, as well as their overall impact and alignment with project goals.",
+    "required": true,
     "connects": ["Value Proposition Canvas"],
-    "elements": ["IdeasToEvaluate", "DFVS_Evaluation"],
-    "display": [{ "format": [1, 1], "height": 300 }]
+    "elements": ["IdeasToEvaluate", "DFVS_Evaluation_Group"],
+    "display": [{ "format": [1, 4], "height": 400 },
+                { "format": [1], "height": 200 }]
   },
   "Value Proposition Canvas": {
     "display_name": "Value Proposition Canvas",
     "description": "Aligns customer needs and pain points with the value offered by the solution, ensuring a strong product-market fit.",
+    "required": true,
     "connects": ["Business Model Canvas"],
     "elements": ["ValuePropositionCanvas_Group"],
     "display": [{ "format": [3, 3], "height": 600 }]
@@ -125,6 +132,7 @@
   "Business Model Canvas": {
     "display_name": "Business Model Canvas",
     "description": "Outlines the project's business model, detailing key activities, resources, value propositions, customer segments, and revenue streams.",
+    "required": true,
     "connects": ["Test Card"],
     "elements": ["BusinessModelCanvas_Group"],
     "display": [
@@ -135,13 +143,16 @@
   "Test Card": {
     "display_name": "Hypothesis-Experiment Test Card",
     "description": "Designs and documents hypotheses and experiments to validate assumptions, enabling data-driven decision-making.",
+    "required": true,
     "connects": ["ExperimentSimulation"],
-    "elements": ["TestCard_Group"],
-    "display": [{ "format": [1, 1, 1, 1], "height": 600 }]
+    "elements": ["TestCard_Group","LikelyOutcome"],
+    "display": [{ "format": [1, 1, 1, 1], "height": 600 },
+                { "format": [1], "height": 200 }]
   },
   "ExperimentSimulation": {
     "display_name": "Experiment Simulations",
     "description": "Simulates experiments to predict outcomes, refine solutions, and assess the feasibility of proposed ideas.",
+    "required": true,
     "connects": ["InnovationLearnings"],
     "elements": ["ExperimentSummary", "LikelyOutcome"],
     "display": [{ "format": [1, 1], "height": 600 }]
@@ -149,6 +160,7 @@
   "InnovationLearnings": {
     "display_name": "Learnings",
     "description": "Captures and organizes key insights, lessons, and feedback from the innovation process to inform future projects.",
+    "required": false,
     "connects": ["End"],
     "elements": ["Learnings", "Impact"],
     "display": [{ "format": [1, 1], "height": 600 }]
@@ -156,6 +168,7 @@
   "End": {
     "display_name": "Solution Summary",
     "description": "Summarizes the final solution, highlighting its key components, benefits, and alignment with the project's objectives.",
+    "required": false,
     "connects": [],
     "elements": ["Solution"],
     "display": [{ "format": [1], "height": 600 }]

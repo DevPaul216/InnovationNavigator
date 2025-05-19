@@ -9,11 +9,7 @@
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch", "website"]
   },
   "SelectedIdea": {
     "display_name": "Selected Idea",
@@ -23,11 +19,7 @@
     "prompt_name": "idea_generation",
     "schema_name": "schema_generic_array",
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "TargetGroup": {
     "display_name": "Person affected by the problem",
@@ -39,333 +31,203 @@
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Resource_Group": {
     "display_name": "Available resources to solve the problem",
     "description": "A collection of resources categorized to solve the identified problem",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Resources"
-    ],
-    "elements": [
-      "Physical Resources",
-      "Human Resources",
-      "Financial Resources",
-      "Intellectual Property",
-      "KnowHow and Information"
-    ],
+    "used_templates": ["Resources"],
+    "elements": ["Physical Resources","Human Resources","Financial Resources","Intellectual Property","KnowHow and Information"],
     "prompt_name": "prompt_resources",
     "schema_name": "schema_resources",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_resources",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Physical Resources": {
     "display_name": "Physical Resources",
     "description": "Tangible assets like equipment or materials",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Human Resources": {
     "display_name": "Human Resources",
     "description": "People or teams available to contribute",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Financial Resources": {
     "display_name": "Financial Resources",
     "description": "Monetary assets available for the project",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Intellectual Property": {
     "display_name": "Intellectual Property",
     "description": "Patents, trademarks, or copyrights owned",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "KnowHow and Information": {
     "display_name": "KnowHow and Information",
     "description": "Knowledge and data relevant to the problem",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "HowMightWe": {
     "display_name": "How-Might-We Questions",
     "description": "Solution-oriented questions that frame the problem in an actionable way",
     "required": true,
-    "used_templates": [
-      "Problem"
-    ],
+    "used_templates": ["Problem"],
     "prompt_name": "prompt_howmightwe",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "ResourcesCombined": {
     "display_name": "Summary of available resources",
     "description": "A summary of all available resources",
     "required": true,
-    "used_templates": [
-      "Resources"
-    ],
+    "used_templates": ["Resources"],
     "prompt_name": "prompt_resourcescombined",
     "schema_name": "schema_generic_object",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_object",
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "StrategyCombined": {
     "display_name": "Strategic Foundation of Organization",
     "description": "The strategic foundation of the organization",
     "required": true,
-    "used_templates": [
-      "Strategic Foundation"
-    ],
+    "used_templates": ["Strategic Foundation"],
     "prompt_name": "prompt_strategycombined",
     "schema_name": "schema_generic_object",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_object",
     "max": 2,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "StrategicFoundation_Group": {
     "display_name": "Strategic Foundation",
     "description": "A group of elements defining the organization's strategic foundation",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Strategic Foundation"
-    ],
-    "elements": [
-      "Organization Name",
-      "Mission",
-      "Vision",
-      "Values"
-    ],
+    "used_templates": ["Strategic Foundation"],
+    "elements": ["Organization Name","Mission","Vision","Values"],
     "prompt_name": "prompt_strategicfoundation",
     "schema_name": "schema_strategicfoundation",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_strategicfoundation",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Organization Name": {
     "display_name": "Organization Name",
     "description": "The name of the organization",
     "required": true,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Mission": {
     "display_name": "Mission",
     "description": "The organization's purpose or mission statement",
     "required": false,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Vision": {
     "display_name": "Vision",
     "description": "The organization's long-term vision",
     "required": false,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Values": {
     "display_name": "Values",
     "description": "The core values guiding the organization",
     "required": false,
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Persona_Group": {
     "display_name": "Customer Persona",
     "description": "A group of elements defining a customer persona for innovation purposes",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Problem",
-      "Design Challenge"
-    ],
-    "elements": [
-      "Name",
-      "Demographics",
-      "About",
-      "Problem_Attitude",
-      "Pains",
-      "Gains",
-      "Quote"
-    ],
+    "used_templates": ["Problem","Design Challenge"],
+    "elements": ["Name","Demographics","About","Problem_Attitude","Pains","Gains","Quote"],
     "prompt_name": "prompt_persona",
     "schema_name": "schema_persona",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_persona",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Name": {
     "display_name": "Name",
     "description": "The name of the persona",
     "required": true,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Demographics": {
     "display_name": "Demographics",
     "description": "The demographic details of the persona",
     "required": true,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "About": {
     "display_name": "About",
     "description": "A brief description of the persona",
     "required": true,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Problem_Attitude": {
     "display_name": "Problem Attitude",
     "description": "The persona's attitude towards the problem",
     "required": true,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Pains": {
     "display_name": "Pains",
     "description": "What currently burdens the person",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Gains": {
     "display_name": "Gains",
     "description": "Where the person sees their strengths",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Quote": {
     "display_name": "Quote",
     "description": "A typical statement",
     "required": true,
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Portrait": {
     "display_name": "Portrait",
     "description": "An image representing the persona",
     "type": "image",
     "required": false,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ],
+    "resources": ["documents","websearch","website"],
     "max": 1,
-    "used_templates": [
-      "Customer Persona"
-    ],
+    "used_templates": ["Customer Persona"],
     "prompt_name": "prompt_persona_portrait"
   },
   "EmpathyMap_Group": {
@@ -373,865 +235,549 @@
     "description": "A group of elements capturing the customer's perspective, emotions, and experiences",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Problem",
-      "Customer Persona"
-    ],
-    "elements": [
-      "SayDo",
-      "See",
-      "Pains",
-      "ThinkFeel",
-      "Hear",
-      "Gains"
-    ],
+    "used_templates": ["Problem","Customer Persona"],
+    "elements": ["SayDo","See","Pains","ThinkFeel","Hear","Gains"],
     "prompt_name": "prompt_empathymap",
     "schema_name": "schema_empathymap",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_empathymap",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "ThinkFeel": {
     "display_name": "Think & Feel",
     "description": "What the customer is thinking and feeling, including their worries and aspirations",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "SayDo": {
     "display_name": "Say & Do",
     "description": "What the customer says and does in public, including their behavior and statements",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "See": {
     "display_name": "See",
     "description": "What the customer sees in their environment, including trends and influences",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Hear": {
     "display_name": "Hear",
     "description": "What the customer hears from others, including feedback, opinions, and advice",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "PESTEL_Group": {
     "display_name": "PESTEL-Analysis",
     "description": "A group of elements analyzing external factors affecting the innovation environment",
     "required": false,
     "type": "group",
-    "used_templates": [
-      "Resources",
-      "Strategic Foundation"
-    ],
-    "elements": [
-      "Political",
-      "Economical",
-      "Social",
-      "Technological",
-      "Environmental",
-      "Legal"
-    ],
+    "used_templates": ["Resources","Strategic Foundation"],
+    "elements": ["Political","Economical","Social","Technological","Environmental","Legal"],
     "prompt_name": "prompt_pestel",
     "schema_name": "schema_pestel",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_pestel",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Political": {
     "display_name": "Political",
     "description": "Political factors affecting the environment",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Economical": {
     "display_name": "Economical",
     "description": "Economic factors influencing the environment",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Social": {
     "display_name": "Social",
     "description": "Social factors impacting the environment",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Technological": {
     "display_name": "Technological",
     "description": "Technological factors affecting the environment",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Environmental": {
     "display_name": "Environmental",
     "description": "Environmental factors influencing the environment",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Legal": {
     "display_name": "Legal",
     "description": "Legal factors impacting the environment",
     "required": false,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
+  },
+
+  "Trend_Group": {
+    "display_name": "Trends",
+    "description": "A group of elements analyzing trends affecting the innovation environment",
+    "required": false,
+    "type": "group",
+    "used_templates": ["Resources","Strategic Foundation", "Design Challenge"],
+    "elements": ["MegaTrends","MacroTrends","MesoTrends","MicroTrends"],
+    "prompt_name": "prompt_trends",
+    "schema_name": "schema_trends",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_trends",
+    "resources": ["documents","websearch","website"]
+  },
+
+  "MegaTrends": {
+    "display_name": "Mega Trends",
+    "description": "Global, long-term shifts that fundamentally reshape societies, economies, and industries over decades (e.g., climate change, demographic shifts).",
+    "required": false,
+    "max": 10,
+    "resources": ["documents","websearch","website"]
+  },
+  "MacroTrends": {
+    "display_name": "Macro Trends",
+    "description": "Broad, multi-year trends that influence entire sectors or regions, often driven by mega trends (e.g., urbanization, digital transformation).",
+    "required": false,
+    "max": 10,
+    "resources": ["documents","websearch","website"]
+  },
+  "MesoTrends": {
+    "display_name": "Meso Trends",
+    "description": "Industry- or market-specific trends that emerge within a particular sector or community, shaping competitive dynamics (e.g., rise of remote work in tech industry).",
+    "required": false,
+    "max": 10,
+    "resources": ["documents","websearch","website"]
+  },
+  "MicroTrends": {
+    "display_name": "Micro Trends",
+    "description": "Short-term, niche trends or behaviors that impact specific groups, products, or markets (e.g., viral social media challenges, local consumer preferences).",
+    "required": false,
+    "max": 10,
+    "resources": ["documents","websearch","website"]
   },
   "SWOT_Group": {
     "display_name": "SWOT-Analysis",
     "description": "A group of elements analyzing strengths, weaknesses, opportunities, and threats",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Strategic Foundation",
-      "Resources",
-      "PESTEL-Analysis"
-    ],
-    "elements": [
-      "Strengths",
-      "Weaknesses",
-      "Opportunities",
-      "Threats"
-    ],
+    "used_templates": ["Strategic Foundation","Resources","PESTEL-Analysis"],
+    "elements": ["Strengths","Weaknesses","Opportunities","Threats"],
     "prompt_name": "prompt_swot",
     "schema_name": "schema_swot",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_swot",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Strengths": {
     "display_name": "Strengths",
     "description": "Internal strengths of the organization",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Weaknesses": {
     "display_name": "Weaknesses",
     "description": "Internal weaknesses of the organization",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Opportunities": {
     "display_name": "Opportunities",
     "description": "External opportunities available to the organization",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Threats": {
     "display_name": "Threats",
     "description": "External threats faced by the organization",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
-  "JTBD_Group": {
-    "display_name": "Jobs-To-Be-Done",
-    "description": "A group of elements analyzing the jobs customers need to accomplish",
-    "required": true,
-    "type": "group",
-    "used_templates": [
-      "Problem Statement",
-      "PESTEL-Analysis"
-    ],
-    "elements": [
-      "Situation",
-      "Motivation",
-      "Outcome",
-      "EmotionalJob"
-    ],
-    "prompt_name": "prompt_jtbd",
-    "schema_name": "schema_jtbd",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_jtbd",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
-  "Situation": {
-    "display_name": "Situation",
-    "description": "The context or situation of the job to be done",
-    "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
-  "Motivation": {
-    "display_name": "Motivation",
-    "description": "The motivation behind the job to be done",
-    "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
-  "Outcome": {
-    "display_name": "Outcome",
-    "description": "The desired outcome of the job to be done",
-    "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
-  "EmotionalJob": {
-    "display_name": "Emotional Job",
-    "description": "The emotional aspect of the job to be done",
-    "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
-  "ProblemStatement_Group": {
+
+  "Problemstatement": {
     "display_name": "Problem Statement",
-    "description": "A group of elements defining the problem's context, cause, and consequence",
+    "description": "A clear and concise statement of the problem to be solved",
     "required": true,
-    "type": "group",
-    "used_templates": [
-      "Empathy Map",
-      "Customer Persona"
-    ],
-    "elements": [
-      "Context",
-      "Cause",
-      "Consequence"
-    ],
+    "used_templates": ["Design Challenge","Customer Persona","Empathy Map"],
     "prompt_name": "prompt_problemstatement",
-    "schema_name": "schema_problemstatement",
+    "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_problemstatement",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "schema_name_import": "schema_generic_array",
+    "max": 10,
+    "resources": ["documents","websearch","website"]
   },
-  "Context": {
-    "display_name": "Context",
-    "description": "The context in which the problem occurs",
+
+  "JobsToBeDone": {
+    "display_name": "Jobs-To-Be-Done",
+    "description": "The jobs or tasks the customer needs to accomplish",
     "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "used_templates": ["Design Challenge","Customer Persona","Jobs-To-Be-Done","Empathy Map"],
+    "prompt_name": "prompt_jobstobedone",
+    "schema_name": "schema_generic_array",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_generic_array",
+    "max": 10,
+    "resources": ["documents","websearch","website"]
   },
-  "Cause": {
-    "display_name": "Cause",
-    "description": "The root cause of the problem",
-    "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
-  "Consequence": {
-    "display_name": "Consequence",
-    "description": "The consequence of the problem",
-    "required": true,
-    "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
-  },
+
   "IdeasSimple": {
     "display_name": "Basic Ideas",
     "description": "Basic ideas generated during brainstorming sessions",
     "required": false,
-    "used_templates": [
-      "Jobs-To-Be-Done",
-      "SWOT-Analysis"
-    ],
+    "used_templates": ["Jobs-To-Be-Done","SWOT-Analysis"],
     "prompt_name": "prompt_ideassimple",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "IdeasABC": {
     "display_name": "ABC Method",
     "description": "Ideas generated using the structured ABC brainstorming method",
     "required": false,
-    "used_templates": [
-      "Jobs-To-Be-Done",
-      "SWOT-Analysis"
-    ],
+    "used_templates": ["Jobs-To-Be-Done","SWOT-Analysis"],
     "prompt_name": "prompt_ideasabc",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Ideas3": {
     "display_name": "Outside-Of-The Box Ideas",
     "description": "Creative and unconventional ideas generated through lateral thinking",
     "required": false,
-    "used_templates": [
-      "Jobs-To-Be-Done",
-      "SWOT-Analysis"
-    ],
+    "used_templates": ["Jobs-To-Be-Done","SWOT-Analysis"],
     "prompt_name": "prompt_ideas3",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "IdeasToEvaluate": {
     "display_name": "Ideas to Evaluate",
     "description": "Ideas selected for further evaluation",
     "required": true,
-    "used_templates": [
-      "Ideation"
-    ],
+    "used_templates": ["Ideation"],
     "prompt_name": "prompt_ideastoevaluate",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Idea Rating": {
     "display_name": "Idea Rating",
     "description": "Ratings assigned to evaluated ideas",
     "required": true,
-    "used_templates": [
-      "Idea Evaluation",
-      "Strategic Foundation",
-      "SWOT-Analysis"
-    ],
+    "used_templates": ["Idea Evaluation","Strategic Foundation","SWOT-Analysis"],
     "prompt_name": "prompt_idearating",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
-  "DFVS_Evaluation": {
-    "display_name": "DVFS_Evaluation",
+  "DFVS_Evaluation_Group": {
+    "display_name": "Idea Evaluation",
     "description": "Evaluation of ideas using the DVFS framework",
     "required": true,
-    "used_templates": [
-      "Idea Evaluation",
-      "Strategic Foundation",
-      "SWOT-Analysis"
-    ],
+    "type": "group",
+    "used_templates": ["Idea Evaluation","Strategic Foundation","SWOT-Analysis"],
+    "elements": ["Desireability","Feasibility","Viability","Sustainability"],
     "prompt_name": "prompt_dfvs",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
+  "Desireability": {
+    "display_name": "Desirability",
+    "description": "The desirability of the idea to the customer",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Feasibility": {
+    "display_name": "Feasibility",
+    "description": "The feasibility of implementing the idea",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Viability": {
+    "display_name": "Viability",
+    "description": "The viability of the idea in the market",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Sustainability": {
+    "display_name": "Sustainability",
+    "description": "The economcical/ecological and social sustainability of the idea in the long term",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "IdeaRating": {
+    "display_name": "Rating Summary",
+    "description": "A summary score that reflects the overall assessment of the product concept based on the evaluations of desirability, viability, feasibility, and sustainability.",
+    "required": true,
+    "max": 10,
+    "resources": ["documents","websearch","website"]
+  },
+
+
   "ValuePropositionCanvas_Group": {
     "display_name": "Value Proposition Canvas",
     "description": "A group of elements defining the value proposition for the customer",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Idea Evaluation",
-      "Customer Persona",
-      "Empathy Map"
-    ],
-    "elements": [
-      "CustomerJobs",
-      "CustomerPains",
-      "CustomerGains",
-      "ProductsAndServices",
-      "PainRelievers",
-      "GainCreators"
-    ],
+    "used_templates": ["Idea Evaluation","Customer Persona","Empathy Map"],
+    "elements": ["CustomerJobs","CustomerPains","CustomerGains","ProductsAndServices","PainRelievers","GainCreators"],
     "prompt_name": "prompt_valuepropositioncanvas",
     "schema_name": "schema_valuepropositioncanvas",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_valuepropositioncanvas",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "CustomerJobs": {
     "display_name": "Customer Jobs",
     "description": "The tasks or jobs the customer needs to accomplish",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "CustomerPains": {
     "display_name": "Pains",
     "description": "The challenges or difficulties faced by the customer",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "CustomerGains": {
     "display_name": "Gains",
     "description": "The benefits or value the customer seeks",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "ProductsAndServices": {
     "display_name": "Products and Services",
     "description": "The products and services offered to the customer",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "PainRelievers": {
     "display_name": "Pain Relievers",
     "description": "Solutions that address customer pains",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "GainCreators": {
     "display_name": "Gain Creators",
     "description": "Solutions that create value for the customer",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "BusinessModelCanvas_Group": {
     "display_name": "Business Model Canvas",
     "description": "A group of elements defining the business model for delivering value",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Value Proposition Canvas",
-      "Strategic Foundation",
-      "Resources"
-    ],
-    "elements": [
-      "KeyPartnerships",
-      "KeyActivities",
-      "KeyResources",
-      "ValuePropositionSummary",
-      "CustomerRelationships",
-      "Channels",
-      "CustomerSegmentSummary",
-      "CostStructure",
-      "RevenueStreams"
-    ],
+    "used_templates": ["Value Proposition Canvas","Strategic Foundation","Resources"],
+    "elements": ["KeyPartnerships","KeyActivities","KeyResources","ValuePropositionSummary","CustomerRelationships","Channels","CustomerSegmentSummary","CostStructure","RevenueStreams"],
     "prompt_name": "prompt_businessmodelcanvas",
     "schema_name": "schema_businessmodelcanvas",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_businessmodelcanvas",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "KeyPartnerships": {
     "display_name": "Key Partnerships",
     "description": "The key partnerships required for the business model",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "KeyActivities": {
     "display_name": "Key Activities",
     "description": "The key activities required for the business model",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "KeyResources": {
     "display_name": "Key Resources",
     "description": "The key resources required for the business model",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "ValuePropositionSummary": {
     "display_name": "Value Proposition Summary",
     "description": "A summary of the value proposition",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "CustomerRelationships": {
     "display_name": "Customer Relationships",
     "description": "The relationships maintained with customers",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Channels": {
     "display_name": "Channels",
     "description": "The channels used to reach customers",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "CustomerSegmentSummary": {
     "display_name": "Customer Segment Summary",
     "description": "A summary of the customer segments",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "CostStructure": {
     "display_name": "Cost Structure",
     "description": "The cost structure of the business model",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "RevenueStreams": {
     "display_name": "Revenue Streams",
     "description": "The revenue streams of the business model",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "TestCard_Group": {
     "display_name": "Test Card",
     "description": "A group of elements for designing and testing hypotheses",
     "required": true,
     "type": "group",
-    "used_templates": [
-      "Business Model Canvas"
-    ],
-    "elements": [
-      "Hypothesis",
-      "Test",
-      "Metric",
-      "Criteria"
-    ],
+    "used_templates": ["Business Model Canvas"],
+    "elements": ["Hypothesis","Test","Metric","Criteria"],
     "prompt_name": "prompt_testcard",
     "schema_name": "schema_testcard",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_testcard",
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Hypothesis": {
     "display_name": "Hypothesis",
     "description": "The hypothesis to be tested",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Test": {
     "display_name": "Test",
     "description": "The test to validate the hypothesis",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Metric": {
     "display_name": "Metric",
     "description": "The metrics used to measure success",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Criteria": {
     "display_name": "Criteria",
     "description": "The criteria for evaluating success",
     "required": true,
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
-  "ExperimentSummary": {
+  "ExperimentSummary": { 
     "display_name": "Experiment Summary",
     "description": "A summary of experiments conducted to validate hypotheses",
     "required": true,
-    "used_templates": [
-      "Test Card",
-      "Business Model Canvas",
-      "InnovationLearnings"
-    ],
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
     "prompt_name": "prompt_experimentsummary",
     "schema_name": "schema_generic_object",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_object",
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "LikelyOutcome": {
     "display_name": "Likely Outcome",
     "description": "The expected results or outcomes of the conducted experiments",
     "required": true,
-    "used_templates": [
-      "Test Card",
-      "Business Model Canvas",
-      "InnovationLearnings"
-    ],
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
     "prompt_name": "prompt_likelyoutcome",
     "schema_name": "schema_generic_object",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_object",
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
     "description": "Insights and lessons learned from the innovation process",
     "required": true,
-    "used_templates": [
-      "Test Card",
-      "Business Model Canvas"
-    ],
+    "used_templates": ["Test Card","Business Model Canvas"],
     "prompt_name": "prompt_learnings",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Impact": {
     "display_name": "Impact on Business Model",
     "description": "The effect of the solution on the business model and overall strategy",
     "required": true,
-    "used_templates": [
-      "Test Card",
-      "Business Model Canvas",
-      "InnovationLearnings"
-    ],
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
     "prompt_name": "prompt_impact",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 5,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   },
   "Solution": {
     "display_name": "Solution",
     "description": "The proposed solution designed to address the identified problem",
     "required": true,
-    "used_templates": [
-      "Business Model Canvas",
-      "Customer Persona",
-      "Design Challenge"
-    ],
+    "used_templates": ["Business Model Canvas","Customer Persona","Design Challenge"],
     "prompt_name": "prompt_solution",
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 1,
-    "resources": [
-      "documents",
-      "websearch",
-      "website"
-    ]
+    "resources": ["documents","websearch","website"]
   }
 }

@@ -932,9 +932,7 @@ def about_view():
     # Add disclaimer
     st.markdown("---")
     st.markdown("# **Disclaimer - Read before use**")
-    st.markdown(
-        "The **Innovation Navigator** is an experimental, AI-assisted platform designed to support users in exploring and managing the innovation process through algorithmically generated insights and suggestions. While we aim to deliver a helpful and engaging experience, it is essential to understand the following terms and limitations of use:"
-    )
+    
     st.markdown("---")
     st.markdown("## **1. Experimental Nature**")
     st.markdown(
