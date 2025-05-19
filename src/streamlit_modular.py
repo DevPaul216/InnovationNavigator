@@ -194,7 +194,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
-                                         style={**style, "width": "70px", "padding": "1px"})
+                                         style={**style, "width": "90px", "padding": "1px"})
             nodes.append(node)
         edges = []
         for source, value in sst.template_config.items():

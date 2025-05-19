@@ -1,8 +1,5 @@
 {
     "Start": {},
-    "IdeaGeneration": {
-        "SelectedIdea": {}
-    },
     "Problem": {
         "InnovationIssue": {},
         "TargetGroup": {}
@@ -26,14 +23,14 @@
         "StrategyCombined": {}
     },
     "Customer Persona": {
+        "Portrait": {},
         "Name": {},
         "Demographics": {},
         "About": {},
         "Problem_Attitude": {},
         "Pains": {},
         "Gains": {},
-        "Quote": {},
-        "Portrait": {}
+        "Quote": {}
     },
     "Empathy Map": {
         "SayDo": {},
@@ -51,31 +48,36 @@
         "Environmental": {},
         "Legal": {}
     },
+    "Trends": {
+        "MegaTrends": {},
+        "MacroTrends": {},
+        "MesoTrends": {},
+        "MicroTrends": {}
+    },
     "SWOT-Analysis": {
         "Strengths": {},
         "Weaknesses": {},
         "Opportunities": {},
         "Threats": {}
     },
-    "Jobs-To-Be-Done": {
-        "Situation": {},
-        "Motivation": {},
-        "Outcome": {},
-        "EmotionalJob": {}
-    },
-    "Problem Statement": {
-        "Context": {},
-        "Cause": {},
-        "Consequence": {}
+    "ProblemsAndJobs": {
+        "ProblemStatement": {},
+        "JobsToBeDone": {}
     },
     "Ideation": {
         "IdeasSimple": {},
         "IdeasABC": {},
         "Ideas3": {}
     },
+    "IdeaGeneration": {
+        "SelectedIdea": {}
+    },
     "Idea Evaluation": {
         "IdeasToEvaluate": {},
-        "DFVS_Evaluation": {}
+        "Desireability": {},
+        "Feasibility": {},
+        "Viability": {},
+        "Sustainability": {}
     },
     "Value Proposition Canvas": {
         "CustomerJobs": {},
@@ -100,10 +102,7 @@
         "Hypothesis": {},
         "Test": {},
         "Metric": {},
-        "Criteria": {}
-    },
-    "ExperimentSimulation": {
-        "ExperimentSummary": {},
+        "Criteria": {},
         "LikelyOutcome": {}
     },
     "InnovationLearnings": {
