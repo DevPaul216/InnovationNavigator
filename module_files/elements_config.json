@@ -208,14 +208,14 @@
   },
   "Gains": {
     "display_name": "Gains",
-    "description": "Where the person sees their strengths",
+    "description": "Things the peron has to gain",
     "required": true,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Quote": {
     "display_name": "Quote",
-    "description": "A typical statement",
+    "description": "A typical statement of the person",
     "required": true,
     "max": 1,
     "resources": ["documents","websearch","website"]
@@ -236,7 +236,7 @@
     "required": true,
     "type": "group",
     "used_templates": ["Problem","Customer Persona"],
-    "elements": ["SayDo","ThinkFeel","See","Hear"],
+    "elements": ["SayDo","ThinkFeel","See","Hear","Pains","Gains"],
     "prompt_name": "prompt_empathymap",
     "schema_name": "schema_empathymap",
     "prompt_name_import": "prompt_import",
@@ -479,9 +479,9 @@
     "required": true,
     "used_templates": ["Ideation"],
     "prompt_name": "prompt_ideastoevaluate",
-    "schema_name": "schema_generic_array",
+    "schema_name": "schema_dvfs",
     "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_array",
+    "schema_name_import": "schema_dvfs",
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
