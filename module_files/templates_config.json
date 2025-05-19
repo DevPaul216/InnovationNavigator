@@ -46,7 +46,7 @@
     "display_name": "Customer Persona",
     "description": "Customer Personas provide detailed profiles of your target audience, capturing their demographics, behaviors, needs, and attitudes. Developing personas fosters empathy within your team and ensures your solutions are tailored precisely to user needs.",
     "required": true,
-    "connects": ["Empathy Map", "ProblemsAndJobs"],
+    "connects": ["Empathy Map"],
     "elements": ["Portrait", "Persona_Group"],
     "display": [
       { "format": [1, 2, 2], "height": 600 },

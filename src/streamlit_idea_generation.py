@@ -15,7 +15,7 @@ def init_idea_session_state():
         sst.init_idea_generation = True
         sst.response_dict = None
         sst.update_idea_graph = False
-        sst.layers = []
+        sst.layers = {}  # <-- FIX: use dict, not list
         sst.position = 0
         sst.flow_state_idea_graph = StreamlitFlowState([], [])
         sst.response_dict = {}

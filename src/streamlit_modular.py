@@ -693,7 +693,7 @@ def chart_view():
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
-            height=600,  # Adjusted height for better visibility
+            height=1000,  # Adjusted height for better visibility
             layout=LayeredLayout(direction="right"),
             fit_view=True,
             get_node_on_click=True,
