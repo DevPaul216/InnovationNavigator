@@ -692,32 +692,34 @@ def chart_view():
 
     legend_subview()
 
-    # --- Add vertical lines for 5 columns ---
+    # --- Add background gradient for 5 columns ---
     st.markdown(
         """
         <style>
         .react-flow__viewport {
-            position: relative;
+            background: repeating-linear-gradient(
+                to right,
+                #f5f5f5 0%,
+                #f5f5f5 19.5%,
+                #e0e0e0 20%,
+                #e0e0e0 20.5%,
+                #f5f5f5 20.5%,
+                #f5f5f5 39.5%,
+                #e0e0e0 40%,
+                #e0e0e0 40.5%,
+                #f5f5f5 40.5%,
+                #f5f5f5 59.5%,
+                #e0e0e0 60%,
+                #e0e0e0 60.5%,
+                #f5f5f5 60.5%,
+                #f5f5f5 79.5%,
+                #e0e0e0 80%,
+                #e0e0e0 80.5%,
+                #f5f5f5 80.5%,
+                #f5f5f5 100%
+            ) !important;
         }
-        .column-divider {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #bbb;
-            z-index: 1;
-        }
-        #col1 { left: 20%; }
-        #col2 { left: 40%; }
-        #col3 { left: 60%; }
-        #col4 { left: 80%; }
         </style>
-        <div style="position:relative; width:100%; height:0;">
-            <div class="column-divider" id="col1"></div>
-            <div class="column-divider" id="col2"></div>
-            <div class="column-divider" id="col3"></div>
-            <div class="column-divider" id="col4"></div>
-        </div>
         """,
         unsafe_allow_html=True
     )
