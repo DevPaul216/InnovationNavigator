@@ -88,10 +88,40 @@ def init_page():
                 min-width: 250px;
                 max-width: 250px;
             }
-            </style>
+            /* --- BEGIN: Vertical lines for 5 columns in React Flow --- */
+            .streamlit-flow-graph-container {
+                position: relative;
+            }
+            .react-flow__viewport-segment {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 0;
+                border-left: 2px dashed #bbb;
+                z-index: 10;
+                pointer-events: none;
+            }
+            .react-flow__viewport-segment.col1 { left: 20%; }
+            .react-flow__viewport-segment.col2 { left: 40%; }
+            .react-flow__viewport-segment.col3 { left: 60%; }
+            .react-flow__viewport-segment.col4 { left: 80%; }
+            /* --- END: Vertical lines for 5 columns --- */
             """,
         unsafe_allow_html=True,
     )
+    # Add vertical lines overlay to the flow chart container
+    st.markdown(
+        """
+        <div class="streamlit-flow-graph-container" style="position:relative;">
+            <div class="react-flow__viewport-segment col1"></div>
+            <div class="react-flow__viewport-segment col2"></div>
+            <div class="react-flow__viewport-segment col3"></div>
+            <div class="react-flow__viewport-segment col4"></div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.markdown(
         """
         <style>
