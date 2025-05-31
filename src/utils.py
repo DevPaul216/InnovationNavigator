@@ -152,6 +152,7 @@ def scrape_texts(query, num_results):
 def synchronize_shared_elements(data_store, elements_config, template_config):
     """
     Synchronize values of shared elements across all templates/groups that reference them.
+    E.g "Pains" is transfered from "Persona" to "Empathy Map" automatically
     """
     # Build a mapping from element name to all (template, group) locations
     element_locations = {}

@@ -88,40 +88,10 @@ def init_page():
                 min-width: 250px;
                 max-width: 250px;
             }
-            /* --- BEGIN: Vertical lines for 5 columns in React Flow --- */
-            .streamlit-flow-graph-container {
-                position: relative;
-            }
-            .react-flow__viewport-segment {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                width: 0;
-                border-left: 2px dashed #bbb;
-                z-index: 10;
-                pointer-events: none;
-            }
-            .react-flow__viewport-segment.col1 { left: 20%; }
-            .react-flow__viewport-segment.col2 { left: 40%; }
-            .react-flow__viewport-segment.col3 { left: 60%; }
-            .react-flow__viewport-segment.col4 { left: 80%; }
-            /* --- END: Vertical lines for 5 columns --- */
+            </style>
             """,
         unsafe_allow_html=True,
     )
-    # Add vertical lines overlay to the flow chart container
-    st.markdown(
-        """
-        <div class="streamlit-flow-graph-container" style="position:relative;">
-            <div class="react-flow__viewport-segment col1"></div>
-            <div class="react-flow__viewport-segment col2"></div>
-            <div class="react-flow__viewport-segment col3"></div>
-            <div class="react-flow__viewport-segment col4"></div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
     st.markdown(
         """
         <style>
@@ -721,6 +691,38 @@ def chart_view():
     add_empty_lines(1)
 
     legend_subview()
+
+    # --- Add vertical lines for 5 columns ---
+    st.markdown(
+        """
+        <style>
+        .react-flow__viewport {
+            position: relative;
+        }
+        .column-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #bbb;
+            z-index: 1;
+        }
+        #col1 { left: 20%; }
+        #col2 { left: 40%; }
+        #col3 { left: 60%; }
+        #col4 { left: 80%; }
+        </style>
+        <div style="position:relative; width:100%; height:0;">
+            <div class="column-divider" id="col1"></div>
+            <div class="column-divider" id="col2"></div>
+            <div class="column-divider" id="col3"></div>
+            <div class="column-divider" id="col4"></div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
