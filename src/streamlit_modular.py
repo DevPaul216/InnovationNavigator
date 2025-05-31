@@ -692,41 +692,53 @@ def chart_view():
 
     legend_subview()
 
-    # --- Add background gradient for 5 columns ---
-    st.markdown(
-        """
+    # Inject custom CSS for vertical column lines (6 columns)
+    st.markdown("""
         <style>
-        .react-flow__viewport {
-            background: repeating-linear-gradient(
-                to right,
-                #f5f5f5 0%,
-                #f5f5f5 19.5%,
-                #e0e0e0 20%,
-                #e0e0e0 20.5%,
-                #f5f5f5 20.5%,
-                #f5f5f5 39.5%,
-                #e0e0e0 40%,
-                #e0e0e0 40.5%,
-                #f5f5f5 40.5%,
-                #f5f5f5 59.5%,
-                #e0e0e0 60%,
-                #e0e0e0 60.5%,
-                #f5f5f5 60.5%,
-                #f5f5f5 79.5%,
-                #e0e0e0 80%,
-                #e0e0e0 80.5%,
-                #f5f5f5 80.5%,
-                #f5f5f5 100%
-            ) !important;
-        }
+            .flow-column-lines {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .flow-column-lines::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                pointer-events: none;
+                background-image: linear-gradient(to right, 
+                    transparent 0%, 
+                    transparent 16.66%, 
+                    rgba(0,0,0,0.10) 16.66%, 
+                    transparent 16.7%,
+                    transparent 33.33%, 
+                    rgba(0,0,0,0.10) 33.33%, 
+                    transparent 33.4%,
+                    transparent 50%, 
+                    rgba(0,0,0,0.10) 50%, 
+                    transparent 50.1%,
+                    transparent 66.66%, 
+                    rgba(0,0,0,0.10) 66.66%, 
+                    transparent 66.7%,
+                    transparent 83.33%, 
+                    rgba(0,0,0,0.10) 83.33%, 
+                    transparent 83.4%
+                );
+                z-index: 0;
+            }
+            .flow-column-lines > div {
+                position: relative;
+                z-index: 1;
+            }
         </style>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
+    with st.container(border=True):
+        # Wrapper for styling
+        st.markdown('<div class="flow-column-lines">', unsafe_allow_html=True)
 
-
-    with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
@@ -739,6 +751,9 @@ def chart_view():
             allow_zoom=True,
             pan_on_drag=True,
         )
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
         sst.current_view = "detail"
