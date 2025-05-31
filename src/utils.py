@@ -148,3 +148,36 @@ def scrape_texts(query, num_results):
             print("Exception occured during website data fetching:", e)
             print("Ignoring and continuing")
     return texts
+
+def synchronize_shared_elements(data_store, elements_config, template_config):
+    """
+    Synchronize values of shared elements across all templates/groups that reference them.
+    """
+    # Build a mapping from element name to all (template, group) locations
+    element_locations = {}
+    for template, tconf in template_config.items():
+        # Direct elements
+        for element in tconf.get("elements", []):
+            if element not in elements_config:
+                continue
+            econf = elements_config[element]
+            if econf.get("type") == "group":
+                for group_element in econf.get("elements", []):
+                    element_locations.setdefault(group_element, []).append((template, group_element))
+            else:
+                element_locations.setdefault(element, []).append((template, element))
+
+    # For each shared element, synchronize its value across all locations
+    for element, locations in element_locations.items():
+        # Find the first non-empty value
+        value = None
+        for template, el in locations:
+            v = data_store.get(template, {}).get(el, [])
+            if v:
+                value = v
+                break
+        # Set this value everywhere
+        if value is not None:
+            for template, el in locations:
+                if template in data_store:
+                    data_store[template][el] = value

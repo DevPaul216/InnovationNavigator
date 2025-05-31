@@ -499,7 +499,7 @@
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
-  "Desireability": {
+  "Desirability": {
     "display_name": "Desirability",
     "description": "The desirability of the idea to the customer",
     "required": true,

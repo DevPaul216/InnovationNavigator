@@ -1,7 +1,7 @@
 {
   "Start": {
     "display_name": "Create Project",
-    "description": "This step marks the start of your innovation project. You create a new project file, specify the project scope, objectives, and initial ideas, and ensure all stakeholders share a common understanding of the project's purpose and direction.",
+    "description": "Define a new project to get started",
     "required": true,
     "connects": ["Problem", "Resources", "Strategic Foundation"],
     "elements": []

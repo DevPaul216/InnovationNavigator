@@ -14,6 +14,7 @@ from streamlit_flow import streamlit_flow
 from streamlit_flow.elements import StreamlitFlowNode, StreamlitFlowEdge
 from streamlit_flow.layouts import LayeredLayout
 from streamlit_flow.state import StreamlitFlowState
+from utils import synchronize_shared_elements
 
 from experimental.streamlit_artifact_generation import scrape_texts
 # from streamlit_idea_generation import idea_generation_view  # commented out
@@ -63,7 +64,7 @@ def init_session_state():
         sst.selected_template_name = None
         sst.sidebar_state = "collapsed"
         sst.update_graph = True
-        sst.current_view = "about"
+        sst.current_view = "chart"
         load_data_store()
         update_data_store()
 
@@ -121,6 +122,8 @@ def get_full_data_store_path():
 
 
 def update_data_store():
+    # Synchronize shared elements before saving
+    synchronize_shared_elements(sst.data_store, sst.elements_config, sst.template_config)
     full_path = get_full_data_store_path()
     with open(full_path, "w", encoding="utf-8") as file:
         json.dump(sst.data_store, file, indent=4)
