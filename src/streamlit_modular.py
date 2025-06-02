@@ -253,12 +253,26 @@ def add_artifact(toggle_key, element_name, artifact_id, artifact):
 
 
 def display_generated_artifacts_view(element_name):
-    if len(sst.generated_artifacts) == 0 or element_name not in sst.generated_artifacts:
+    # Combine generated artifacts and already assigned artifacts, show all with toggles
+    generated = sst.generated_artifacts.get(element_name, {})
+    assigned = sst.data_store[sst.selected_template_name][element_name]
+    # Build a unique list: keep order, but don't duplicate
+    all_artifacts = []
+    artifact_ids = []
+    # Add generated artifacts first (with their ids)
+    for artifact_id, artifact in generated.items():
+        all_artifacts.append(artifact)
+        artifact_ids.append(f"generated_{artifact_id}")
+    # Add assigned artifacts that are not in generated
+    for artifact in assigned:
+        if artifact not in all_artifacts:
+            all_artifacts.append(artifact)
+            artifact_ids.append(f"assigned_{hash(str(artifact))}")
+    if not all_artifacts:
         st.write("Nothing to show")
         return
-    artifacts_dict = sst.generated_artifacts[element_name]
     element_store = sst.data_store[sst.selected_template_name]
-    for i, (artifact_id, artifact) in enumerate(artifacts_dict.items()):
+    for i, (artifact, artifact_id) in enumerate(zip(all_artifacts, artifact_ids)):
         if i != 0:
             st.divider()
         with st.container():
@@ -269,27 +283,24 @@ def display_generated_artifacts_view(element_name):
                 else:
                     st.write(artifact)
             with columns[3]:
-                toggle_key = f"button_{artifact}_check"
-                toggled = st.toggle("Add", key=toggle_key)
-                if toggled:
-                    # Add artifact directly if not already present
-                    if artifact not in element_store[element_name]:
-                        check = check_can_add(element_store, element_name, [artifact])
-                        if check is None:
-                            if isinstance(artifact, str):
-                                element_store[element_name].append(artifact)
-                            else:
-                                add_image_to_image_store(element_name, element_store, artifact)
-                            update_data_store()
-                            st.rerun()
+                # Show toggle ON if artifact is assigned, OFF otherwise
+                is_assigned = artifact in assigned
+                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_id}")
+                if toggled and not is_assigned:
+                    check = check_can_add(element_store, element_name, [artifact])
+                    if check is None:
+                        if isinstance(artifact, str):
+                            assigned.append(artifact)
                         else:
-                            st.warning(check)
-                else:
-                    # Remove artifact if present
-                    if artifact in element_store[element_name]:
-                        element_store[element_name].remove(artifact)
+                            add_image_to_image_store(element_name, element_store, artifact)
                         update_data_store()
                         st.rerun()
+                    else:
+                        st.warning(check)
+                elif not toggled and is_assigned:
+                    assigned.remove(artifact)
+                    update_data_store()
+                    st.rerun()
 
 
 def format_func(option):
