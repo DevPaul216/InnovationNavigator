@@ -149,7 +149,7 @@
     "description": "This template captures the essence of your innovation, including its name, description, and key features..",
     "required": true,
     "connects": ["Test Card", "UserFeedback"],
-    "elements": ["ProductConcept_Group, ProductConceptImage_Group"],
+    "elements": ["ProductConcept_Group", "ProductConceptImages_Group"],
     "display": [{ "format": [2,2,2], "height": 1200 }]
   },
 
