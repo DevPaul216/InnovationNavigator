@@ -66,12 +66,9 @@ def main():
     # Show templates as expandable folders with color indicators in the expander title
     for template_name, template_content in data.items():
         filled = all_elements_filled(template_content)
-        color = "#68DFC8" if filled else "#FFD580"  # green if filled, orange if not
-        # Add a colored dot before the template name in the expander title
-        dot = f"<span style='display:inline-block;width:14px;height:14px;border-radius:7px;background-color:{color};margin-right:8px;vertical-align:middle;'></span>"
-        expander_label = f"{dot}<span style='vertical-align:middle;font-weight:bold;'>{template_name}</span>"
-        with st.expander(label=None, expanded=False):
-            st.markdown(expander_label, unsafe_allow_html=True)
+        dot = "🟢" if filled else "🟠"  # green dot if filled, orange dot if not
+        expander_label = f"{dot} {template_name}"
+        with st.expander(label=expander_label, expanded=False):
             show_template_content(template_name, template_content)
 
     # --- Show full data store content with names and descriptions ---
