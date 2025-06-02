@@ -261,9 +261,9 @@ def display_generated_artifacts_view(element_name):
     artifact_keys = []
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
-        if artifact not in all_artifacts:
-            all_artifacts.append(artifact)
-            artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
+        all_artifacts.append(artifact)
+        # Use both id and hash of artifact for uniqueness
+        artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
         if artifact not in all_artifacts:
@@ -830,7 +830,6 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         display_generated_artifacts_view(element_name)
                         st.divider()
-                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row and len(elements_group_copy) > 0:
                     number_columns = min(max_elements_row, len(elements_group_copy))
@@ -839,7 +838,7 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            display_artifacts_view(element_selected, element_store)
+            pass  # Removed redundant display_artifacts_view
         else:
             display_artifact_view_image(element_selected, element_store)
 
