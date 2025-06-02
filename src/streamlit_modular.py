@@ -225,8 +225,11 @@ def init_graph():
             for element_name in elements:
                 element_config = sst.elements_config[element_name]
                 if element_config["required"]:
-                    element_store = sst.data_store[template_name]
-                    for element_values in element_store.values():
+                    #element_store = sst.data_store[template_name]
+                    #for element_values in element_store.values():
+                    # Use .get() to avoid KeyError if template_name is missing in data_store
+                    element_store = sst.data_store.get(template_name, {})
+                    for element_values in element_store.get(element_name, []):
                         if element_values is None or len(element_values) == 0:
                             is_fulfilled = False
         if is_fulfilled:
