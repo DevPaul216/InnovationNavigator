@@ -584,27 +584,8 @@ def add_resources(selected_resources, home_url, number_entries_used, query, uplo
 
 
 def display_artifacts_view(element_selected, element_store):
-    st.markdown("**Assigned Artifacts**")
-    artifacts_to_show = element_store[element_selected]
-    if len(artifacts_to_show) == 0:
-        st.write("Nothing here yet.")
-    deleted_artifacts = []
-    for i, artifact in enumerate(artifacts_to_show):
-        if i != 0:
-            st.divider()
-        with st.container():
-            columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
-            with columns[1]:
-                st.markdown(artifact)
-            with columns[3]:
-                if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
-                    deleted_artifacts.append(artifact)
-
-    remaining_artifacts = [artifact for artifact in artifacts_to_show if artifact not in deleted_artifacts]
-    element_store[element_selected] = remaining_artifacts
-    # If something was marked for deletion refresh
-    if len(deleted_artifacts) != 0:
-        st.rerun()
+    # This function is now hidden/disabled. Assigned artifacts are shown in the 'Generated Artifacts' section above.
+    pass
 
 
 def display_artifact_view_image(element_selected, element_store):
