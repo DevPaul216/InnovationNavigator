@@ -262,7 +262,6 @@ def display_generated_artifacts_view(element_name):
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
-        # Use both id and hash of artifact for uniqueness
         artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
@@ -290,18 +289,15 @@ def display_generated_artifacts_view(element_name):
                 if toggled and not is_assigned:
                     check = check_can_add(element_store, element_name, [artifact])
                     if check is None:
-                        if isinstance(artifact, str):
-                            assigned.append(artifact)
-                        else:
-                            add_image_to_image_store(element_name, element_store, artifact)
+                        assigned.append(artifact)
                         update_data_store()
-                        st.rerun()
+                        # No st.rerun() here to avoid screen shake
                     else:
                         st.warning(check)
                 elif not toggled and is_assigned:
                     assigned.remove(artifact)
                     update_data_store()
-                    st.rerun()
+                    # No st.rerun() here to avoid screen shake
 
 
 def format_func(option):
@@ -718,21 +714,6 @@ def legend_subview():
         )
 
 
-def render_vertical_lines(num_lines=3, color="#000", width="2px"):
-    """Render vertical lines over the flow chart area to segment it into columns."""
-    # Calculate left positions as percentages
-    positions = [(i + 1) * (100 // (num_lines + 1)) for i in range(num_lines)]
-    lines_html = ""
-    for pos in positions:
-        lines_html += f"<div style='position:absolute; top:0; left:{pos}%; width:{width}; height:100%; background:{color}; opacity:0.3; z-index:10;'></div>"
-    # Wrap in a relative container
-    st.markdown(f"""
-    <div style='position:relative; width:100%; height:0; min-height:0; pointer-events:none;'>
-        {lines_html}
-    </div>
-    """, unsafe_allow_html=True)
-
-
 def chart_view():
     add_empty_lines(1)
     st.subheader("Project: " + sst.project_name)
@@ -740,8 +721,6 @@ def chart_view():
 
     legend_subview()
 
-    # Add vertical lines overlay before the flow chart
-    render_vertical_lines(num_lines=3, color="#000", width="2px")
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
@@ -850,7 +829,8 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            display_artifacts_view(element_selected, element_store)
+            # display_artifacts_view(element_selected, element_store)  # <-- REMOVE THIS LINE
+            pass
         else:
             display_artifact_view_image(element_selected, element_store)
 
