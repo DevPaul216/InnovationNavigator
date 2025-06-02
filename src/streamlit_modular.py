@@ -639,7 +639,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                 display_name = element_name
                                 if "display_name" in element_config:
                                     display_name = element_config["display_name"]
-                                st.subheader(display_name)
+                                st.markdown(f"<div style='text-align:center;'><u><b>{display_name}</b></u></div>", unsafe_allow_html=True)
                                 if element_name in artifact_texts:
                                     artifact_text = artifact_texts[element_name]
                                     if len(artifact_text) > 0:
@@ -1033,7 +1033,7 @@ def open_sidebar():
 
     # Button in sidebar to go back to overview
     if st.sidebar.button(label="Overview", type="primary", use_container_width=True):
-        if sst.current_view != "chart":
+        if sst.current_view != "chart":  # Only rerun if not already on the "Overview" page because the fowchart collapsed otherwise
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
@@ -1042,7 +1042,7 @@ def open_sidebar():
 
     # New button to project selection
     if st.sidebar.button(label="Projects", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Start"
+        sst.selected_template_name = "Start"  # Set to "start" to open the project creation screen
         sst.current_view = "detail"
         sst.sidebar_state = "expanded"
         sst.update_graph = True
@@ -1055,12 +1055,6 @@ def open_sidebar():
         sst.sidebar_state = "expanded"
         sst.update_graph = True
         st.rerun()
-
-    # --- Config Editor Button ---
-    if st.sidebar.button(label="Config Editor", type="secondary", use_container_width=True):
-        import streamlit_config_editor as config_editor
-        config_editor.main()
-        st.stop()
 
     # button for other stuff
     if st.sidebar.button(label="About", type="secondary", use_container_width=True):
