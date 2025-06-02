@@ -726,7 +726,7 @@ def chart_view():
     legend_subview()
 
     # Show the background image above the flow chart for robust compatibility
-    st.image("misc/pipeline.png", use_column_width=True)
+    st.image("misc/LogoFH.png", use_column_width=True)
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
