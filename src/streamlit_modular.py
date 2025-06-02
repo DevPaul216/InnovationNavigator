@@ -741,6 +741,7 @@ def chart_view():
             key="ret_val_flow",
             state=sst.flow_state,
             height=800,  # Adjusted height for better visibility
+            width=1500,  # Adjusted width for better visibility
             layout=LayeredLayout(direction="right"),
             fit_view=True,
             get_node_on_click=True,
