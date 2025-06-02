@@ -594,15 +594,23 @@ def display_artifacts_view(element_selected, element_store):
         st.write("Nothing here yet.")
     deleted_artifacts = []
     for i, artifact in enumerate(artifacts_to_show):
+        # Skip empty or whitespace-only artifacts
+        if not artifact or (isinstance(artifact, str) and not artifact.strip()):
+            continue
         if i != 0:
             st.divider()
         with st.container():
             columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
             with columns[1]:
+                # Render artifact robustly
                 if isinstance(artifact, str):
-                    st.markdown(artifact)
+                    st.markdown(artifact.strip())
+                elif isinstance(artifact, dict):
+                    st.json(artifact)
+                elif isinstance(artifact, list):
+                    st.markdown("\n".join(str(x) for x in artifact if x and str(x).strip()))
                 else:
-                    st.write(artifact)
+                    st.write(str(artifact))
             with columns[3]:
                 if st.button(":x:", key=f"button_{element_selected}_{i}"):
                     deleted_artifacts.append(artifact)
@@ -1169,7 +1177,7 @@ def open_sidebar():
         st.rerun()
 
     # button to open Data Store Browser
-    if st.sidebar.button(label="Data Store Browser", type="secondary", use_container_width=True):
+    if st.sidebar.button(label="Browse Collected Information", type="secondary", use_container_width=True):
         sst.selected_template_name = None
         sst.current_view = "datastore_browser"
         sst.sidebar_state = "expanded"
