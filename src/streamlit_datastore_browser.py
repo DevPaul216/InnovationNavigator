@@ -53,7 +53,11 @@ def main():
         return
 
     file_names = [f.name for f in data_store_files]
-    selected_file = st.selectbox("Select a data store file:", file_names)
+    # Set default selection to currently open project (from session_state['project_name'])
+    project_name = st.session_state.get('project_name', 'default')
+    default_file = f"data_store_{project_name}.json"
+    default_index = file_names.index(default_file) if default_file in file_names else 0
+    selected_file = st.selectbox("Select a data store file:", file_names, index=default_index)
     file_path = os.path.join(DATA_STORE_PATH, selected_file)
 
     data = load_data_store(file_path)
@@ -63,12 +67,18 @@ def main():
         st.info("This data store is empty.")
         return
 
+    # --- Template quick-jump selectbox ---
+    template_names = list(data.keys())
+    selected_template = st.selectbox(
+        "Jump to template:", template_names, key="template_jump_select"
+    )
+
     # Show templates as expandable folders with color indicators in the expander title
     for template_name, template_content in data.items():
         filled = all_elements_filled(template_content)
         dot = "🟢" if filled else "🟠"  # green dot if filled, orange dot if not
         expander_label = f"{dot} {template_name}"
-        with st.expander(label=expander_label, expanded=False):
+        with st.expander(label=expander_label, expanded=(template_name == selected_template)):
             show_template_content(template_name, template_content)
 
     # --- Show full data store content (content only, easy to copy) in a single container ---
