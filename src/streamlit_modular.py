@@ -1058,7 +1058,7 @@ def open_sidebar():
 
     # --- Config Editor Button ---
     if st.sidebar.button(label="Config Editor", type="secondary", use_container_width=True):
-        import src.streamlit_config_editor as config_editor
+        import streamlit_config_editor as config_editor
         config_editor.main()
         st.stop()
 
