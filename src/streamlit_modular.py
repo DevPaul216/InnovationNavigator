@@ -913,30 +913,8 @@ def image_input_subview(element_selected, element_store):
 
 
 def detail_view():
-    # Add a big red Back button and a Next button at the top, aligned with the template name
-    nav_cols = st.columns([2, 6, 2])
-    with nav_cols[0]:
-        if st.button("⬅️ Back to Overview", key="back_to_overview", use_container_width=True, type="primary", help="Return to the project overview."):
-            sst.selected_template_name = None
-            sst.current_view = "chart"
-            sst.sidebar_state = "expanded"
-            st.rerun()
-    with nav_cols[1]:
-        st.title(get_config_value(sst.selected_template_name, config_value="display_name"))
-    with nav_cols[2]:
-        # Find the next template in the process
-        template_names = list(sst.template_config.keys())
-        try:
-            idx = template_names.index(sst.selected_template_name)
-            next_template = template_names[idx + 1] if idx + 1 < len(template_names) else None
-        except Exception:
-            next_template = None
-        if next_template:
-            if st.button("Next ➡️", key="next_template", use_container_width=True, type="primary", help="Go to next template in process"):
-                sst.selected_template_name = next_template
-                sst.current_view = "detail"
-                st.sidebar_state = "expanded"
-                st.rerun()
+    # Show template name at the top
+    st.title(get_config_value(sst.selected_template_name, config_value="display_name"))
     st.markdown(get_config_value(sst.selected_template_name, config_value="description"))
     if str(sst.selected_template_name).lower() == "start":
         start_sub_view()
@@ -944,6 +922,36 @@ def detail_view():
         end_sub_view()
     else:
         template_edit_subview()
+    # Navigation buttons below the template
+    nav_cols = st.columns([2, 2, 6, 2])
+    template_names = list(sst.template_config.keys())
+    try:
+        idx = template_names.index(sst.selected_template_name)
+        prev_template = template_names[idx - 1] if idx > 0 else None
+        next_template = template_names[idx + 1] if idx + 1 < len(template_names) else None
+    except Exception:
+        prev_template = None
+        next_template = None
+    with nav_cols[0]:
+        if prev_template:
+            if st.button("⬅️ Previous Template", key="prev_template", use_container_width=True, type="primary", help="Go to previous template in process"):
+                sst.selected_template_name = prev_template
+                sst.current_view = "detail"
+                sst.sidebar_state = "expanded"
+                st.rerun()
+    with nav_cols[1]:
+        if st.button("⬅️ Back to Overview", key="back_to_overview", use_container_width=True, type="primary", help="Return to the project overview."):
+            sst.selected_template_name = None
+            sst.current_view = "chart"
+            sst.sidebar_state = "expanded"
+            st.rerun()
+    with nav_cols[3]:
+        if next_template:
+            if st.button("Next ➡️", key="next_template", use_container_width=True, type="primary", help="Go to next template in process"):
+                sst.selected_template_name = next_template
+                sst.current_view = "detail"
+                sst.sidebar_state = "expanded"
+                st.rerun()
     update_data_store()
 
 
