@@ -57,19 +57,11 @@
     "description": "An Empathy Map documents the experiences, thoughts, emotions, and behaviors of your target customers. This deeper understanding allows your team to identify meaningful opportunities and design solutions that resonate genuinely with users.",
     "required": true,
     "connects": ["ProblemsAndJobs"],
-    "elements": [
-      "ThinkFeel",
-      "Hear",
-      "See",
-      "SayDo",
-      "Pains",
-      "Gains"
-    ],
+    "elements": ["EmpathyMap_Group"],
     "display": [
-      { "format": [2, 2], "height": 200 },
-      { "format": [2, 2], "height": 200 },
-      { "format": [2, 2], "height": 200 }
-    ]
+      { "format": [1, 1], "height": 200 },
+      { "format": [1, 1], "height": 200 },
+      { "format": [1, 1], "height": 200 }]
   },
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
