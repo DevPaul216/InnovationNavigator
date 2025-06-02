@@ -27,23 +27,25 @@ def main():
 
     with tab1:
         st.header('Templates')
-        selected_template = st.selectbox('Select template', list(templates.keys()))
-        template_data = templates[selected_template]
-        st.subheader('Current Template Data')
-        st.json(template_data)
-        st.markdown('**Edit as raw JSON (advanced):**')
-        template_json = st.text_area('Edit template JSON', value=json.dumps(template_data, indent=2), height=300, key='template_json')
-        if st.button('Save Template Changes'):
-            try:
-                new_data = json.loads(template_json)
-                templates[selected_template] = new_data
-                save_json(TEMPLATES_PATH, templates)
-                st.success('Template updated!')
-            except Exception as e:
-                st.error(f'Invalid JSON: {e}')
+        template_keys = list(templates.keys())
+        selected_template = st.selectbox('Select template', template_keys, key='template_select')
+        if selected_template:
+            template_data = templates[selected_template]
+            st.subheader('Current Template Data')
+            st.json(template_data)
+            st.markdown('**Edit as raw JSON (advanced):**')
+            template_json = st.text_area('Edit template JSON', value=json.dumps(template_data, indent=2), height=300, key=f'template_json_{selected_template}')
+            if st.button('Save Template Changes', key=f'save_template_{selected_template}'):
+                try:
+                    new_data = json.loads(template_json)
+                    templates[selected_template] = new_data
+                    save_json(TEMPLATES_PATH, templates)
+                    st.success('Template updated!')
+                except Exception as e:
+                    st.error(f'Invalid JSON: {e}')
         st.markdown('---')
-        new_name = st.text_input('New template key')
-        if st.button('Add New Template'):
+        new_name = st.text_input('New template key', key='new_template_key')
+        if st.button('Add New Template', key='add_new_template'):
             if new_name and new_name not in templates:
                 templates[new_name] = {}
                 save_json(TEMPLATES_PATH, templates)
@@ -51,23 +53,25 @@ def main():
 
     with tab2:
         st.header('Elements')
-        selected_element = st.selectbox('Select element', list(elements.keys()))
-        element_data = elements[selected_element]
-        st.subheader('Current Element Data')
-        st.json(element_data)
-        st.markdown('**Edit as raw JSON (advanced):**')
-        element_json = st.text_area('Edit element JSON', value=json.dumps(element_data, indent=2), height=300, key='element_json')
-        if st.button('Save Element Changes'):
-            try:
-                new_data = json.loads(element_json)
-                elements[selected_element] = new_data
-                save_json(ELEMENTS_PATH, elements)
-                st.success('Element updated!')
-            except Exception as e:
-                st.error(f'Invalid JSON: {e}')
+        element_keys = list(elements.keys())
+        selected_element = st.selectbox('Select element', element_keys, key='element_select')
+        if selected_element:
+            element_data = elements[selected_element]
+            st.subheader('Current Element Data')
+            st.json(element_data)
+            st.markdown('**Edit as raw JSON (advanced):**')
+            element_json = st.text_area('Edit element JSON', value=json.dumps(element_data, indent=2), height=300, key=f'element_json_{selected_element}')
+            if st.button('Save Element Changes', key=f'save_element_{selected_element}'):
+                try:
+                    new_data = json.loads(element_json)
+                    elements[selected_element] = new_data
+                    save_json(ELEMENTS_PATH, elements)
+                    st.success('Element updated!')
+                except Exception as e:
+                    st.error(f'Invalid JSON: {e}')
         st.markdown('---')
-        new_elem_name = st.text_input('New element key')
-        if st.button('Add New Element'):
+        new_elem_name = st.text_input('New element key', key='new_element_key')
+        if st.button('Add New Element', key='add_new_element'):
             if new_elem_name and new_elem_name not in elements:
                 elements[new_elem_name] = {}
                 save_json(ELEMENTS_PATH, elements)
@@ -76,18 +80,47 @@ def main():
     with tab3:
         st.header('Process Flow')
         st.markdown('Visualize and edit the process assembled from templates.')
-        import graphviz
-        dot = graphviz.Digraph()
-        for t_key, t_val in templates.items():
-            dot.node(t_key, t_val.get('display_name', t_key))
-            for conn in t_val.get('connects', []):
-                # Handle comma-separated connects
-                if isinstance(conn, str) and ',' in conn:
-                    for c in conn.split(','):
-                        dot.edge(t_key, c.strip())
-                else:
-                    dot.edge(t_key, conn)
-        st.graphviz_chart(dot)
+        try:
+            from streamlit_flow import streamlit_flow
+            from streamlit_flow.layouts import LayeredLayout
+            from streamlit_flow.elements import StreamlitFlowNode, StreamlitFlowEdge
+            from streamlit_flow.state import StreamlitFlowState
+            # Prepare nodes and edges
+            nodes = []
+            edges = []
+            for t_key, t_val in templates.items():
+                nodes.append(StreamlitFlowNode(
+                    id=t_key,
+                    pos=(0, 0),
+                    data={'content': t_val.get('display_name', t_key)},
+                    node_type="default",
+                    draggable=True,
+                    focusable=False,
+                    source_position="right",
+                    target_position="left",
+                    style={"width": "120px", "padding": "2px"}
+                ))
+                for conn in t_val.get('connects', []):
+                    if isinstance(conn, str) and ',' in conn:
+                        for c in conn.split(','):
+                            edges.append(StreamlitFlowEdge(f'{t_key}-{c.strip()}', t_key, c.strip(), marker_end={'type': 'arrowclosed'}))
+                    else:
+                        edges.append(StreamlitFlowEdge(f'{t_key}-{conn}', t_key, conn, marker_end={'type': 'arrowclosed'}))
+            flow_state = StreamlitFlowState(nodes, edges)
+            streamlit_flow(
+                key="config_editor_flow",
+                state=flow_state,
+                height=800,
+                layout=LayeredLayout(direction="right"),
+                fit_view=True,
+                get_node_on_click=False,
+                get_edge_on_click=False,
+                show_controls=True,
+                allow_zoom=True,
+                pan_on_drag=True,
+            )
+        except ImportError:
+            st.warning('streamlit_flow is not installed. Please install it to view the process flow.')
         st.info('To edit the process, modify the "connects" field in the Templates tab.')
 
 if __name__ == '__main__':
