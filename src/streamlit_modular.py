@@ -594,23 +594,15 @@ def display_artifacts_view(element_selected, element_store):
         st.write("Nothing here yet.")
     deleted_artifacts = []
     for i, artifact in enumerate(artifacts_to_show):
-        # Skip empty or whitespace-only artifacts
-        if not artifact or (isinstance(artifact, str) and not artifact.strip()):
-            continue
         if i != 0:
             st.divider()
         with st.container():
             columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
             with columns[1]:
-                # Render artifact robustly
                 if isinstance(artifact, str):
-                    st.markdown(artifact.strip())
-                elif isinstance(artifact, dict):
-                    st.json(artifact)
-                elif isinstance(artifact, list):
-                    st.markdown("\n".join(str(x) for x in artifact if x and str(x).strip()))
+                    st.markdown(artifact)
                 else:
-                    st.write(str(artifact))
+                    st.write(artifact)
             with columns[3]:
                 if st.button(":x:", key=f"button_{element_selected}_{i}"):
                     deleted_artifacts.append(artifact)
@@ -648,9 +640,9 @@ def get_elements_to_show(element_names, element_store, max_characters):
             artifact_images[element_name] = image_file
         else:
             element_artifacts = element_store[element_name]
-            artifact_text = ""
-            for artifact in element_artifacts:
-                artifact_text += "- " + artifact + "  \n"
+            # Only include non-empty, stripped artifacts
+            clean_artifacts = [artifact.strip() for artifact in element_artifacts if isinstance(artifact, str) and artifact.strip()]
+            artifact_text = "\n\n".join(f"- {artifact}" for artifact in clean_artifacts)
             if len(artifact_text) > max_characters:
                 max_characters = len(artifact_text)
             artifact_texts[element_name] = artifact_text
