@@ -33,6 +33,16 @@ def show_template_content(template_name, template_content):
     for element_name, element_content in template_content.items():
         show_element_content(element_name, element_content)
 
+def all_elements_filled(template_content):
+    # Returns True if all elements in the template have at least one artifact (non-empty list or non-empty value)
+    for element_content in template_content.values():
+        if isinstance(element_content, list):
+            if not element_content:
+                return False
+        elif not element_content:
+            return False
+    return True
+
 def main():
     st.title(":open_file_folder: Data Store Browser")
     st.markdown("Browse and inspect saved project data stores in a hierarchical (template/element) view.")
@@ -53,9 +63,13 @@ def main():
         st.info("This data store is empty.")
         return
 
-    # Show templates as expandable folders
+    # Show templates as expandable folders with color indicators
     for template_name, template_content in data.items():
-        with st.expander(f"Template: {template_name}", expanded=False):
+        filled = all_elements_filled(template_content)
+        color = "#68DFC8" if filled else "#FFD580"  # green if filled, orange if not
+        expander_label = f"<span style='background-color:{color};padding:4px 8px;border-radius:6px;color:black;'><b>Template: {template_name}</b></span>"
+        with st.expander(label="Template: " + template_name, expanded=False):
+            st.markdown(expander_label, unsafe_allow_html=True)
             show_template_content(template_name, template_content)
 
 if __name__ == "__main__":
