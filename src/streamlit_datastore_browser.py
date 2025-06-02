@@ -63,14 +63,41 @@ def main():
         st.info("This data store is empty.")
         return
 
-    # Show templates as expandable folders with color indicators
+    # Show templates as expandable folders with color indicators in the expander title
     for template_name, template_content in data.items():
         filled = all_elements_filled(template_content)
         color = "#68DFC8" if filled else "#FFD580"  # green if filled, orange if not
-        expander_label = f"<span style='background-color:{color};padding:4px 8px;border-radius:6px;color:black;'><b>Template: {template_name}</b></span>"
-        with st.expander(label="Template: " + template_name, expanded=False):
+        # Add a colored dot before the template name in the expander title
+        dot = f"<span style='display:inline-block;width:14px;height:14px;border-radius:7px;background-color:{color};margin-right:8px;vertical-align:middle;'></span>"
+        expander_label = f"{dot}<span style='vertical-align:middle;font-weight:bold;'>{template_name}</span>"
+        with st.expander(label=None, expanded=False):
             st.markdown(expander_label, unsafe_allow_html=True)
             show_template_content(template_name, template_content)
+
+    # --- Show full data store content with names and descriptions ---
+    st.markdown("---")
+    st.subheader(":page_facing_up: Full Data Store Content (with Names & Descriptions)")
+    # Load elements config for names/descriptions
+    elements_config_path = os.path.join("module_files", "elements_config.json")
+    with open(elements_config_path, "r", encoding="utf-8") as f:
+        elements_config = json.load(f)
+    # Pretty print with names/descriptions
+    for template_name, template_content in data.items():
+        st.markdown(f"### Template: `{template_name}`")
+        for element_name, element_content in template_content.items():
+            display_name = elements_config.get(element_name, {}).get("display_name", element_name)
+            description = elements_config.get(element_name, {}).get("description", "")
+            st.markdown(f"**Element:** `{element_name}` | **Name:** {display_name}")
+            if description:
+                st.markdown(f"_Description:_ {description}")
+            if isinstance(element_content, list):
+                if not element_content:
+                    st.info("No artifacts assigned.")
+                else:
+                    for i, artifact in enumerate(element_content):
+                        st.markdown(f"- {artifact}")
+            else:
+                st.write(element_content)
 
 if __name__ == "__main__":
     main()
