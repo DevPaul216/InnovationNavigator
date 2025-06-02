@@ -538,15 +538,19 @@ def add_resources(selected_resources, home_url, number_entries_used, query, uplo
     if query is not None:
         texts_scrape = scrape_texts(query, number_entries_used)
         selected_resources.update(texts_scrape)
-    if uploaded_files is not None and len(uploaded_files) > 0:
-        text = ""
-        for uploaded_file in uploaded_files:
-            text += f"# {uploaded_file.name}\n"
-            reader = PyPDF2.PdfReader(uploaded_file)
-            for page in reader.pages:
-                text += page.extract_text()
-            text += "\n"
-        selected_resources["document_text"] = text
+    # ↓ Fix: Ensure uploaded_files is a list
+    if uploaded_files is not None:
+        if not isinstance(uploaded_files, list):
+            uploaded_files = [uploaded_files]
+        if len(uploaded_files) > 0:
+            text = ""
+            for uploaded_file in uploaded_files:
+                text += f"# {uploaded_file.name}\n"
+                reader = PyPDF2.PdfReader(uploaded_file)
+                for page in reader.pages:
+                    text += page.extract_text() or ""
+                text += "\n"
+            selected_resources["document_text"] = text
 
 
 def display_artifacts_view(element_selected, element_store):
@@ -692,53 +696,7 @@ def chart_view():
 
     legend_subview()
 
-    # Inject custom CSS for vertical column lines (6 columns)
-    st.markdown("""
-        <style>
-            .flow-column-lines {
-                position: relative;
-                width: 100%;
-                height: 100%;
-            }
-            .flow-column-lines::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                pointer-events: none;
-                background-image: linear-gradient(to right, 
-                    transparent 0%, 
-                    transparent 16.66%, 
-                    rgba(0,0,0,0.10) 16.66%, 
-                    transparent 16.7%,
-                    transparent 33.33%, 
-                    rgba(0,0,0,0.10) 33.33%, 
-                    transparent 33.4%,
-                    transparent 50%, 
-                    rgba(0,0,0,0.10) 50%, 
-                    transparent 50.1%,
-                    transparent 66.66%, 
-                    rgba(0,0,0,0.10) 66.66%, 
-                    transparent 66.7%,
-                    transparent 83.33%, 
-                    rgba(0,0,0,0.10) 83.33%, 
-                    transparent 83.4%
-                );
-                z-index: 0;
-            }
-            .flow-column-lines > div {
-                position: relative;
-                z-index: 1;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
-    with st.container(border=True):
-        # Wrapper for styling
-        st.markdown('<div class="flow-column-lines">', unsafe_allow_html=True)
-
+    with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
@@ -751,9 +709,6 @@ def chart_view():
             allow_zoom=True,
             pan_on_drag=True,
         )
-
-        st.markdown('</div>', unsafe_allow_html=True)
-
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
         sst.current_view = "detail"
