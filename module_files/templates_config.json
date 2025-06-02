@@ -57,11 +57,19 @@
     "description": "An Empathy Map documents the experiences, thoughts, emotions, and behaviors of your target customers. This deeper understanding allows your team to identify meaningful opportunities and design solutions that resonate genuinely with users.",
     "required": true,
     "connects": ["ProblemsAndJobs"],
-    "elements": ["EmpathyMap_Group"],
+    "elements": [
+      "ThinkFeel",
+      "Hear",
+      "See",
+      "SayDo",
+      "Pains",
+      "Gains"
+    ],
     "display": [
-      { "format": [1, 1], "height": 200 },
-      { "format": [1, 1], "height": 200 },
-      { "format": [1, 1], "height": 200 }]
+      { "format": [2, 2], "height": 200 },
+      { "format": [2, 2], "height": 200 },
+      { "format": [2, 2], "height": 200 }
+    ]
   },
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
@@ -127,7 +135,7 @@
     "display_name": "Business Model Canvas",
     "description": "The Business Model Canvas clearly outlines how your innovation will deliver value, detailing essential elements such as customer segments, value propositions, key activities, resources, partnerships, cost structures, and revenue streams. It ensures your innovation has a viable and sustainable business model.",
     "required": true,
-    "connects": ["Test Card", "UserFeedback"],
+    "connects": ["Test Card"],
     "elements": ["BusinessModelCanvas_Group"],
     "display": [
       { "format": [1, 2, 1, 2, 1], "height": 600 },
