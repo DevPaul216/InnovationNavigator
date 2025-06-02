@@ -405,7 +405,7 @@ def handle_response_image(element_name, prompt, selected_resources):
     add_to_generated_artifacts(element_name, generated_images)
 
 
-def generate_artifacts(element_name, is_image=False, generate_now_clicked=False, home_url=None, query=None, number_entries_used=None, uploaded_files=None):
+def generate_artifacts(element_name, is_image=False, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
     required_items = element_config['used_templates']
     selected_resources = {}
@@ -755,7 +755,7 @@ def element_selection_format_func(item):
 
 def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
-    columns = st.columns([1, 1, 2, 2], vertical_alignment="center")
+    columns = st.columns([1, 1, 1, 2], vertical_alignment="center")
     with columns[0]:
         element_selected = st.selectbox(label="Select Element to generate: ", help="Select the element to generate artifacts for PLACEHOLDER",
                                         options=assigned_elements,
@@ -765,9 +765,6 @@ def general_creation_view(assigned_elements):
     # Move Generate Now! button to the right of select mode
     generate_now_clicked = False
     with columns[2]:
-        # Move resource selection here (was in expander)
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
-    with columns[3]:
         if creation_mode == "Generate":
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
@@ -809,7 +806,7 @@ def general_creation_view(assigned_elements):
                     position = 0
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked, home_url, query, number_entries_used, uploaded_files)
+            generate_artifacts(element_selected, is_image, generate_now_clicked)
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()
