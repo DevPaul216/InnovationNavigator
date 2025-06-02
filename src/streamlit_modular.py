@@ -209,55 +209,6 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                                          animated=connection_state,
                                          style={"backgroundColor": "green"})
                 edges.append(edge)
-        # Add bounding box (square) with 4 small circle nodes and 4 dotted edges
-        # Place the square around the main graph area (positions are arbitrary, adjust as needed)
-        square_node_radius = 8
-        square_nodes = [
-            ("corner_tl", (-100, -100)),  # top-left
-            ("corner_tr", (1000, -100)),  # top-right
-            ("corner_br", (1000, 700)),   # bottom-right
-            ("corner_bl", (-100, 700)),   # bottom-left
-        ]
-        for node_id, pos in square_nodes:
-            nodes.append(StreamlitFlowNode(
-                id=node_id,
-                pos=pos,
-                data={'content': ''},
-                node_type="default",
-                style={
-                    "background": "#333",
-                    "borderRadius": "50%",
-                    "width": f"{square_node_radius*2}px",
-                    "height": f"{square_node_radius*2}px",
-                    "border": "2px solid #888",
-                    "zIndex": 1000,
-                },
-                draggable=False,
-                focusable=False,
-                source_position='right',  # Set to a valid value
-                target_position='left',   # Set to a valid value
-            ))
-        # Dotted edges for the square
-        square_edges = [
-            ("corner_tl", "corner_tr"),
-            ("corner_tr", "corner_br"),
-            ("corner_br", "corner_bl"),
-            ("corner_bl", "corner_tl"),
-        ]
-        for i, (src, tgt) in enumerate(square_edges):
-            edges.append(StreamlitFlowEdge(
-                id=f"square_{i}",
-                source=src,
-                target=tgt,
-                style={
-                    "stroke": "#888",
-                    "strokeDasharray": "6 6",
-                    "strokeWidth": 2,
-                    "zIndex": 1000,
-                },
-                marker_end=None,
-                animated=False,
-            ))
         sst.flow_state = StreamlitFlowState(nodes, edges)
         sst.update_graph = False
 
