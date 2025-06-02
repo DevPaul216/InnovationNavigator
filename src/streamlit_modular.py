@@ -1033,7 +1033,7 @@ def open_sidebar():
 
     # Button in sidebar to go back to overview
     if st.sidebar.button(label="Overview", type="primary", use_container_width=True):
-        if sst.current_view != "chart":  # Only rerun if not already on the "Overview" page because the fowchart collapsed otherwise
+        if sst.current_view != "chart":
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
@@ -1042,7 +1042,7 @@ def open_sidebar():
 
     # New button to project selection
     if st.sidebar.button(label="Projects", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Start"  # Set to "start" to open the project creation screen
+        sst.selected_template_name = "Start"
         sst.current_view = "detail"
         sst.sidebar_state = "expanded"
         sst.update_graph = True
@@ -1056,7 +1056,7 @@ def open_sidebar():
         sst.update_graph = True
         st.rerun()
 
-    # button to open config editor
+    # --- Config Editor Button ---
     if st.sidebar.button(label="Config Editor", type="secondary", use_container_width=True):
         import src.streamlit_config_editor as config_editor
         config_editor.main()
