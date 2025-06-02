@@ -3,20 +3,41 @@ import os
 import json
 from pathlib import Path
 
-data_store_path = os.path.join("stores", "data_stores")
+# Path to the data store directory
+DATA_STORE_PATH = os.path.join("stores", "data_stores")
 
 def list_data_store_files():
-    data_stores = list(Path(data_store_path).glob("data_store_*.json"))
+    data_stores = list(Path(DATA_STORE_PATH).glob("data_store_*.json"))
     return sorted(data_stores)
 
 def load_data_store(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+def show_element_content(element_name, element_content):
+    st.markdown(f"**Element:** `{element_name}`")
+    if isinstance(element_content, list):
+        if not element_content:
+            st.info("No artifacts assigned.")
+        else:
+            for i, artifact in enumerate(element_content):
+                st.markdown(f"- {artifact}")
+    else:
+        st.write(element_content)
+
+def show_template_content(template_name, template_content):
+    st.markdown(f"### Template: `{template_name}`")
+    if not template_content:
+        st.info("No elements in this template.")
+        return
+    for element_name, element_content in template_content.items():
+        with st.expander(f"Element: {element_name}", expanded=False):
+            show_element_content(element_name, element_content)
+
 def main():
     st.set_page_config(page_title="Data Store Browser", layout="wide")
-    st.title("Data Store Browser")
-    st.markdown("Browse and inspect saved project data stores.")
+    st.title(":open_file_folder: Data Store Browser")
+    st.markdown("Browse and inspect saved project data stores in a hierarchical (template/element) view.")
 
     data_store_files = list_data_store_files()
     if not data_store_files:
@@ -25,38 +46,19 @@ def main():
 
     file_names = [f.name for f in data_store_files]
     selected_file = st.selectbox("Select a data store file:", file_names)
-    file_path = os.path.join(data_store_path, selected_file)
+    file_path = os.path.join(DATA_STORE_PATH, selected_file)
 
     data = load_data_store(file_path)
 
-    st.subheader(f"Contents of {selected_file}")
-    st.json(data)
+    st.markdown(f"## Project: `{selected_file.replace('data_store_', '').replace('.json', '')}`")
+    if not data:
+        st.info("This data store is empty.")
+        return
 
-    # Optional: Add a search/filter feature
-    st.markdown("---")
-    st.subheader("Search in Data Store")
-    search_term = st.text_input("Enter a key or value to search for (case-insensitive):")
-    if search_term:
-        search_term_lower = search_term.lower()
-        results = []
-        def search_dict(d, path=None):
-            if path is None:
-                path = []
-            if isinstance(d, dict):
-                for k, v in d.items():
-                    if search_term_lower in str(k).lower() or search_term_lower in str(v).lower():
-                        results.append((path + [k], v))
-                    search_dict(v, path + [k])
-            elif isinstance(d, list):
-                for idx, item in enumerate(d):
-                    search_dict(item, path + [str(idx)])
-        search_dict(data)
-        if results:
-            st.write(f"Found {len(results)} matches:")
-            for path, value in results:
-                st.write(f"**{'/'.join(path)}**: {value}")
-        else:
-            st.info("No matches found.")
+    # Show templates as expandable folders
+    for template_name, template_content in data.items():
+        with st.expander(f"Template: {template_name}", expanded=False):
+            show_template_content(template_name, template_content)
 
 if __name__ == "__main__":
     main()
