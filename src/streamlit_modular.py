@@ -669,7 +669,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                         with st.container(border=True, height=height_single):
                             # with stylable_container(key="sc_" + str(position), css_styles=container_css):
                             container = st.container(border=False)
-                            sub_columns = container.columns([1, 5, 1], vertical_alignment='center')
+                            sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
                             with sub_columns[1]:
                                 element_config = sst.elements_config[element_name]
                                 display_name = element_name

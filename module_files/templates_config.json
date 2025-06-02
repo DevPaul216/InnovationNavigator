@@ -175,7 +175,7 @@
     "display": [{ "format": [1, 1], "height": 600 }]
   },
   "End": {
-    "display_name": "Solution Summary",
+    "display_name": "All Templates",
     "description": "This template summarizes and visualizes all key elements and insights from the completed templates. It provides a consolidated view of your final innovation, clearly illustrating how it addresses the original problem and aligns with strategic goals, aiding effective communication with stakeholders.",
     "required": false,
     "connects": [],
