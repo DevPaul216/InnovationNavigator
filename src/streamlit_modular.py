@@ -639,7 +639,10 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                 display_name = element_name
                                 if "display_name" in element_config:
                                     display_name = element_config["display_name"]
-                                st.markdown(f"<div style='text-align:center;'><u><b>{display_name}</b></u></div>", unsafe_allow_html=True)
+                                st.markdown(
+                                    f"<div style='text-align:left; font-family:Impact, Charcoal, sans-serif; font-weight:bold; font-size:1.2em;'>{display_name}</div>",
+                                    unsafe_allow_html=True
+                                )
                                 if element_name in artifact_texts:
                                     artifact_text = artifact_texts[element_name]
                                     if len(artifact_text) > 0:
