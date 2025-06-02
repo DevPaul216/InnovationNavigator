@@ -746,9 +746,8 @@ def chart_view():
             get_node_on_click=True,
             get_edge_on_click=False,
             show_controls=True,
-            allow_zoom=False,  # Disable zoom
-            pan_on_drag=False,  # Disable panning
-            draggable=False,  # Disable node dragging
+            allow_zoom=True,
+            pan_on_drag=True,
         )
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
