@@ -114,12 +114,12 @@ def main():
                 elif element_content:
                     content_lines.append(str(element_content))
         content_text = "\n".join(content_lines)
-        # Show in a Streamlit text area for easy copy/paste
-        st.text_area(
-            label="All Content (copy/paste for transfer)",
-            value=content_text,
-            height=300,
-            label_visibility="visible"
+        # Show in a Streamlit text_reader for easy copy/paste
+        st.text_reader(
+            content_text,
+            language="plain text",
+            line_numbers=False,
+            key="full_content_reader"
         )
         # Optionally, add a download button for convenience
         st.download_button(
