@@ -913,29 +913,37 @@ def image_input_subview(element_selected, element_store):
 
 
 def detail_view():
-    # Add a big red Back button at the top
-    back_col, _ = st.columns([2, 8])
-    with back_col:
-        if st.button("⬅️ Back to Overview", key="back_to_overview", use_container_width=True, type="secondary", help="Return to the project overview."):
+    # Add a big red Back button and a Next button at the top, aligned with the template name
+    nav_cols = st.columns([2, 6, 2])
+    with nav_cols[0]:
+        if st.button("⬅️ Back to Overview", key="back_to_overview", use_container_width=True, type="primary", help="Return to the project overview."):
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
             st.rerun()
-    # removed temporarily blocking to make testing easier
-
-    # if sst.selected_template_name in blocked_templates:
-    #    st.text("Requirements not met. Fill previous templates")
-    # el ....
-
-    if sst.selected_template_name is not None and sst.selected_template_name in sst.template_config:
+    with nav_cols[1]:
         st.title(get_config_value(sst.selected_template_name, config_value="display_name"))
-        st.markdown(get_config_value(sst.selected_template_name, config_value="description"))
-        if str(sst.selected_template_name).lower() == "start":
-            start_sub_view()
-        elif str(sst.selected_template_name).lower() == "end":
-            end_sub_view()
-        else:
-            template_edit_subview()
+    with nav_cols[2]:
+        # Find the next template in the process
+        template_names = list(sst.template_config.keys())
+        try:
+            idx = template_names.index(sst.selected_template_name)
+            next_template = template_names[idx + 1] if idx + 1 < len(template_names) else None
+        except Exception:
+            next_template = None
+        if next_template:
+            if st.button("Next ➡️", key="next_template", use_container_width=True, type="primary", help="Go to next template in process"):
+                sst.selected_template_name = next_template
+                sst.current_view = "detail"
+                st.sidebar_state = "expanded"
+                st.rerun()
+    st.markdown(get_config_value(sst.selected_template_name, config_value="description"))
+    if str(sst.selected_template_name).lower() == "start":
+        start_sub_view()
+    elif str(sst.selected_template_name).lower() == "end":
+        end_sub_view()
+    else:
+        template_edit_subview()
     update_data_store()
 
 
