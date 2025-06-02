@@ -934,21 +934,20 @@ def detail_view():
                 sst.sidebar_state = "expanded"
                 st.rerun()
     with nav_cols[1]:
-        if st.button(
-            "\u2302 Back to Overview",
-            key="back_to_overview",
-            use_container_width=True,
-            type="primary",
-            help="Go back to the overview"
-        ):
-            st.markdown(
-            "<style>"
-            "button[data-testid='baseButton-back_to_overview'] div[class^='stButton'] button {"
-            "font-size: 1.5em !important;"
-            "}"
-            "</style>",
-            unsafe_allow_html=True
-            )
+        # Make the button larger using custom CSS
+        st.markdown(
+            """
+            <style>
+            .stButton > button#back_to_overview {
+            font-size: 1.5em !important;
+            padding: 0.75em 2em !important;
+            height: 3.5em !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
