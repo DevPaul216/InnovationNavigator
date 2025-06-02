@@ -33,11 +33,11 @@
         "Quote": {}
     },
     "Empathy Map": {
-        "SayDo": {},
-        "See": {},
-        "Pains": {},
         "ThinkFeel": {},
         "Hear": {},
+        "See": {},
+        "SayDo": {},
+        "Pains": {},
         "Gains": {}
     },
     "PESTEL-Analysis": {
@@ -69,15 +69,13 @@
         "IdeasABC": {},
         "Ideas3": {}
     },
-    "IdeaGeneration": {
-        "SelectedIdea": {}
-    },
     "Idea Evaluation": {
         "IdeasToEvaluate": {},
         "Desirability": {},
         "Feasibility": {},
         "Viability": {},
-        "Sustainability": {}
+        "Sustainability": {},
+        "IdeaRating": {}
     },
     "Value Proposition Canvas": {
         "CustomerJobs": {},
@@ -104,6 +102,22 @@
         "Metric": {},
         "Criteria": {},
         "LikelyOutcome": {}
+    },
+    "ProductConcept": {
+        "ProductName": {},
+        "ProductDescription": {},
+        "ProductFeatures": {},
+        "ProductBenefits": {},
+        "ProductImage1": {},
+        "ProductImage2": {},
+        "ProductImage3": {}
+    },
+    "UserFeedback": {
+        "Portrait": {},
+        "ProductImage1": {},
+        "FeedbackText": {},
+        "FeedbackRating": {},
+        "FeedbackRecommendation": {}
     },
     "InnovationLearnings": {
         "Learnings": {},
