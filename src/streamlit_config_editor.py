@@ -29,13 +29,21 @@ def main():
         st.header('Templates')
         selected_template = st.selectbox('Select template', list(templates.keys()))
         template_data = templates[selected_template]
-        edited = st.experimental_data_editor(template_data, num_rows="dynamic")
+        st.subheader('Current Template Data')
+        st.json(template_data)
+        st.markdown('**Edit as raw JSON (advanced):**')
+        template_json = st.text_area('Edit template JSON', value=json.dumps(template_data, indent=2), height=300, key='template_json')
         if st.button('Save Template Changes'):
-            templates[selected_template] = edited
-            save_json(TEMPLATES_PATH, templates)
-            st.success('Template updated!')
+            try:
+                new_data = json.loads(template_json)
+                templates[selected_template] = new_data
+                save_json(TEMPLATES_PATH, templates)
+                st.success('Template updated!')
+            except Exception as e:
+                st.error(f'Invalid JSON: {e}')
+        st.markdown('---')
+        new_name = st.text_input('New template key')
         if st.button('Add New Template'):
-            new_name = st.text_input('New template key')
             if new_name and new_name not in templates:
                 templates[new_name] = {}
                 save_json(TEMPLATES_PATH, templates)
@@ -45,15 +53,23 @@ def main():
         st.header('Elements')
         selected_element = st.selectbox('Select element', list(elements.keys()))
         element_data = elements[selected_element]
-        edited = st.experimental_data_editor(element_data, num_rows="dynamic")
+        st.subheader('Current Element Data')
+        st.json(element_data)
+        st.markdown('**Edit as raw JSON (advanced):**')
+        element_json = st.text_area('Edit element JSON', value=json.dumps(element_data, indent=2), height=300, key='element_json')
         if st.button('Save Element Changes'):
-            elements[selected_element] = edited
-            save_json(ELEMENTS_PATH, elements)
-            st.success('Element updated!')
+            try:
+                new_data = json.loads(element_json)
+                elements[selected_element] = new_data
+                save_json(ELEMENTS_PATH, elements)
+                st.success('Element updated!')
+            except Exception as e:
+                st.error(f'Invalid JSON: {e}')
+        st.markdown('---')
+        new_elem_name = st.text_input('New element key')
         if st.button('Add New Element'):
-            new_name = st.text_input('New element key')
-            if new_name and new_name not in elements:
-                elements[new_name] = {}
+            if new_elem_name and new_elem_name not in elements:
+                elements[new_elem_name] = {}
                 save_json(ELEMENTS_PATH, elements)
                 st.experimental_rerun()
 
