@@ -262,6 +262,7 @@ def display_generated_artifacts_view(element_name):
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
+        # Use both id and hash of artifact for uniqueness
         artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
@@ -289,15 +290,18 @@ def display_generated_artifacts_view(element_name):
                 if toggled and not is_assigned:
                     check = check_can_add(element_store, element_name, [artifact])
                     if check is None:
-                        assigned.append(artifact)
+                        if isinstance(artifact, str):
+                            assigned.append(artifact)
+                        else:
+                            add_image_to_image_store(element_name, element_store, artifact)
                         update_data_store()
-                        # No st.rerun() here to avoid screen shake
+                        st.rerun()
                     else:
                         st.warning(check)
                 elif not toggled and is_assigned:
                     assigned.remove(artifact)
                     update_data_store()
-                    # No st.rerun() here to avoid screen shake
+                    st.rerun()
 
 
 def format_func(option):
@@ -792,7 +796,6 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         artifact_input_subview(element_name, element_store)
                         st.divider()
-                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row:
                     columns_inner = st.columns(max_elements_row)
@@ -820,7 +823,6 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         display_generated_artifacts_view(element_name)
                         st.divider()
-                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row and len(elements_group_copy) > 0:
                     number_columns = min(max_elements_row, len(elements_group_copy))
@@ -829,7 +831,6 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            # display_artifacts_view(element_selected, element_store)  # <-- REMOVE THIS LINE
             pass
         else:
             display_artifact_view_image(element_selected, element_store)
