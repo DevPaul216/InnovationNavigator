@@ -797,13 +797,42 @@
     "max": 1
   },
 
+  "UserFeedback_Group": {
+    "display_name": "User Feedback",
+    "description": "A group of elements capturing user feedback on the product concept",
+    "required": false,
+    "type": "group",
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "elements": ["Portrait","FeedbackText","FeedbackRating", "FeedbackRecommendation, ProductImage1"],
+    "prompt_name": "prompt_generic",
+    "schema_name": "schema_generic_array",
+  },
+  "FeedbackText": {
+    "display_name": "Feedback Text",
+    "description": "The text of the feedback provided by the user",
+    "required": true,
+    "max": 1,
+  },
 
+  "FeedbackRating": {
+    "display_name": "Feedback Rating",
+    "description": "The rating given by the user for the product concept",
+    "required": true,
+    "max": 1,
+  },
+
+  "FeedbackRecommendation": {
+      "display_name": "Feedback Recommendation",
+      "description": "Any recommendations or suggestions provided by the user",
+      "required": true,
+      "max": 1,
+    },
 
 
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
     "description": "Insights and lessons learned from the innovation process",
-    "required": true,
+    "required": false,
     "used_templates": ["Test Card","Business Model Canvas"],
     "prompt_name": "prompt_learnings",
     "schema_name": "schema_generic_array",
