@@ -127,7 +127,7 @@
     "display_name": "Business Model Canvas",
     "description": "The Business Model Canvas clearly outlines how your innovation will deliver value, detailing essential elements such as customer segments, value propositions, key activities, resources, partnerships, cost structures, and revenue streams. It ensures your innovation has a viable and sustainable business model.",
     "required": true,
-    "connects": ["Test Card, UserFeedback"],
+    "connects": ["Test Card, UserFeedback, ProductConcept"],
     "elements": ["BusinessModelCanvas_Group"],
     "display": [
       { "format": [1, 2, 1, 2, 1], "height": 600 },
