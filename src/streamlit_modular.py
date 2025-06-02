@@ -256,6 +256,10 @@ def display_generated_artifacts_view(element_name):
     # Combine generated artifacts and already assigned artifacts, show all with toggles
     generated = sst.generated_artifacts.get(element_name, {})
     assigned = sst.data_store[sst.selected_template_name][element_name]
+    # Ensure assigned is always a list
+    if isinstance(assigned, dict):
+        assigned = list(assigned.values())
+        sst.data_store[sst.selected_template_name][element_name] = assigned
     # Build a unique list: keep order, but don't duplicate
     all_artifacts = []
     artifact_keys = []
