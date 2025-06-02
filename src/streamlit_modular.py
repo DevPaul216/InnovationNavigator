@@ -765,17 +765,16 @@ def chart_view():
             f"""
             <div style="
                 position: fixed;
-                top: 220px;  /* Lowered further down the page */
+                top: 220px;
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 9999;
-                opacity: 0.18;
                 pointer-events: none;
-                width: 1200px;  /* Make it as wide as the graph area */
+                width: 1200px;
                 display: flex;
                 justify-content: center;
             ">
-                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 1200px;"/>
+                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 1200px; opacity: 0.18;"/>
             </div>
             """,
             unsafe_allow_html=True
