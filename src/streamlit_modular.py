@@ -736,7 +736,9 @@ def chart_view():
     legend_subview()
 
 
-    with st.container(border=True):  # Add border to the container of the flow chart
+    # Fix the width of the flow graph container
+    st.markdown('<div style="width:1200px; margin:0 auto;">', unsafe_allow_html=True)
+    with st.container(border=True):
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
@@ -749,6 +751,8 @@ def chart_view():
             allow_zoom=False,
             pan_on_drag=False,
         )
+    st.markdown('</div>', unsafe_allow_html=True)
+
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
         sst.current_view = "detail"
