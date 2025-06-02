@@ -913,10 +913,8 @@ def image_input_subview(element_selected, element_store):
 
 
 def detail_view():
-    # Add some empty space above the buttons
     st.write("")
     st.write("")
-    # Centered navigation buttons with larger text using HTML/CSS
     template_names = list(sst.template_config.keys())
     try:
         idx = template_names.index(sst.selected_template_name)
@@ -926,17 +924,41 @@ def detail_view():
         prev_template = None
         next_template = None
 
-    # Build buttons as HTML for better alignment and size
-    button_html = "<div style='display: flex; justify-content: center; gap: 2em; margin-bottom: 1.5em;'>"
-    if prev_template:
-        button_html += f"<form style='display:inline;' action='' method='post'><button name='prev_template' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>&#9664; Previous Template</button></form>"
-    button_html += f"<form style='display:inline;' action='' method='post'><button name='back_to_overview' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>&#8962; Back to Overview</button></form>"
-    if next_template:
-        button_html += f"<form style='display:inline;' action='' method='post'><button name='next_template' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>Next Template &#9654;</button></form>"
-    button_html += "</div>"
-
-    # Show only the styled HTML buttons (remove hidden Streamlit logic buttons)
-    st.markdown(button_html, unsafe_allow_html=True)
+    # Centered navigation buttons using columns, styled with markdown
+    st.markdown("""
+        <style>
+        .nav-btn button {
+            font-size: 1.2em !important;
+            padding: 0.7em 2em !important;
+            background: #d0021b !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    nav_cols = st.columns([1, 1, 1], gap="large")
+    with nav_cols[0]:
+        if prev_template:
+            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True):
+                sst.selected_template_name = prev_template
+                sst.current_view = "detail"
+                sst.sidebar_state = "expanded"
+                st.rerun()
+    with nav_cols[1]:
+        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True):
+            sst.selected_template_name = None
+            sst.current_view = "chart"
+            sst.sidebar_state = "expanded"
+            st.rerun()
+    with nav_cols[2]:
+        if next_template:
+            if st.button("Next Template \u25B6", key="next_template", use_container_width=True):
+                sst.selected_template_name = next_template
+                sst.current_view = "detail"
+                sst.sidebar_state = "expanded"
+                st.rerun()
 
     # Centered template name and description with larger text
     st.markdown(f"""
