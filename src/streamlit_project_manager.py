@@ -5,6 +5,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from streamlit_modular import add_empty_lines
+
 data_store_path = os.path.join("stores", "data_stores")
 
 def project_manager_view(current_project_name, on_project_switch=None):
