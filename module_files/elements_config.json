@@ -803,7 +803,7 @@
     "required": false,
     "type": "group",
     "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
-    "elements": ["Portrait","FeedbackText","FeedbackRating", "FeedbackRecommendation, ProductImage1"],
+    "elements": ["Portrait","FeedbackText","FeedbackRating", "FeedbackRecommendation", "ProductImage1"],
     "prompt_name": "prompt_generic",
     "schema_name": "schema_generic_array"
   },
