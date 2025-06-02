@@ -135,14 +135,6 @@
     ]
   },
 
-  "ProductConcept"  : {
-    "display_name": "Product Concept",
-    "description": "This template captures the essence of your innovation, including its name, description, and key features..",
-    "required": true,
-    "connects": ["Test Card", "UserFeedback"],
-    "elements": ["ProductConcept_Group, ProductConceptImage_Group"],
-    "display": [{ "format": [2,2,2], "height": 1200 }]
-  },
 
 
   "Test Card": {
@@ -155,14 +147,7 @@
                 { "format": [1], "height": 200 }]
   },
 
-  "UserFeedback": {
-    "display_name": "User Feedback",
-    "description": "Ask you user for feedback about your current product.",
-    "required": false,
-    "connects": ["InnovationLearnings"],
-    "elements": ["Feedback_Group"],
-    "display": [{ "format": [1], "height": 600 }]
-  },
+
 
   "InnovationLearnings": {
     "display_name": "Learnings",
