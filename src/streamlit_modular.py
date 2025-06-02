@@ -928,24 +928,52 @@ def detail_view():
     nav_cols = st.columns([1, 1, 1], gap="large")
     with nav_cols[0]:
         if prev_template:
-            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary"):
+            if st.button(
+                "\u25C0 Previous Template",
+                key="prev_template",
+                use_container_width=True,
+                type="primary"
+            ):
                 sst.selected_template_name = prev_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
                 st.rerun()
+            # Add larger, bold label below button for clarity
+            st.markdown(
+                "<div style='text-align:center; font-size:1.2em; font-weight:bold;'>Previous</div>",
+                unsafe_allow_html=True
+            )
     with nav_cols[1]:
-        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
+        if st.button(
+            "\u2302 Back to Overview",
+            key="back_to_overview",
+            use_container_width=True,
+            type="primary"
+        ):
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
             st.rerun()
+        st.markdown(
+            "<div style='text-align:center; font-size:1.2em; font-weight:bold;'>Overview</div>",
+            unsafe_allow_html=True
+        )
     with nav_cols[2]:
         if next_template:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary"):
+            if st.button(
+                "Next Template \u25B6",
+                key="next_template",
+                use_container_width=True,
+                type="primary"
+            ):
                 sst.selected_template_name = next_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
                 st.rerun()
+            st.markdown(
+                "<div style='text-align:center; font-size:1.2em; font-weight:bold;'>Next</div>",
+                unsafe_allow_html=True
+            )
 
     # Centered template name and description with larger text
     st.markdown(f"""
