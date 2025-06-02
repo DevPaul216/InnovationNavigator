@@ -720,6 +720,86 @@
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
+
+ "ProductConcept_Group": {
+    "display_name": "Product Concept",
+    "description": "A group of elements defining the product concept for the innovation",
+    "required": true,
+    "type": "group",
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "elements": ["ProductName","ProductDescription","ProductFeatures","ProductBenefits"],
+    "prompt_name": "prompt_generic",
+    "schema_name": "schema_generic_object",
+    "resources": ["documents","websearch","website"]
+  },
+
+  "ProductName": {
+    "display_name": "Product Name",
+    "description": "The name of the product being developed",
+    "required": true,
+    "max": 1
+  },
+
+  "ProductDescription": {
+    "display_name": "Product Description",
+    "description": "A detailed description of the product",
+    "required": true,
+    "max": 1
+  },
+
+  "ProductFeatures": {
+    "display_name": "Product Features",
+    "description": "Key features of the product that differentiate it from competitors",
+    "required": true,
+    "max": 5
+  },
+
+  "ProductBenefits": {
+    "display_name": "Product Benefits",
+    "description": "The benefits the product provides to the customer",
+    "required": true,
+    "max": 5
+  },
+
+  "ProductConceptImages_Group": {
+    "display_name": "Product Concept Images",
+    "description": "Images representing the product concept",
+    "required": false,
+    "type": "group",
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "elements": ["ProductImage1","ProductImage2","ProductImage3"],
+    "prompt_name": "prompt_generic",
+    "schema_name": "schema_generic_object",
+    "resources": ["documents","websearch","website"]
+  },
+
+  "ProductImage1": {
+    "display_name": "Product Image 1",
+    "description": "An image representing the product concept",
+    "type": "image",
+    "required": false,
+    "max": 1
+  },
+
+  "ProductImage2": {
+    "display_name": "Product Image 2",
+    "description": "An additional image representing the product concept",
+    "type": "image",
+    "required": false,
+    "max": 1
+  },
+
+  "ProductImage3": {
+    "display_name": "Product Image 3",
+    "description": "Another image representing the product concept",
+    "type": "image",
+    "required": false,
+    "max": 1
+  },
+
+
+
+
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
     "description": "Insights and lessons learned from the innovation process",

@@ -135,8 +135,6 @@
     ]
   },
 
-
-
   "Test Card": {
     "display_name": "Hypothesis-Experiment Test Card",
     "description": "This template documents your team's hypotheses and outlines structured experiments to test these assumptions. By providing clear metrics and evaluation criteria, it supports evidence-based decision-making and rapid learning cycles.",
@@ -145,6 +143,24 @@
     "elements": ["TestCard_Group","LikelyOutcome"],
     "display": [{ "format": [1, 1, 1, 1], "height": 600 },
                 { "format": [1], "height": 200 }]
+  },
+  "ProductConcept"  : {
+    "display_name": "Product Concept",
+    "description": "This template captures the essence of your innovation, including its name, description, and key features..",
+    "required": true,
+    "connects": ["Test Card", "UserFeedback"],
+    "elements": ["ProductConcept_Group, ProductConceptImage_Group"],
+    "display": [{ "format": [2,2,2], "height": 1200 }]
+  },
+
+
+  "UserFeedback": {
+    "display_name": "User Feedback",
+    "description": "Ask you user for feedback about your current product.",
+    "required": false,
+    "connects": ["InnovationLearnings"],
+    "elements": ["Feedback_Group"],
+    "display": [{ "format": [1], "height": 600 }]
   },
 
 
