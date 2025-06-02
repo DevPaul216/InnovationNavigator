@@ -924,16 +924,7 @@ def detail_view():
         prev_template = None
         next_template = None
 
-    # Custom CSS for larger, bold button text
-    st.markdown("""
-        <style>
-        .stButton > button {
-            font-size: 3.35em !important;
-            font-weight: bold !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
+    # Centered navigation buttons using columns, using Streamlit's 'primary' type for red color
     nav_cols = st.columns([1, 1, 1], gap="large")
     with nav_cols[0]:
         if prev_template:
@@ -943,14 +934,28 @@ def detail_view():
                 sst.sidebar_state = "expanded"
                 st.rerun()
     with nav_cols[1]:
-        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
+        if st.button(
+            "\u2302 Back to Overview",
+            key="back_to_overview",
+            use_container_width=True,
+            type="primary",
+            help="Go back to the overview"
+        ):
+            st.markdown(
+            "<style>"
+            "button[data-testid='baseButton-back_to_overview'] div[class^='stButton'] button {"
+            "font-size: 1.5em !important;"
+            "}"
+            "</style>",
+            unsafe_allow_html=True
+            )
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
             st.rerun()
     with nav_cols[2]:
         if next_template:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary"):
+            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="secondary"):
                 sst.selected_template_name = next_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
