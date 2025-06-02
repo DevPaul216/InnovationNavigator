@@ -86,7 +86,7 @@ def main():
             if st.button("Go", key=f"jump_{template_name}"):
                 st.session_state['selected_template_name'] = template_name
                 st.session_state['current_view'] = 'detail'
-                st.experimental_rerun()
+                st.rerun()
 
     # --- Show full data store content (content only, easy to copy) in a single container ---
     with st.container():
