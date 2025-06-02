@@ -258,21 +258,22 @@ def display_generated_artifacts_view(element_name):
     assigned = sst.data_store[sst.selected_template_name][element_name]
     # Build a unique list: keep order, but don't duplicate
     all_artifacts = []
-    artifact_ids = []
+    artifact_keys = []
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
-        artifact_ids.append(f"generated_{artifact_id}")
+        # Use both id and hash of artifact for uniqueness
+        artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
         if artifact not in all_artifacts:
             all_artifacts.append(artifact)
-            artifact_ids.append(f"assigned_{hash(str(artifact))}")
+            artifact_keys.append(f"assigned_{hash(str(artifact))}")
     if not all_artifacts:
         st.write("Nothing to show")
         return
     element_store = sst.data_store[sst.selected_template_name]
-    for i, (artifact, artifact_id) in enumerate(zip(all_artifacts, artifact_ids)):
+    for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
         if i != 0:
             st.divider()
         with st.container():
@@ -285,7 +286,7 @@ def display_generated_artifacts_view(element_name):
             with columns[3]:
                 # Show toggle ON if artifact is assigned, OFF otherwise
                 is_assigned = artifact in assigned
-                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_id}")
+                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
                 if toggled and not is_assigned:
                     check = check_can_add(element_store, element_name, [artifact])
                     if check is None:
