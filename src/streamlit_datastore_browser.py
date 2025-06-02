@@ -35,7 +35,6 @@ def show_template_content(template_name, template_content):
             show_element_content(element_name, element_content)
 
 def main():
-    st.set_page_config(page_title="Data Store Browser", layout="wide")
     st.title(":open_file_folder: Data Store Browser")
     st.markdown("Browse and inspect saved project data stores in a hierarchical (template/element) view.")
 
