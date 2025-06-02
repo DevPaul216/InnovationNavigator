@@ -89,6 +89,9 @@ def main():
                 elif element_content:
                     content_lines.append(str(element_content))
         content_text = "\n".join(content_lines)
+        if not content_text.strip():
+            content_text = "[No content available in this data store.]"
+            st.info("No content found to display. The data store may be empty or all elements are blank.")
         # Show in a Streamlit text_area for easy copy/paste
         st.text_area(
             label="Full Content (copy/paste)",
