@@ -78,8 +78,15 @@ def main():
         filled = all_elements_filled(template_content)
         dot = "🟢" if filled else "🟠"  # green dot if filled, orange dot if not
         expander_label = f"{dot} {template_name}"
-        with st.expander(label=expander_label, expanded=(template_name == selected_template)):
-            show_template_content(template_name, template_content)
+        expander_cols = st.columns([8, 1])
+        with expander_cols[0]:
+            with st.expander(label=expander_label, expanded=(template_name == selected_template)):
+                show_template_content(template_name, template_content)
+        with expander_cols[1]:
+            if st.button("Go", key=f"jump_{template_name}"):
+                st.session_state['selected_template_name'] = template_name
+                st.session_state['current_view'] = 'detail'
+                st.experimental_rerun()
 
     # --- Show full data store content (content only, easy to copy) in a single container ---
     with st.container():
