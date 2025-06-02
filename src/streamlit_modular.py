@@ -1064,6 +1064,15 @@ def open_sidebar():
         sst.update_graph = True
         st.rerun()
 
+    # button to open Data Store Browser
+    if st.sidebar.button(label="Data Store Browser", type="secondary", use_container_width=True):
+        sst.selected_template_name = None
+        sst.current_view = "datastore_browser"
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
+        st.rerun()
+        
+
 
 def end_sub_view():
     st.header("Overview")
@@ -1165,3 +1174,6 @@ if __name__ == '__main__':
         prompt_editor_view("./canned_prompts")
     elif sst.current_view == "about":
         about_view()
+    elif sst.current_view == "datastore_browser":
+        import streamlit_datastore_browser
+        streamlit_datastore_browser.main()
