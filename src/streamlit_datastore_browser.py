@@ -15,7 +15,7 @@ def load_data_store(file_path):
         return json.load(f)
 
 def show_element_content(element_name, element_content):
-    st.markdown(f"**Element:** `{element_name}`")
+    st.markdown(f"#### Element: `{element_name}`")
     if isinstance(element_content, list):
         if not element_content:
             st.info("No artifacts assigned.")
@@ -31,8 +31,7 @@ def show_template_content(template_name, template_content):
         st.info("No elements in this template.")
         return
     for element_name, element_content in template_content.items():
-        with st.expander(f"Element: {element_name}", expanded=False):
-            show_element_content(element_name, element_content)
+        show_element_content(element_name, element_content)
 
 def main():
     st.title(":open_file_folder: Data Store Browser")
