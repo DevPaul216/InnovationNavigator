@@ -150,8 +150,9 @@
     "required": true,
     "connects": ["UserFeedback"],
     "elements": ["ProductConcept_Group", "ProductConceptImages_Group"],
-    "display": [{ "format": [1], "height": 200},
-                { "format": [2,2,2,2], "height": 1000}]
+    "display": [{ "format": [1], "height": 150},
+                { "format": [1,1,1], "height": 300},
+                { "format": [1,1,1], "height": 500}]
   },
 
 
@@ -162,7 +163,7 @@
     "connects": ["InnovationLearnings"],
     "elements": ["UserFeedback_Group"],
     "display": [{ "format": [1,1], "height": 600},
-                { "format": [4], "height": 300 }]
+                { "format": [1,1,1], "height": 300 }]
   },
 
 
