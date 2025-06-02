@@ -913,6 +913,14 @@ def image_input_subview(element_selected, element_store):
 
 
 def detail_view():
+    # Add a big red Back button at the top
+    back_col, _ = st.columns([2, 8])
+    with back_col:
+        if st.button("⬅️ Back to Overview", key="back_to_overview", use_container_width=True, type="secondary", help="Return to the project overview."):
+            sst.selected_template_name = None
+            sst.current_view = "chart"
+            sst.sidebar_state = "expanded"
+            st.rerun()
     # removed temporarily blocking to make testing easier
 
     # if sst.selected_template_name in blocked_templates:
