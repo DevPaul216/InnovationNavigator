@@ -928,7 +928,7 @@ def detail_view():
     st.markdown("""
         <style>
         .stButton > button {
-            font-size: 1.35em !important;
+            font-size: 3.35em !important;
             font-weight: bold !important;
         }
         </style>
