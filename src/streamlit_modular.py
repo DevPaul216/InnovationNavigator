@@ -393,7 +393,7 @@ def handle_response_image(element_name, prompt, selected_resources):
     add_to_generated_artifacts(element_name, generated_images)
 
 
-def generate_artifacts(element_name, is_image=False):
+def generate_artifacts(element_name, is_image=False, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
     required_items = element_config['used_templates']
     selected_resources = {}
@@ -509,7 +509,7 @@ def generate_artifacts(element_name, is_image=False):
         temperature = st.session_state.temperature
         top_p = st.session_state.top_p
 
-    if st.button("Generate now!", type="primary"):
+    if generate_now_clicked:
         with st.spinner("Processing..."):
             add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
             if not is_image:
@@ -518,7 +518,7 @@ def generate_artifacts(element_name, is_image=False):
                 handle_response_image(element_name, prompt, selected_resources)
 
 
-def import_artifacts(element_name):
+def import_artifacts(element_name, import_now_clicked=False):
     element_config = sst.elements_config[element_name]
     if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
         st.write("Not available for this element")
@@ -541,7 +541,7 @@ def import_artifacts(element_name):
         st.json(schema)
 
     add_empty_lines(1)
-    if st.button("Import now!", type="primary"):
+    if import_now_clicked:
         with st.spinner("Processing..."):
             selected_resources = {}
             add_resources(selected_resources, None, None, None, uploaded_files)
@@ -739,13 +739,20 @@ def element_selection_format_func(item):
 
 def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
-    columns = st.columns([1, 1, 3], vertical_alignment="center")
+    columns = st.columns([1, 1, 1, 2], vertical_alignment="center")
     with columns[0]:
         element_selected = st.selectbox(label="Select Element to generate: ", help="Select the element to generate artifacts for PLACEHOLDER",
                                         options=assigned_elements,
                                         format_func=element_selection_format_func)
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
+    # Move Generate Now! button to the right of select mode
+    generate_now_clicked = False
+    with columns[2]:
+        if creation_mode == "Generate":
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+        elif creation_mode == "Import":
+            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_single = True
@@ -767,9 +774,9 @@ def general_creation_view(assigned_elements):
             elements_group_copy = elements_group.copy()
             position = 0
             max_elements_row = 2
-            columns = st.columns(max_elements_row)
+            columns_inner = st.columns(max_elements_row)
             while len(elements_group_copy) > 0:
-                with columns[position]:
+                with columns_inner[position]:
                     with st.container(border=True):
                         element_name = elements_group_copy.pop(0)
                         st.subheader(get_config_value(element_name, False))
@@ -779,13 +786,13 @@ def general_creation_view(assigned_elements):
                         display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row:
-                    columns = st.columns(max_elements_row)
+                    columns_inner = st.columns(max_elements_row)
                     position = 0
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image)
+            generate_artifacts(element_selected, is_image, generate_now_clicked)
         if creation_mode == "Import":
-            import_artifacts(element_selected)
+            import_artifacts(element_selected, generate_now_clicked)
         st.divider()
         if is_single:
             st.subheader("Generated Artifacts")
@@ -795,9 +802,9 @@ def general_creation_view(assigned_elements):
             elements_group_copy = elements_group.copy()
             position = 0
             max_elements_row = 2
-            columns = st.columns(max_elements_row)
+            columns_inner = st.columns(max_elements_row)
             while len(elements_group_copy) > 0:
-                with columns[position]:
+                with columns_inner[position]:
                     with st.container(border=True):
                         element_name = elements_group_copy.pop(0)
                         st.subheader(get_config_value(element_name, False))
@@ -808,7 +815,7 @@ def general_creation_view(assigned_elements):
                         position += 1
                 if position >= max_elements_row and len(elements_group_copy) > 0:
                     number_columns = min(max_elements_row, len(elements_group_copy))
-                    columns = st.columns(number_columns)
+                    columns_inner = st.columns(number_columns)
                     position = 0
     if is_single:
         st.divider()
