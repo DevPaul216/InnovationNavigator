@@ -755,26 +755,16 @@ def chart_view():
         sst.sidebar_state = "expanded"
         st.rerun()
 
-    # Overlay 50% transparent logo on overview
-    st.markdown(
-        f"""
-        <style>
-        .logo-overlay {{
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.5;
-            z-index: 1;
-            pointer-events: none;
-            width: 40vw;
-            max-width: 600px;
-        }}
-        </style>
-        <img src='misc/LogoFH.png' class='logo-overlay' />
-        """,
-        unsafe_allow_html=True
-    )
+    # Overlay 50% transparent logo on overview (Streamlit does not support custom CSS classes for images)
+    from PIL import Image
+    logo_path = os.path.join("misc", "LogoFH.png")
+    if os.path.exists(logo_path):
+        logo_img = Image.open(logo_path)
+        st.image(logo_img, use_column_width=False, width=400, caption="", output_format="PNG")
+        st.markdown(
+            "<div style='text-align:center; opacity:0.5; margin-top:-350px; margin-bottom:20px;'></div>",
+            unsafe_allow_html=True
+        )
 
 
 def element_selection_format_func(item):
