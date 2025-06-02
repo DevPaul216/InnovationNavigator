@@ -725,6 +725,27 @@ def chart_view():
 
     legend_subview()
 
+    # Add custom background image behind the graph process
+    st.markdown(
+        '''
+        <style>
+        .st-emotion-cache-1r4qj8v { /* This is the default container for st.container() in Streamlit 1.x/2.x */
+            background-image: url("/misc/pipeline.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .st-emotion-cache-1avcm0n { /* fallback for other container class */
+            background-image: url("/misc/pipeline.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        </style>
+        ''',
+        unsafe_allow_html=True
+    )
+
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
             key="ret_val_flow",
