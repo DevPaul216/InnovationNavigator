@@ -913,16 +913,10 @@ def image_input_subview(element_selected, element_store):
 
 
 def detail_view():
-    # Show template name at the top
-    st.title(get_config_value(sst.selected_template_name, config_value="display_name"))
-    st.markdown(get_config_value(sst.selected_template_name, config_value="description"))
-    if str(sst.selected_template_name).lower() == "start":
-        start_sub_view()
-    elif str(sst.selected_template_name).lower() == "end":
-        end_sub_view()
-    else:
-        template_edit_subview()
-    # Navigation buttons below the template
+    # Add some empty space above the buttons
+    st.write("")
+    st.write("")
+    # Navigation buttons at the top, with white icons and improved symbols
     nav_cols = st.columns([2, 2, 6, 2])
     template_names = list(sst.template_config.keys())
     try:
@@ -934,24 +928,37 @@ def detail_view():
         next_template = None
     with nav_cols[0]:
         if prev_template:
-            if st.button("⬅️ Previous Template", key="prev_template", use_container_width=True, type="primary", help="Go to previous template in process"):
+            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary", help="Go to previous template in process"):
                 sst.selected_template_name = prev_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
                 st.rerun()
     with nav_cols[1]:
-        if st.button("⬅️ Back to Overview", key="back_to_overview", use_container_width=True, type="primary", help="Return to the project overview."):
+        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary", help="Return to the project overview."):
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
             st.rerun()
     with nav_cols[3]:
         if next_template:
-            if st.button("Next ➡️", key="next_template", use_container_width=True, type="primary", help="Go to next template in process"):
+            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary", help="Go to next template in process"):
                 sst.selected_template_name = next_template
                 sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
+                st.sidebar_state = "expanded"
                 st.rerun()
+    # Centered template name and description
+    st.markdown("""
+        <div style='text-align: center;'>
+            <h1 style='margin-bottom: 0.5em;'>""" + get_config_value(sst.selected_template_name, config_value="display_name") + """</h1>
+            <div style='font-size: 1.2em; color: #666;'>""" + get_config_value(sst.selected_template_name, config_value="description") + """</div>
+        </div>
+    """, unsafe_allow_html=True)
+    if str(sst.selected_template_name).lower() == "start":
+        start_sub_view()
+    elif str(sst.selected_template_name).lower() == "end":
+        end_sub_view()
+    else:
+        template_edit_subview()
     update_data_store()
 
 
