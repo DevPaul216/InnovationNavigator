@@ -150,7 +150,7 @@
     "required": true,
     "connects": ["UserFeedback"],
     "elements": ["ProductConcept_Group", "ProductConceptImages_Group"],
-    "display": [{ "format": [2,2,2], "height": 1200 }]
+    "display": [{ "format": [2,2,2,2], "height": 100}]
   },
 
 
@@ -160,7 +160,8 @@
     "required": false,
     "connects": ["InnovationLearnings"],
     "elements": ["UserFeedback_Group"],
-    "display": [{ "format": [1], "height": 600 }]
+    "display": [{ "format": [2], "height": 100},
+                { "format": [2,4], "height": 400 }]
   },
 
 
