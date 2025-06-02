@@ -725,24 +725,6 @@ def chart_view():
 
     legend_subview()
 
-    # Set a background image for the whole app using base64 encoding and CSS
-    @st.cache_data
-    def get_img(file):
-        with open(file, "rb") as f:
-            data = f.read()
-        return base64.b64encode(data).decode()
-
-    img = get_img("misc/LogoFH.png")
-    page_bg_img = f"""
-    <style>
-    [data-testid="stAppViewContainer"] {{
-        background-image: url('data:image/png;base64,{img}');
-        background-size: cover;
-        background-position: center;
-    }}
-    </style>
-    """
-    st.markdown(page_bg_img, unsafe_allow_html=True)
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
