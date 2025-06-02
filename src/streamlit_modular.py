@@ -664,10 +664,12 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                 for number_subrows in range(0, sub_row):
                     if position < len(element_names):
                         element_name = element_names[position]
+                        # if element_name in artifact_images:
+                        #    height_single = None
                         with st.container(border=True, height=height_single):
+                            # with stylable_container(key="sc_" + str(position), css_styles=container_css):
                             container = st.container(border=False)
-                            # Wider text column, more space for text
-                            sub_columns = container.columns([0.5, 15, 0.5], vertical_alignment='center')
+                            sub_columns = container.columns([1, 5, 1], vertical_alignment='center')
                             with sub_columns[1]:
                                 element_config = sst.elements_config[element_name]
                                 display_name = element_name
@@ -682,19 +684,14 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                         text_to_show = "Nothing here yet."
                                         if 'required' not in element_config or element_config['required']:
                                             text_to_show = text_to_show + "\n \n Required :heavy_exclamation_mark:"
-                                    # Use a styled div for better space usage
-                                    st.markdown(f"""
-                                        <div style='font-size:1.25em; min-height:120px; padding:18px 12px 18px 12px; line-height:1.6; word-break:break-word;'>
-                                            {text_to_show}
-                                        </div>
-                                    """, unsafe_allow_html=True)
+                                    st.markdown(text_to_show)
                             if element_name in artifact_images:
                                 if artifact_images[element_name] is not None:
                                     container.image(artifact_images[element_name])
                                 else:
                                     text_to_show = ":heavy_exclamation_mark: Kein Bild zum Anzeigen vorhanden"
                                     st.markdown(text_to_show)
-                        position += 1
+                            position += 1
 
 
 def display_template_view(selected_template_name):
