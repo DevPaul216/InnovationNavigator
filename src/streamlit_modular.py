@@ -935,32 +935,8 @@ def detail_view():
         button_html += f"<form style='display:inline;' action='' method='post'><button name='next_template' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>Next Template &#9654;</button></form>"
     button_html += "</div>"
 
-    # Handle button clicks using st.form_submit_button logic
-    # But since Streamlit doesn't support HTML form submit natively, we use st.form and columns for logic
-    # So, fallback to columns for logic, but show HTML for style
+    # Show only the styled HTML buttons (remove hidden Streamlit logic buttons)
     st.markdown(button_html, unsafe_allow_html=True)
-    # Logic for button actions (hidden real buttons)
-    nav_cols = st.columns([2, 2, 6, 2])
-    with nav_cols[0]:
-        if prev_template:
-            if st.button("", key="prev_template_logic", help="Go to previous template in process", args=None):
-                sst.selected_template_name = prev_template
-                sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
-                st.rerun()
-    with nav_cols[1]:
-        if st.button("", key="back_to_overview_logic", help="Return to the project overview.", args=None):
-            sst.selected_template_name = None
-            sst.current_view = "chart"
-            sst.sidebar_state = "expanded"
-            st.rerun()
-    with nav_cols[3]:
-        if next_template:
-            if st.button("", key="next_template_logic", help="Go to next template in process", args=None):
-                sst.selected_template_name = next_template
-                sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
-                st.rerun()
 
     # Centered template name and description with larger text
     st.markdown(f"""
