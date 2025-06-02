@@ -21,7 +21,6 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
-from streamlit_project_manager import project_manager_view
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -1210,5 +1209,3 @@ if __name__ == '__main__':
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
-    elif sst.current_view == "project_manager":
-        project_manager_view(sst.project_name)
