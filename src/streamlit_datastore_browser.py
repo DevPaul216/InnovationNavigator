@@ -71,31 +71,6 @@ def main():
         with st.expander(label=expander_label, expanded=False):
             show_template_content(template_name, template_content)
 
-    # --- Show full data store content with names and descriptions ---
-    st.markdown("---")
-    st.subheader(":page_facing_up: Full Data Store Content (with Names & Descriptions)")
-    # Load elements config for names/descriptions
-    elements_config_path = os.path.join("module_files", "elements_config.json")
-    with open(elements_config_path, "r", encoding="utf-8") as f:
-        elements_config = json.load(f)
-    # Pretty print with names/descriptions
-    for template_name, template_content in data.items():
-        st.markdown(f"### Template: `{template_name}`")
-        for element_name, element_content in template_content.items():
-            display_name = elements_config.get(element_name, {}).get("display_name", element_name)
-            description = elements_config.get(element_name, {}).get("description", "")
-            st.markdown(f"**Element:** `{element_name}` | **Name:** {display_name}")
-            if description:
-                st.markdown(f"_Description:_ {description}")
-            if isinstance(element_content, list):
-                if not element_content:
-                    st.info("No artifacts assigned.")
-                else:
-                    for i, artifact in enumerate(element_content):
-                        st.markdown(f"- {artifact}")
-            else:
-                st.write(element_content)
-
     # --- Show full data store content (content only, easy to copy) in a single container ---
     with st.container():
         st.markdown("---")
