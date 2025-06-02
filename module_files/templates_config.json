@@ -59,7 +59,7 @@
     "connects": ["ProblemsAndJobs"],
     "elements": ["EmpathyMap_Group"],
     "display": [
-      { "format": [3, 3], "height": 600 }]
+      { "format": [3, 3], "height": 900 }]
   },
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
