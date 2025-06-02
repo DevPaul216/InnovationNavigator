@@ -528,7 +528,7 @@ def import_artifacts(element_name):
         with st.spinner("Processing..."):
             selected_resources = {}
             add_resources(selected_resources, None, None, None, uploaded_files)
-             handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
+            handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
 
 
 def add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files):
