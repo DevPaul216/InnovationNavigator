@@ -924,37 +924,24 @@ def detail_view():
         prev_template = None
         next_template = None
 
-    # Centered navigation buttons using columns, styled with markdown
-    st.markdown("""
-        <style>
-        .nav-btn button {
-            font-size: 1.2em !important;
-            padding: 0.7em 2em !important;
-            background: #d0021b !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 8px !important;
-            cursor: pointer !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+    # Centered navigation buttons using columns, using Streamlit's 'secondary' type for red color
     nav_cols = st.columns([1, 1, 1], gap="large")
     with nav_cols[0]:
         if prev_template:
-            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True):
+            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="secondary"):
                 sst.selected_template_name = prev_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
                 st.rerun()
     with nav_cols[1]:
-        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True):
+        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="secondary"):
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
             st.rerun()
     with nav_cols[2]:
         if next_template:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True):
+            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="secondary"):
                 sst.selected_template_name = next_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
