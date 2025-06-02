@@ -21,6 +21,7 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
+from streamlit_project_manager import project_manager_view
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -729,7 +730,7 @@ def general_creation_view(assigned_elements):
                                         format_func=element_selection_format_func)
         # element_selected = "Portrait"
     with columns[1]:
-        creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Manual", help="Select the mode to create artifacts PLACEHOLDER")
+        creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_single = True
@@ -934,19 +935,6 @@ def detail_view():
                 sst.sidebar_state = "expanded"
                 st.rerun()
     with nav_cols[1]:
-        # Make the button larger using custom CSS
-        st.markdown(
-            """
-            <style>
-            .stButton > button#back_to_overview {
-            font-size: 1.5em !important;
-            padding: 0.75em 2em !important;
-            height: 3.5em !important;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
         if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
             sst.selected_template_name = None
             sst.current_view = "chart"
@@ -954,7 +942,7 @@ def detail_view():
             st.rerun()
     with nav_cols[2]:
         if next_template:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="secondary"):
+            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary"):
                 sst.selected_template_name = next_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
@@ -1087,8 +1075,8 @@ def open_sidebar():
 
     # New button to project selection
     if st.sidebar.button(label="Projects", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Start"  # Set to "start" to open the project creation screen
-        sst.current_view = "detail"
+        sst.selected_template_name = None
+        sst.current_view = "project_manager"  # Use new view name
         sst.sidebar_state = "expanded"
         sst.update_graph = True
         st.rerun()
@@ -1130,78 +1118,12 @@ def end_sub_view():
 
 
 def start_sub_view():
-    data_stores_paths = Path(data_store_path).glob("data_store_*.json")
-    core_names = [path.stem for path in data_stores_paths]
-    project_names = [str(name).split('data_store_')[1] for name in core_names]
-    st.subheader("Add new Innovation Project", help="Create a new project to start working on it. You can also import existing projects.")
-    new_project_name = st.text_input(label="Name of new Innovation Project").strip()
-    if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
-        if new_project_name not in project_names:
-            # Save the current data store just to be sure
-            update_data_store()
-            sst.project_name = new_project_name
-            # Create new empty data store
-            sst.data_store = {}
-            update_data_store()
-            load_data_store()
-            st.success("Project created")
-            sst.sidebar_state = "expanded"
-            sst.update_graph = True
-            sst.current_view = "chart"  # Transition to the overview screen
-            time.sleep(1.0)
-            st.rerun()
-        else:
-            st.warning("A project with this name is already there")
+    st.subheader("Project Management")
+    st.info("To manage projects (create, switch, delete, import, export), use the 'Projects' button in the sidebar.")
     st.divider()
-    st.subheader("Switch/Delete Project", help="Switch to another project or delete the current one.")
-    selected_project_name = st.selectbox("Switch to another project:", options=project_names,
-                                         index=project_names.index(sst.project_name))
-    if selected_project_name != sst.project_name:
-        sst.project_name = selected_project_name
-        load_data_store()
-        sst.sidebar_state = "expanded"
-        st.rerun()
-    if selected_project_name != "default":
-        add_empty_lines(2)
-        with st.expander("Delete Project"):
-            if st.button("Delete"):
-                os.remove(get_full_data_store_path())
-                sst.project_name = "default"
-                load_data_store()
-                st.success("Deleted")
-                time.sleep(1.0)
-                st.rerun()
-    st.divider()
-    st.subheader("Export all projects", help="Export all projects to a zip file.")
-    if st.button("Export"):
-        zip_directory_path = shutil.make_archive("stores", "zip", "./stores")
-        now = datetime.now()
-        date_time_str = now.strftime("%Y-%m-%d-%H-%M")
-        with open(zip_directory_path, "rb") as file:
-            st.download_button(
-                label="Download",
-                data=file,
-                file_name=f"projects_{date_time_str}.zip",
-                mime="application/zip",
-                type="primary"
-            )
-    st.divider()
-    st.subheader("Import projects", help="Import projects from a zip file. Needs to be in the correct format.")
-    uploaded_file = st.file_uploader(label="Upload zip project folder",
-                                     type=".zip",
-                                     accept_multiple_files=False)
-    if uploaded_file is not None:
-        if st.button("Import"):
-            save_path = "uploaded_project.zip"
-            with open(save_path, "wb") as file:
-                file.write(uploaded_file.getbuffer())
-            shutil.unpack_archive(save_path, "./stores", "zip")
-            time.sleep(0.2)
-            os.remove(save_path)
-            os.remove("stores.zip")
-            st.success("Projects imported")
-            time.sleep(2.0)
-            st.rerun()
+    st.subheader("Quick Start")
+    st.markdown("Select or create a project using the sidebar to begin your innovation journey.")
+    # Optionally, add more welcome/help text here
 
 
 view_assignment_dict = {"general": general_creation_view}
@@ -1222,3 +1144,5 @@ if __name__ == '__main__':
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
+    elif sst.current_view == "project_manager":
+        project_manager_view(sst.project_name)
