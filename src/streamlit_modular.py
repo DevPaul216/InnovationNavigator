@@ -660,7 +660,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                         with st.container(border=True, height=height_single):
                             container = st.container(border=False)
                             # Wider text column, more space for text
-                            sub_columns = container.columns([0.5, 7, 0.5], vertical_alignment='center')
+                            sub_columns = container.columns([0.5, 15, 0.5], vertical_alignment='center')
                             with sub_columns[1]:
                                 element_config = sst.elements_config[element_name]
                                 display_name = element_name

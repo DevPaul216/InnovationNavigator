@@ -96,7 +96,7 @@
     "display": [{ "format": [1, 1], "height": 400 }]
   },  
   "Ideation": {
-    "display_name": "Ideation",
+    "display_name": "Idea Generation",
     "description": "Ideation involves generating a diverse range of ideas through structured brainstorming methods, including basic idea generation, the ABC method, and lateral thinking. This process ensures a comprehensive exploration of potential solutions.",
     "required": true,
     "connects": ["Idea Evaluation"],
