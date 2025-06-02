@@ -99,30 +99,34 @@ def main():
     # --- Show full data store content (content only, easy to copy) ---
     st.markdown("---")
     st.subheader(":page_facing_up: Full Data Store Content (Content Only)")
-    # Load elements config for names/descriptions
+    # Load elements config for names/descriptions (not used for output, but could be for future features)
     elements_config_path = os.path.join("module_files", "elements_config.json")
     with open(elements_config_path, "r", encoding="utf-8") as f:
         elements_config = json.load(f)
-    # Gather all content as plain text (no keys, no labels)
+    # Collect all content as plain text (no keys, just values)
     content_lines = []
     for template_content in data.values():
-        for element_name, element_content in template_content.items():
+        for element_content in template_content.values():
             if isinstance(element_content, list):
                 for artifact in element_content:
                     content_lines.append(str(artifact))
             elif element_content:
                 content_lines.append(str(element_content))
     content_text = "\n".join(content_lines)
-    # Show in a copy-friendly container
-    with st.container():
-        st.text_area(
-            label="Copy/Paste All Content (no structure, just values)",
-            value=content_text,
-            height=300,
-            key="datastore_content_copy",
-            label_visibility="visible"
-        )
-        st.caption("You can copy all content above for use in other tools.")
+    # Show in a Streamlit text area for easy copy/paste
+    st.container().text_area(
+        label="All Content (copy/paste for transfer)",
+        value=content_text,
+        height=300,
+        label_visibility="visible"
+    )
+    # Optionally, add a download button for convenience
+    st.download_button(
+        label="Download Content as .txt",
+        data=content_text,
+        file_name=f"{selected_file.replace('.json', '')}_content.txt",
+        mime="text/plain"
+    )
 
 if __name__ == "__main__":
     main()
