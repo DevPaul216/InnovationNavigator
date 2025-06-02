@@ -811,21 +811,21 @@
     "display_name": "Feedback Text",
     "description": "The text of the feedback provided by the user",
     "required": true,
-    "max": 1,
+    "max": 1
   },
 
   "FeedbackRating": {
     "display_name": "Feedback Rating",
     "description": "The rating given by the user for the product concept",
     "required": true,
-    "max": 1,
+    "max": 1
   },
 
   "FeedbackRecommendation": {
       "display_name": "Feedback Recommendation",
       "description": "Any recommendations or suggestions provided by the user",
       "required": true,
-      "max": 1,
+      "max": 1
     },
 
 
