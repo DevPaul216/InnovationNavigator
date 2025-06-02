@@ -746,8 +746,9 @@ def chart_view():
             get_node_on_click=True,
             get_edge_on_click=False,
             show_controls=True,
-            allow_zoom=True,
-            pan_on_drag=True,
+            allow_zoom=False,  # Disable zoom
+            pan_on_drag=False,  # Disable panning
+            draggable=False,  # Disable node dragging
         )
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
@@ -756,7 +757,7 @@ def chart_view():
         st.rerun()
 
     # Overlay a semi-transparent logo on the overview using HTML/CSS (centered, wider, and lower)
-    logo_path = os.path.join("misc", "LogoFH.png")
+    logo_path = os.path.join("misc", "DoubleDiamondPhases.png")
     if os.path.exists(logo_path):
         import base64
         with open(logo_path, "rb") as image_file:
