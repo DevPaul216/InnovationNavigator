@@ -761,15 +761,9 @@ def general_creation_view(assigned_elements):
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
     # Move Generate Now! button to the right of select mode
     generate_now_clicked = False
-    processing = False
     with columns[2]:
         if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True, key="generate_now_btn")
-            if generate_now_clicked:
-                processing = True
-            if processing:
-                with st.spinner("Processing..."):
-                    pass  # The spinner is shown next to the button
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
     element_store = sst.data_store[sst.selected_template_name]
@@ -802,15 +796,14 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         artifact_input_subview(element_name, element_store)
                         st.divider()
-                        # display_artifacts_view(element_name, element_store)
+                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row:
                     columns_inner = st.columns(max_elements_row)
                     position = 0
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            if generate_now_clicked:
-                generate_artifacts(element_selected, is_image, generate_now_clicked)
+            generate_artifacts(element_selected, is_image, generate_now_clicked)
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()
@@ -831,7 +824,7 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         display_generated_artifacts_view(element_name)
                         st.divider()
-                        # display_artifacts_view(element_name, element_store)
+                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row and len(elements_group_copy) > 0:
                     number_columns = min(max_elements_row, len(elements_group_copy))
@@ -840,8 +833,7 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            # display_artifacts_view(element_selected, element_store)
-            pass
+            display_artifacts_view(element_selected, element_store)
         else:
             display_artifact_view_image(element_selected, element_store)
 
