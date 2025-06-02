@@ -916,8 +916,7 @@ def detail_view():
     # Add some empty space above the buttons
     st.write("")
     st.write("")
-    # Navigation buttons at the top, with white icons and improved symbols
-    nav_cols = st.columns([2, 2, 6, 2])
+    # Centered navigation buttons with larger text using HTML/CSS
     template_names = list(sst.template_config.keys())
     try:
         idx = template_names.index(sst.selected_template_name)
@@ -926,31 +925,48 @@ def detail_view():
     except Exception:
         prev_template = None
         next_template = None
+
+    # Build buttons as HTML for better alignment and size
+    button_html = "<div style='display: flex; justify-content: center; gap: 2em; margin-bottom: 1.5em;'>"
+    if prev_template:
+        button_html += f"<form style='display:inline;' action='' method='post'><button name='prev_template' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>&#9664; Previous Template</button></form>"
+    button_html += f"<form style='display:inline;' action='' method='post'><button name='back_to_overview' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>&#8962; Back to Overview</button></form>"
+    if next_template:
+        button_html += f"<form style='display:inline;' action='' method='post'><button name='next_template' style='font-size:1.2em; padding:0.7em 2em; background:#d0021b; color:white; border:none; border-radius:8px; cursor:pointer;' type='submit' formmethod='post'>Next Template &#9654;</button></form>"
+    button_html += "</div>"
+
+    # Handle button clicks using st.form_submit_button logic
+    # But since Streamlit doesn't support HTML form submit natively, we use st.form and columns for logic
+    # So, fallback to columns for logic, but show HTML for style
+    st.markdown(button_html, unsafe_allow_html=True)
+    # Logic for button actions (hidden real buttons)
+    nav_cols = st.columns([2, 2, 6, 2])
     with nav_cols[0]:
         if prev_template:
-            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary", help="Go to previous template in process"):
+            if st.button("", key="prev_template_logic", help="Go to previous template in process", args=None):
                 sst.selected_template_name = prev_template
                 sst.current_view = "detail"
                 sst.sidebar_state = "expanded"
                 st.rerun()
     with nav_cols[1]:
-        if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary", help="Return to the project overview."):
+        if st.button("", key="back_to_overview_logic", help="Return to the project overview.", args=None):
             sst.selected_template_name = None
             sst.current_view = "chart"
             sst.sidebar_state = "expanded"
             st.rerun()
     with nav_cols[3]:
         if next_template:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary", help="Go to next template in process"):
+            if st.button("", key="next_template_logic", help="Go to next template in process", args=None):
                 sst.selected_template_name = next_template
                 sst.current_view = "detail"
-                st.sidebar_state = "expanded"
+                sst.sidebar_state = "expanded"
                 st.rerun()
-    # Centered template name and description
-    st.markdown("""
+
+    # Centered template name and description with larger text
+    st.markdown(f"""
         <div style='text-align: center;'>
-            <h1 style='margin-bottom: 0.5em;'>""" + get_config_value(sst.selected_template_name, config_value="display_name") + """</h1>
-            <div style='font-size: 1.2em; color: #666;'>""" + get_config_value(sst.selected_template_name, config_value="description") + """</div>
+            <h1 style='margin-bottom: 0.5em; font-size:2.7em;'>{get_config_value(sst.selected_template_name, config_value='display_name')}</h1>
+            <div style='font-size: 1.4em; color: #666; margin-bottom:1.5em;'>{get_config_value(sst.selected_template_name, config_value='description')}</div>
         </div>
     """, unsafe_allow_html=True)
     if str(sst.selected_template_name).lower() == "start":
