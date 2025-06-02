@@ -755,7 +755,7 @@ def chart_view():
         sst.sidebar_state = "expanded"
         st.rerun()
 
-    # Overlay a semi-transparent logo on the overview using HTML/CSS (works best at top of page)
+    # Overlay a semi-transparent logo on the overview using HTML/CSS (centered, wider, and lower)
     logo_path = os.path.join("misc", "LogoFH.png")
     if os.path.exists(logo_path):
         import base64
@@ -765,14 +765,17 @@ def chart_view():
             f"""
             <div style="
                 position: fixed;
-                top: 80px;
+                top: 220px;  /* Lowered further down the page */
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 9999;
                 opacity: 0.18;
                 pointer-events: none;
+                width: 1200px;  /* Make it as wide as the graph area */
+                display: flex;
+                justify-content: center;
             ">
-                <img src="data:image/png;base64,{encoded}" width="400"/>
+                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 1200px;"/>
             </div>
             """,
             unsafe_allow_html=True
