@@ -236,14 +236,8 @@
     "required": true,
     "type": "group",
     "used_templates": ["Problem","Customer Persona"],
-    "elements": [
-      "ThinkFeel",
-      "Hear",
-      "See",
-      "SayDo",
-      "Pains",
-      "Gains"
-    ],
+    "elements": ["ThinkFeel", "Hear","See","SayDo","Pains","Gains"],
+    
     "prompt_name": "prompt_empathymap",
     "schema_name": "schema_empathymap",
     "prompt_name_import": "prompt_import",
