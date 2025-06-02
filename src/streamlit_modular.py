@@ -254,10 +254,10 @@ def add_artifact(toggle_key, element_name, artifact_id, artifact):
 
 def display_generated_artifacts_view(element_name):
     if len(sst.generated_artifacts) == 0 or element_name not in sst.generated_artifacts:
-        # not needed: st.write("Artifacts:.")
         st.write("Nothing to show")
         return
     artifacts_dict = sst.generated_artifacts[element_name]
+    element_store = sst.data_store[sst.selected_template_name]
     for i, (artifact_id, artifact) in enumerate(artifacts_dict.items()):
         if i != 0:
             st.divider()
@@ -267,12 +267,29 @@ def display_generated_artifacts_view(element_name):
                 if isinstance(artifact, str):
                     st.markdown(artifact)
                 else:
-                    st.image(artifact)
+                    st.write(artifact)
             with columns[3]:
-                st.toggle("Add", key=f"button_{artifact}_check",
-                          on_change=add_artifact,
-                          kwargs={"toggle_key": f"button_{artifact}_check", "element_name": element_name,
-                                  "artifact_id": artifact_id, "artifact": artifact})
+                toggle_key = f"button_{artifact}_check"
+                toggled = st.toggle("Add", key=toggle_key)
+                if toggled:
+                    # Add artifact directly if not already present
+                    if artifact not in element_store[element_name]:
+                        check = check_can_add(element_store, element_name, [artifact])
+                        if check is None:
+                            if isinstance(artifact, str):
+                                element_store[element_name].append(artifact)
+                            else:
+                                add_image_to_image_store(element_name, element_store, artifact)
+                            update_data_store()
+                            st.rerun()
+                        else:
+                            st.warning(check)
+                else:
+                    # Remove artifact if present
+                    if artifact in element_store[element_name]:
+                        element_store[element_name].remove(artifact)
+                        update_data_store()
+                        st.rerun()
 
 
 def format_func(option):
@@ -727,7 +744,6 @@ def general_creation_view(assigned_elements):
         element_selected = st.selectbox(label="Select Element to generate: ", help="Select the element to generate artifacts for PLACEHOLDER",
                                         options=assigned_elements,
                                         format_func=element_selection_format_func)
-        # element_selected = "Portrait"
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
     element_store = sst.data_store[sst.selected_template_name]
@@ -773,7 +789,7 @@ def general_creation_view(assigned_elements):
         st.divider()
         if is_single:
             st.subheader("Generated Artifacts")
-            confirm_single_subview(element_selected, element_store)
+            display_generated_artifacts_view(element_selected)
         else:
             elements_group = element_config["elements"]
             elements_group_copy = elements_group.copy()
@@ -786,7 +802,7 @@ def general_creation_view(assigned_elements):
                         element_name = elements_group_copy.pop(0)
                         st.subheader(get_config_value(element_name, False))
                         st.markdown(get_config_value(element_name, False, "description"))
-                        confirm_single_subview(element_name, element_store)
+                        display_generated_artifacts_view(element_name)
                         st.divider()
                         display_artifacts_view(element_name, element_store)
                         position += 1
