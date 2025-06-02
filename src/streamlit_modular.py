@@ -740,14 +740,14 @@ def chart_view():
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
-            height=1000,  # Adjusted height for better visibility
+            height=800,  # Adjusted height for better visibility
             layout=LayeredLayout(direction="right"),
             fit_view=True,
             get_node_on_click=True,
             get_edge_on_click=False,
             show_controls=True,
-            allow_zoom=True,
-            pan_on_drag=True,
+            allow_zoom=False,
+            pan_on_drag=False,
         )
     sst.selected_template_name = updated_state.selected_id
     if sst.selected_template_name is not None:
