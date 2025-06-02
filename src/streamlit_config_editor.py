@@ -19,6 +19,14 @@ def main():
     st.title('Config Editor: Templates & Elements')
     st.markdown('View, edit, and expand your process configuration files.')
 
+    # Use session state to persist selected tab and selection
+    if 'config_tab' not in st.session_state:
+        st.session_state['config_tab'] = 0
+    if 'selected_template' not in st.session_state:
+        st.session_state['selected_template'] = None
+    if 'selected_element' not in st.session_state:
+        st.session_state['selected_element'] = None
+
     # Load configs
     templates = load_json(TEMPLATES_PATH)
     elements = load_json(ELEMENTS_PATH)
@@ -28,7 +36,9 @@ def main():
     with tab1:
         st.header('Templates')
         template_keys = list(templates.keys())
-        selected_template = st.selectbox('Select template', template_keys, key='template_select')
+        selected_template = st.selectbox('Select template', template_keys, key='template_select',
+                                         index=template_keys.index(st.session_state['selected_template']) if st.session_state['selected_template'] in template_keys else 0)
+        st.session_state['selected_template'] = selected_template
         if selected_template:
             template_data = templates[selected_template]
             st.subheader('Current Template Data')
@@ -49,12 +59,15 @@ def main():
             if new_name and new_name not in templates:
                 templates[new_name] = {}
                 save_json(TEMPLATES_PATH, templates)
+                st.session_state['selected_template'] = new_name
                 st.experimental_rerun()
 
     with tab2:
         st.header('Elements')
         element_keys = list(elements.keys())
-        selected_element = st.selectbox('Select element', element_keys, key='element_select')
+        selected_element = st.selectbox('Select element', element_keys, key='element_select',
+                                        index=element_keys.index(st.session_state['selected_element']) if st.session_state['selected_element'] in element_keys else 0)
+        st.session_state['selected_element'] = selected_element
         if selected_element:
             element_data = elements[selected_element]
             st.subheader('Current Element Data')
@@ -75,6 +88,7 @@ def main():
             if new_elem_name and new_elem_name not in elements:
                 elements[new_elem_name] = {}
                 save_json(ELEMENTS_PATH, elements)
+                st.session_state['selected_element'] = new_elem_name
                 st.experimental_rerun()
 
     with tab3:
