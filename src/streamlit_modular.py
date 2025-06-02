@@ -234,8 +234,8 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                 },
                 draggable=False,
                 focusable=False,
-                source_position=None,
-                target_position=None,
+                source_position='right',  # Set to a valid value
+                target_position='left',   # Set to a valid value
             ))
         # Dotted edges for the square
         square_edges = [
