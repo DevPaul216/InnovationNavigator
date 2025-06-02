@@ -755,6 +755,27 @@ def chart_view():
         sst.sidebar_state = "expanded"
         st.rerun()
 
+    # Overlay 50% transparent logo on overview
+    st.markdown(
+        f"""
+        <style>
+        .logo-overlay {{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.5;
+            z-index: 1;
+            pointer-events: none;
+            width: 40vw;
+            max-width: 600px;
+        }}
+        </style>
+        <img src='misc/LogoFH.png' class='logo-overlay' />
+        """,
+        unsafe_allow_html=True
+    )
+
 
 def element_selection_format_func(item):
     return get_config_value(item, for_template=False)
