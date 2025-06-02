@@ -805,7 +805,7 @@
     "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
     "elements": ["Portrait","FeedbackText","FeedbackRating", "FeedbackRecommendation, ProductImage1"],
     "prompt_name": "prompt_generic",
-    "schema_name": "schema_generic_array",
+    "schema_name": "schema_generic_array"
   },
   "FeedbackText": {
     "display_name": "Feedback Text",
