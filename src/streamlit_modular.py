@@ -261,9 +261,9 @@ def display_generated_artifacts_view(element_name):
     artifact_keys = []
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
-        all_artifacts.append(artifact)
-        # Use both id and hash of artifact for uniqueness
-        artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
+        if artifact not in all_artifacts:
+            all_artifacts.append(artifact)
+            artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
         if artifact not in all_artifacts:
