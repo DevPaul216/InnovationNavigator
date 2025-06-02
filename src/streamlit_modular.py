@@ -718,6 +718,21 @@ def legend_subview():
         )
 
 
+def render_vertical_lines(num_lines=3, color="#000", width="2px"):
+    """Render vertical lines over the flow chart area to segment it into columns."""
+    # Calculate left positions as percentages
+    positions = [(i + 1) * (100 // (num_lines + 1)) for i in range(num_lines)]
+    lines_html = ""
+    for pos in positions:
+        lines_html += f"<div style='position:absolute; top:0; left:{pos}%; width:{width}; height:100%; background:{color}; opacity:0.3; z-index:10;'></div>"
+    # Wrap in a relative container
+    st.markdown(f"""
+    <div style='position:relative; width:100%; height:0; min-height:0; pointer-events:none;'>
+        {lines_html}
+    </div>
+    """, unsafe_allow_html=True)
+
+
 def chart_view():
     add_empty_lines(1)
     st.subheader("Project: " + sst.project_name)
@@ -725,6 +740,8 @@ def chart_view():
 
     legend_subview()
 
+    # Add vertical lines overlay before the flow chart
+    render_vertical_lines(num_lines=3, color="#000", width="2px")
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
