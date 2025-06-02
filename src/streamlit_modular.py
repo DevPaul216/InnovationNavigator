@@ -420,7 +420,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         default=required_items  # Preselect only the ones defined in the config
     )
     selected_elements = {}
-    with st.expander("Choose individual elements from selected templates"):
+    with st.expander("🧩 Choose individual elements from selected templates"):
         columns = st.columns(2)
         position = 0
         for selected_key in selected_keys:
@@ -463,10 +463,11 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     if prompt is None:
         st.error("There is no prompt assigned")
         return
-    with st.expander(label="Add external information source"):
+    with st.expander(label="🌐 Add external information source"):
         home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
-    schema = None    
-    with st.expander(label="View prompt"):  # added name of the prompt used to label
+    schema = None   
+     
+    with st.expander(label="📝 View prompt"):  # added name of the prompt used to label
         st.markdown("**Prompt:** " + prompt_name + ".txt")
         st.markdown(prompt)
         st.divider()
@@ -479,12 +480,12 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
 
-        with st.expander(label="View response schema"):
+        with st.expander(label="🗂️ View response schema"):
             st.markdown("**Schema:** " + schema_name + ".json")
             st.json(schema)
 
    
-    with st.expander("Adjust Generation Parameters", expanded=False):
+    with st.expander("🎛️ Adjust Generation Parameters", expanded=False):
 
         # --- initialise defaults once ---
         st.session_state.setdefault("temperature", 1.0)
