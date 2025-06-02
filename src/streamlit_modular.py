@@ -1056,6 +1056,12 @@ def open_sidebar():
         sst.update_graph = True
         st.rerun()
 
+    # button to open config editor
+    if st.sidebar.button(label="Config Editor", type="secondary", use_container_width=True):
+        import src.streamlit_config_editor as config_editor
+        config_editor.main()
+        st.stop()
+
     # button for other stuff
     if st.sidebar.button(label="About", type="secondary", use_container_width=True):
         sst.selected_template_name = "About"
