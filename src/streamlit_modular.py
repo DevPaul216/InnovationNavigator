@@ -725,6 +725,24 @@ def chart_view():
 
     legend_subview()
 
+    # Set a background image for the whole app using base64 encoding and CSS
+    @st.cache_data
+    def get_img(file):
+        with open(file, "rb") as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
+
+    img = get_img("misc/LogoFH.png")
+    page_bg_img = f"""
+    <style>
+    [data-testid="stAppViewContainer"] {{
+        background-image: url('data:image/png;base64,{img}');
+        background-size: cover;
+        background-position: center;
+    }}
+    </style>
+    """
+    st.markdown(page_bg_img, unsafe_allow_html=True)
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
@@ -796,6 +814,7 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         artifact_input_subview(element_name, element_store)
                         st.divider()
+                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row:
                     columns_inner = st.columns(max_elements_row)
@@ -823,6 +842,7 @@ def general_creation_view(assigned_elements):
                         st.markdown(get_config_value(element_name, False, "description"))
                         display_generated_artifacts_view(element_name)
                         st.divider()
+                        display_artifacts_view(element_name, element_store)
                         position += 1
                 if position >= max_elements_row and len(elements_group_copy) > 0:
                     number_columns = min(max_elements_row, len(elements_group_copy))
@@ -831,7 +851,7 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            pass
+            display_artifacts_view(element_selected, element_store)
         else:
             display_artifact_view_image(element_selected, element_store)
 
