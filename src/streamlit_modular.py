@@ -1020,7 +1020,7 @@ def detail_view():
     st.markdown(f"""
         <div style='text-align: center;'>
             <h1 style='margin-bottom: 0.1em; font-size:2.7em;'>{get_config_value(sst.selected_template_name, config_value='display_name')}</h1>
-            <div style='font-size: 1.4em; color: #666; margin-bottom:1.5em;'>{get_config_value(sst.selected_template_name, config_value='description')}</div>
+            <div style='font-size: 1.0em; color: #666; margin-bottom:0.5em;'>{get_config_value(sst.selected_template_name, config_value='description')}</div>
         </div>
     """, unsafe_allow_html=True)
     if str(sst.selected_template_name).lower() == "start":
