@@ -12,7 +12,7 @@ def project_manager_view(current_project_name, on_project_switch=None):
     data_stores_paths = Path(data_store_path).glob("data_store_*.json")
     core_names = [path.stem for path in data_stores_paths]
     project_names = [str(name).split('data_store_')[1] for name in core_names]
-    st.subheader("Add new Innovation Project", help="Create a new project to start working on it. You can also import existing projects.")
+    st.title("Add new Innovation Project", help="Create a new project to start working on it. You can also import existing projects.")
     new_project_name = st.text_input(label="Name of new Innovation Project").strip()
     if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
         if new_project_name not in project_names:
