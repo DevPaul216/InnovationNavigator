@@ -755,14 +755,26 @@ def chart_view():
         sst.sidebar_state = "expanded"
         st.rerun()
 
-    # Overlay 50% transparent logo on overview (Streamlit does not support custom CSS classes for images)
-    from PIL import Image
+    # Overlay a semi-transparent logo on the overview using HTML/CSS (works best at top of page)
     logo_path = os.path.join("misc", "LogoFH.png")
     if os.path.exists(logo_path):
-        logo_img = Image.open(logo_path)
-        st.image(logo_img, use_column_width=False, width=400, caption="", output_format="PNG")
+        import base64
+        with open(logo_path, "rb") as image_file:
+            encoded = base64.b64encode(image_file.read()).decode()
         st.markdown(
-            "<div style='text-align:center; opacity:0.5; margin-top:-350px; margin-bottom:20px;'></div>",
+            f"""
+            <div style="
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                opacity: 0.18;
+                pointer-events: none;
+            ">
+                <img src="data:image/png;base64,{encoded}" width="400"/>
+            </div>
+            """,
             unsafe_allow_html=True
         )
 
