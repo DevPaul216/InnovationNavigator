@@ -1,9 +1,5 @@
 import streamlit as st
 
-st.write("")
-st.write("")
-st.write("")
-
 import os
 import shutil
 import time
