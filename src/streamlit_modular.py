@@ -725,8 +725,21 @@ def chart_view():
 
     legend_subview()
 
-    # Show the background image above the flow chart for robust compatibility
-    st.image("misc/LogoFH.png", use_column_width=True)
+    # Inject CSS to set a background image for the flow-graph container
+    st.markdown(
+        """
+        <style>
+        /* Target the main block container, but you may need to adjust this selector for your use case */
+        div[data-testid="stVerticalBlock"] > div:nth-child(5) > div {
+            background-image: url('misc/LogoFH.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
     with st.container(border=True):  # Add border to the container of the flow chart
         updated_state = streamlit_flow(
