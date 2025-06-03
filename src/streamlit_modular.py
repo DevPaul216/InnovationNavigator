@@ -189,29 +189,31 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
-        # Define individual widths for special templates
+        # --- Positioning for special templates ---
+        special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
         special_template_widths = {
-            "align": "350px",
-            "discover": "300px",
-            "define": "200px",
-            "develop": "300px",
-            "deliver": "250px",
-            "continue": "300px"
+            "align": 350,
+            "discover": 300,
+            "define": 200,
+            "develop": 300,
+            "deliver": 250,
+            "continue": 300
         }
+        special_gap = 20  # px between special nodes
+        special_x = 0
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
             if template_name.lower() in special_templates:
-                width = special_template_widths.get(template_name.lower(), "300px")
+                width_px = special_template_widths.get(template_name.lower(), 300)
                 style = {
                     "backgroundColor": "white",
-                    "width": width,
+                    "width": f"{width_px}px",
                     "padding": "1px",
                     "border": "2px solid #bbb"
                 }
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=(100, 0),
+                    pos=(special_x, 0),
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
@@ -221,6 +223,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     focusable=False,
                     selectable=False
                 )
+                special_x += width_px + special_gap
             elif template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
