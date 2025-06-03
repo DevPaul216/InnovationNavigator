@@ -763,7 +763,7 @@ def chart_view():
             <div style="
                 position: fixed;
                 top: 220px;
-                left: 55%;
+                left: 58%;
                 transform: translateX(-50%);
                 z-index: 9999;
                 pointer-events: none;
