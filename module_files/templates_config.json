@@ -1,4 +1,26 @@
 {
+  
+  "Align": {
+    "display_name": "Align",
+    "connects": ["Discover"]
+  },
+  "Discover": {
+    "display_name": "Discover",
+    "connects": ["Define"]
+  },
+  "Define": {
+    "display_name": "Define",
+    "connects": ["Ideate"]
+  },
+  "Develop": {
+    "display_name": "Develop",
+    "connects": ["Deliver"]
+  },
+  "Deliver": {
+    "display_name": "Deliver",
+    "connects": ["Align"]
+  },
+
   "Start": {
     "display_name": "Create Project",
     "description": "Define a new project to get started",
