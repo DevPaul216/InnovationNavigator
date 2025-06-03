@@ -1291,14 +1291,3 @@ if __name__ == '__main__':
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
-
-def expand_elements(elements_list, elements_config):
-    """Expands group elements in the list to their members, preserving order."""
-    expanded = []
-    for el in elements_list:
-        config = elements_config.get(el, {})
-        if config.get("type") == "group" and "elements" in config:
-            expanded.extend(config["elements"])
-        else:
-            expanded.append(el)
-    return expanded
