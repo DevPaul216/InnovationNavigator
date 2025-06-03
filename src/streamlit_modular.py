@@ -868,7 +868,7 @@ def general_creation_view(assigned_elements):
             position = 0
             for row_config in selected_template_config['display']:
                 sub_rows = row_config['format']
-                height = row_config['height']
+                height = row_config['height'] * 2  # Double the height
                 number_cols = len(sub_rows)
                 cols = st.columns(number_cols, vertical_alignment='center')
                 for col, sub_row in zip(cols, sub_rows):
@@ -973,7 +973,7 @@ def general_creation_view(assigned_elements):
             position = 0
             for row_config in selected_template_config['display']:
                 sub_rows = row_config['format']
-                height = row_config['height']
+                height = row_config['height'] * 2  # Double the height
                 number_cols = len(sub_rows)
                 cols = st.columns(number_cols, vertical_alignment='center')
                 for col, sub_row in zip(cols, sub_rows):
