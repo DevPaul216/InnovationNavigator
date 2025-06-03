@@ -295,18 +295,39 @@ def display_generated_artifacts_view(element_name):
                 st.markdown('</div>', unsafe_allow_html=True)
             with columns[3]:
                 # Show toggle ON if artifact is assigned, OFF otherwise
-                is_assigned = artifact in assigned
+                is_assigned = artifact in assigned or (not isinstance(artifact, str) and any(isinstance(a, str) and a.endswith('.jpg') for a in assigned))
                 toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
                 if toggled and not is_assigned:
-                    check = check_can_add(element_store, element_name, [artifact])
+                    # If artifact is an image, save to disk and store path
+                    if not isinstance(artifact, str):
+                        import hashlib
+                        directory_path = './stores/image_store'
+                        if not os.path.exists(directory_path):
+                            os.makedirs(directory_path)
+                        # Generate a unique filename based on hash
+                        artifact.seek(0)
+                        img = Image.open(artifact)
+                        hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
+                        filename = f"{element_name}_{sst.project_name}_{hash_digest}.jpg"
+                        full_path = os.path.join(directory_path, filename)
+                        img.save(full_path)
+                        artifact_to_add = full_path
+                    else:
+                        artifact_to_add = artifact
+                    check = check_can_add(element_store, element_name, [artifact_to_add])
                     if check is None:
-                        assigned.append(artifact)
+                        assigned.append(artifact_to_add)
                         update_data_store()
                         st.rerun()
                     else:
                         st.warning(check)
                 elif not toggled and is_assigned:
-                    assigned.remove(artifact)
+                    # Remove by path if image
+                    if not isinstance(artifact, str):
+                        # Remove any .jpg path from assigned
+                        assigned[:] = [a for a in assigned if not (isinstance(a, str) and a.endswith('.jpg'))]
+                    else:
+                        assigned.remove(artifact)
                     update_data_store()
                     st.rerun()
 
