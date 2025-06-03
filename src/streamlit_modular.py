@@ -189,17 +189,15 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
-        x_offset = 100  # Move all nodes 100px to the right
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
             # Special formatting for key templates
             special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
-            pos = (x_offset, 0)
             if template_name.lower() in special_templates:
-                style = {"backgroundColor": "white", "width": "300px", "padding": "1px", "border": "2px solid #bbb"}
+                style = {"backgroundColor": "white", "width": "310px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=pos,
+                    pos=(0, 0),
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
@@ -210,11 +208,11 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     selectable=False
                 )
             elif template_name == "Start":
-                node = StreamlitFlowNode(id=str(template_name), pos=pos,
+                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
             elif template_name == "End":
-                node = StreamlitFlowNode(id=str(template_name), pos=pos,
+                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
@@ -224,7 +222,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
-                node = StreamlitFlowNode(id=template_name, pos=pos, data={'content': f"{template_display_name}"},
+                node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
                                          style={**style, "width": "90px", "padding": "1px"})
