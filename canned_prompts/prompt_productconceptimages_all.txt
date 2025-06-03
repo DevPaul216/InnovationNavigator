@@ -1,1 +1,6 @@
-prompt_productconceptimages_all
+You will be provdied with information describing a user and a product/service/business model.
+
+Generate three phorealistic image of the person interaction with the product.
+The first picture should show the person interacting with the product for the very first time.
+The second picture showing the person intearcting with the product in a postive way.
+The third picture showing the person interacting with the product in a negative way.
