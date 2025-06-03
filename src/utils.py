@@ -112,9 +112,15 @@ def make_request_image(prompt, model="gpt-image-1", additional_information_dict=
         n=1
     )
 
-    url = response.data[0].url
-    url_response = requests.get(url)
-    image = io.BytesIO(url_response.content)
+    if model == "gpt-image-1":
+        # gpt-image-1 returns base64-encoded image, not a URL
+        import base64
+        b64_image = response.data[0].b64_json
+        image = io.BytesIO(base64.b64decode(b64_image))
+    else:
+        url = response.data[0].url
+        url_response = requests.get(url)
+        image = io.BytesIO(url_response.content)
     return image
 
 
