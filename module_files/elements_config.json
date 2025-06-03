@@ -605,15 +605,10 @@
     "required": true,
     "type": "group",
     "elements": [
-      "Idea1_Desirability", "Idea1_Feasibility", "Idea1_Viability", "Idea1_Sustainability",
-      "Idea2_Desirability", "Idea2_Feasibility", "Idea2_Viability", "Idea2_Sustainability",
-      "Idea3_Desirability", "Idea3_Feasibility", "Idea3_Viability", "Idea3_Sustainability",
-      "Idea4_Desirability", "Idea4_Feasibility", "Idea4_Viability", "Idea4_Sustainability",
-      "Idea5_Desirability", "Idea5_Feasibility", "Idea5_Viability", "Idea5_Sustainability",
-      "Idea6_Desirability", "Idea6_Feasibility", "Idea6_Viability", "Idea6_Sustainability",
-      "Idea7_Desirability", "Idea7_Feasibility", "Idea7_Viability", "Idea7_Sustainability",
-      "Idea8_Desirability", "Idea8_Feasibility", "Idea8_Viability", "Idea8_Sustainability",
-      "Idea9_Desirability", "Idea9_Feasibility", "Idea9_Viability", "Idea9_Sustainability"
+      "Idea1_Desirability", "Idea2_Desirability", "Idea3_Desirability", "Idea4_Desirability", "Idea5_Desirability", "Idea6_Desirability", "Idea7_Desirability", "Idea8_Desirability", "Idea9_Desirability",
+      "Idea1_Feasibility", "Idea2_Feasibility", "Idea3_Feasibility", "Idea4_Feasibility", "Idea5_Feasibility", "Idea6_Feasibility", "Idea7_Feasibility", "Idea8_Feasibility", "Idea9_Feasibility",
+      "Idea1_Viability", "Idea2_Viability", "Idea3_Viability", "Idea4_Viability", "Idea5_Viability", "Idea6_Viability", "Idea7_Viability", "Idea8_Viability", "Idea9_Viability",
+      "Idea1_Sustainability", "Idea2_Sustainability", "Idea3_Sustainability", "Idea4_Sustainability", "Idea5_Sustainability", "Idea6_Sustainability", "Idea7_Sustainability", "Idea8_Sustainability", "Idea9_Sustainability"
     ],
     "prompt_name": "prompt_ratingmatrix",
     "schema_name": "schema_generic_array",
@@ -626,45 +621,9 @@
     "required": false,
     "max": 1
   },
-  "Idea1_Feasibility": {
-    "display_name": "Idea 1 Feasibility",
-    "description": "Feasibility rating for Idea 1.",
-    "required": false,
-    "max": 1
-  },
-  "Idea1_Viability": {
-    "display_name": "Idea 1 Viability",
-    "description": "Viability rating for Idea 1.",
-    "required": false,
-    "max": 1
-  },
-  "Idea1_Sustainability": {
-    "display_name": "Idea 1 Sustainability",
-    "description": "Sustainability rating for Idea 1.",
-    "required": false,
-    "max": 1
-  },
   "Idea2_Desirability": {
     "display_name": "Idea 2 Desirability",
     "description": "Desirability rating for Idea 2.",
-    "required": false,
-    "max": 1
-  },
-  "Idea2_Feasibility": {
-    "display_name": "Idea 2 Feasibility",
-    "description": "Feasibility rating for Idea 2.",
-    "required": false,
-    "max": 1
-  },
-  "Idea2_Viability": {
-    "display_name": "Idea 2 Viability",
-    "description": "Viability rating for Idea 2.",
-    "required": false,
-    "max": 1
-  },
-  "Idea2_Sustainability": {
-    "display_name": "Idea 2 Sustainability",
-    "description": "Sustainability rating for Idea 2.",
     "required": false,
     "max": 1
   },
@@ -674,45 +633,9 @@
     "required": false,
     "max": 1
   },
-  "Idea3_Feasibility": {
-    "display_name": "Idea 3 Feasibility",
-    "description": "Feasibility rating for Idea 3.",
-    "required": false,
-    "max": 1
-  },
-  "Idea3_Viability": {
-    "display_name": "Idea 3 Viability",
-    "description": "Viability rating for Idea 3.",
-    "required": false,
-    "max": 1
-  },
-  "Idea3_Sustainability": {
-    "display_name": "Idea 3 Sustainability",
-    "description": "Sustainability rating for Idea 3.",
-    "required": false,
-    "max": 1
-  },
   "Idea4_Desirability": {
     "display_name": "Idea 4 Desirability",
     "description": "Desirability rating for Idea 4.",
-    "required": false,
-    "max": 1
-  },
-  "Idea4_Feasibility": {
-    "display_name": "Idea 4 Feasibility",
-    "description": "Feasibility rating for Idea 4.",
-    "required": false,
-    "max": 1
-  },
-  "Idea4_Viability": {
-    "display_name": "Idea 4 Viability",
-    "description": "Viability rating for Idea 4.",
-    "required": false,
-    "max": 1
-  },
-  "Idea4_Sustainability": {
-    "display_name": "Idea 4 Sustainability",
-    "description": "Sustainability rating for Idea 4.",
     "required": false,
     "max": 1
   },
@@ -722,45 +645,9 @@
     "required": false,
     "max": 1
   },
-  "Idea5_Feasibility": {
-    "display_name": "Idea 5 Feasibility",
-    "description": "Feasibility rating for Idea 5.",
-    "required": false,
-    "max": 1
-  },
-  "Idea5_Viability": {
-    "display_name": "Idea 5 Viability",
-    "description": "Viability rating for Idea 5.",
-    "required": false,
-    "max": 1
-  },
-  "Idea5_Sustainability": {
-    "display_name": "Idea 5 Sustainability",
-    "description": "Sustainability rating for Idea 5.",
-    "required": false,
-    "max": 1
-  },
   "Idea6_Desirability": {
     "display_name": "Idea 6 Desirability",
     "description": "Desirability rating for Idea 6.",
-    "required": false,
-    "max": 1
-  },
-  "Idea6_Feasibility": {
-    "display_name": "Idea 6 Feasibility",
-    "description": "Feasibility rating for Idea 6.",
-    "required": false,
-    "max": 1
-  },
-  "Idea6_Viability": {
-    "display_name": "Idea 6 Viability",
-    "description": "Viability rating for Idea 6.",
-    "required": false,
-    "max": 1
-  },
-  "Idea6_Sustainability": {
-    "display_name": "Idea 6 Sustainability",
-    "description": "Sustainability rating for Idea 6.",
     "required": false,
     "max": 1
   },
@@ -770,45 +657,9 @@
     "required": false,
     "max": 1
   },
-  "Idea7_Feasibility": {
-    "display_name": "Idea 7 Feasibility",
-    "description": "Feasibility rating for Idea 7.",
-    "required": false,
-    "max": 1
-  },
-  "Idea7_Viability": {
-    "display_name": "Idea 7 Viability",
-    "description": "Viability rating for Idea 7.",
-    "required": false,
-    "max": 1
-  },
-  "Idea7_Sustainability": {
-    "display_name": "Idea 7 Sustainability",
-    "description": "Sustainability rating for Idea 7.",
-    "required": false,
-    "max": 1
-  },
   "Idea8_Desirability": {
     "display_name": "Idea 8 Desirability",
     "description": "Desirability rating for Idea 8.",
-    "required": false,
-    "max": 1
-  },
-  "Idea8_Feasibility": {
-    "display_name": "Idea 8 Feasibility",
-    "description": "Feasibility rating for Idea 8.",
-    "required": false,
-    "max": 1
-  },
-  "Idea8_Viability": {
-    "display_name": "Idea 8 Viability",
-    "description": "Viability rating for Idea 8.",
-    "required": false,
-    "max": 1
-  },
-  "Idea8_Sustainability": {
-    "display_name": "Idea 8 Sustainability",
-    "description": "Sustainability rating for Idea 8.",
     "required": false,
     "max": 1
   },
@@ -818,15 +669,159 @@
     "required": false,
     "max": 1
   },
+  "Idea1_Feasibility": {
+    "display_name": "Idea 1 Feasibility",
+    "description": "Feasibility rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Feasibility": {
+    "display_name": "Idea 2 Feasibility",
+    "description": "Feasibility rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Feasibility": {
+    "display_name": "Idea 3 Feasibility",
+    "description": "Feasibility rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Feasibility": {
+    "display_name": "Idea 4 Feasibility",
+    "description": "Feasibility rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Feasibility": {
+    "display_name": "Idea 5 Feasibility",
+    "description": "Feasibility rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Feasibility": {
+    "display_name": "Idea 6 Feasibility",
+    "description": "Feasibility rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Feasibility": {
+    "display_name": "Idea 7 Feasibility",
+    "description": "Feasibility rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Feasibility": {
+    "display_name": "Idea 8 Feasibility",
+    "description": "Feasibility rating for Idea 8.",
+    "required": false,
+    "max": 1
+  },
   "Idea9_Feasibility": {
     "display_name": "Idea 9 Feasibility",
     "description": "Feasibility rating for Idea 9.",
     "required": false,
     "max": 1
   },
+  "Idea1_Viability": {
+    "display_name": "Idea 1 Viability",
+    "description": "Viability rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Viability": {
+    "display_name": "Idea 2 Viability",
+    "description": "Viability rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Viability": {
+    "display_name": "Idea 3 Viability",
+    "description": "Viability rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Viability": {
+    "display_name": "Idea 4 Viability",
+    "description": "Viability rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Viability": {
+    "display_name": "Idea 5 Viability",
+    "description": "Viability rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Viability": {
+    "display_name": "Idea 6 Viability",
+    "description": "Viability rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Viability": {
+    "display_name": "Idea 7 Viability",
+    "description": "Viability rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Viability": {
+    "display_name": "Idea 8 Viability",
+    "description": "Viability rating for Idea 8.",
+    "required": false,
+    "max": 1
+  },
   "Idea9_Viability": {
     "display_name": "Idea 9 Viability",
     "description": "Viability rating for Idea 9.",
+    "required": false,
+    "max": 1
+  },
+  "Idea1_Sustainability": {
+    "display_name": "Idea 1 Sustainability",
+    "description": "Sustainability rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Sustainability": {
+    "display_name": "Idea 2 Sustainability",
+    "description": "Sustainability rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Sustainability": {
+    "display_name": "Idea 3 Sustainability",
+    "description": "Sustainability rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Sustainability": {
+    "display_name": "Idea 4 Sustainability",
+    "description": "Sustainability rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Sustainability": {
+    "display_name": "Idea 5 Sustainability",
+    "description": "Sustainability rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Sustainability": {
+    "display_name": "Idea 6 Sustainability",
+    "description": "Sustainability rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Sustainability": {
+    "display_name": "Idea 7 Sustainability",
+    "description": "Sustainability rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Sustainability": {
+    "display_name": "Idea 8 Sustainability",
+    "description": "Sustainability rating for Idea 8.",
     "required": false,
     "max": 1
   },
