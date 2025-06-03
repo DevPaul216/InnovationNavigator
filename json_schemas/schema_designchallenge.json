@@ -13,11 +13,14 @@
       },
       "StrategyCombined": {
         "type": "object",
-        "description": "A summary of the strategic foundation of the organization."
+        "description": "A summary of the strategic foundation of the organization.",
+        "additionalProperties": false
+        
       },
       "ResourcesCombined": {
         "type": "object",
-        "description": "A summary of all available resources."
+        "description": "A summary of all available resources.",
+        "additionalProperties": false
       }
     },
     "required": [
