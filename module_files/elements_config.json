@@ -539,8 +539,9 @@
     "description": "A group containing up to 9 ideas for evaluation.",
     "required": true,
     "type": "group",
+    "used_templates": ["Ideation"],
     "elements": ["Idea1", "Idea2", "Idea3", "Idea4", "Idea5", "Idea6", "Idea7", "Idea8", "Idea9"],
-    "prompt_name": "prompt_idealist",
+    "prompt_name": "prompt_ideastoevaluate",
     "schema_name": "schema_generic_array",
     "max": 9,
     "resources": ["documents", "websearch", "website"]
@@ -604,6 +605,7 @@
     "description": "A group containing desirability, feasibility, viability, and sustainability ratings for each idea.",
     "required": true,
     "type": "group",
+    "used_templates": ["Idea Comparison"],
     "elements": [
       "Idea1_Desirability", "Idea2_Desirability", "Idea3_Desirability", "Idea4_Desirability", "Idea5_Desirability", "Idea6_Desirability", "Idea7_Desirability", "Idea8_Desirability", "Idea9_Desirability",
       "Idea1_Feasibility", "Idea2_Feasibility", "Idea3_Feasibility", "Idea4_Feasibility", "Idea5_Feasibility", "Idea6_Feasibility", "Idea7_Feasibility", "Idea8_Feasibility", "Idea9_Feasibility",
