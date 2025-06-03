@@ -786,11 +786,12 @@ def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
     columns = st.columns([1, 1, 1, 2], vertical_alignment="center")
     with columns[0]:
-        # Allow multiple selection of elements to generate artifacts for
+        # Preselect all available elements and element groups by default
         elements_selected = st.multiselect(
             label="Select Elements to generate:",
             help="Select one or more elements or element groups to generate artifacts for",
             options=assigned_elements,
+            default=assigned_elements,  # Preselect all
             format_func=element_selection_format_func
         )
     with columns[1]:
