@@ -881,8 +881,10 @@ def general_creation_view(assigned_elements):
                                     st.subheader(get_config_value(element_name, False))
                                     st.markdown(get_config_value(element_name, False, "description"))
                                     artifact_input_subview(element_name, element_store)
-                                    st.divider()
                                     display_artifacts_view(element_name, element_store)
+                                    # Add a thin divider only between entries, not after the last one
+                                    if position < len(elements_group) - 1:
+                                        st.markdown('<hr style="margin:4px 0 4px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
