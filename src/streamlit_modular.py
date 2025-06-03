@@ -666,9 +666,6 @@ def get_elements_to_show(element_names, element_store, max_characters):
     artifact_images = {}
     for element_name in element_names:
         element_config = sst.elements_config[element_name]
-        # Ensure the element exists in the store, else initialize as empty list
-        if element_name not in element_store:
-            element_store[element_name] = []
         if 'type' in element_config and element_config['type'] == 'image':
             image_file = None
             if len(element_store[element_name]) > 0:
@@ -734,7 +731,7 @@ def display_template_view(selected_template_name):
     element_store = sst.data_store[selected_template_name]
     selected_template_config = sst.template_config[selected_template_name]
     max_characters = 0
-    element_names = selected_template_config["elements"]
+    element_names = list(element_store.keys())
     artifact_texts, artifact_images = get_elements_to_show(element_names, element_store, max_characters)
     vertical_gap = 7
     display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
