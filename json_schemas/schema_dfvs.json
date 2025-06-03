@@ -1,5 +1,5 @@
 {
-    "name": "dvfs",
+    "name": "dfvs",
     "schema": {
         "type": "object",
         "properties": {
