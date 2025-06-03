@@ -39,8 +39,8 @@
     "connects": ["Customer Persona", "PESTEL-Analysis", "Trends"],
     "elements": ["DesignChallenge_Group"],
     "display": [
-      { "format": [1], "height": 200 },
-      { "format": [1, 1], "height": 400 }]
+      { "format": [1], "height": 300 },
+      { "format": [1, 1], "height": 600 }]
   },
   "Customer Persona": {
     "display_name": "Customer Persona",

@@ -1,26 +1,25 @@
 {
-  "name": "designchallenge",
+  "name": "Design Challenge",
   "schema": {
     "type": "object",
     "properties": {
       "HowMightWe": {
         "type": "array",
-        "description": "A list of solution-oriented 'How Might We' questions that frame the problem in an actionable way.",
+        "description": "How might we statements to define the design challenge.",
         "items": {
           "type": "string",
-          "description": "A single 'How Might We' question."
+          "description": "A how might we question."
         }
       },
       "StrategyCombined": {
-        "type": "object",
-        "description": "A summary of the strategic foundation of the organization.",
-        "additionalProperties": false
-        
+        "type": "string",
+        "description": "A short sumamrizing intorduction to the company or organization and its strategic goals."
+
       },
       "ResourcesCombined": {
-        "type": "object",
-        "description": "A summary of all available resources.",
-        "additionalProperties": false
+        "type": "string",
+        "description": "A short sumamrizing introduction to the resources available to the company or organization, including financial, human, and technological resources."
+
       }
     },
     "required": [
