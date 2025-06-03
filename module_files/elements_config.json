@@ -83,7 +83,7 @@
   },
 
   "DesignChallenge_Group": {
-    "display_name": "Combined Resources Group",
+    "display_name": "Design Challenge Elements",
     "description": "A group containing How-Might-We Questions, Resources Combined, and Strategy Combined elements.",
     "required": false,
     "type": "group",
