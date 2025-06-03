@@ -5,39 +5,39 @@
     "properties": {
       "Idea1": {
         "type": "string",
-        "description": "First idea to be evaluated."
+        "description": "First idea to be evaluated or the statement -No Idea 1-."
       },
       "Idea2": {
         "type": "string",
-        "description": "Second idea to be evaluated."
+        "description": "Second idea to be evaluated or the statement -No Idea 2-."
       },
       "Idea3": {
         "type": "string",
-        "description": "Third idea to be evaluated."
+        "description": "Third idea to be evaluated or the statement -No Idea 3-."
       },
       "Idea4": {
         "type": "string",
-        "description": "Fourth idea to be evaluated."
+        "description": "Fourth idea to be evaluated or the statement -No Idea 4-."
       },
       "Idea5": {
         "type": "string",
-        "description": "Fifth idea to be evaluated."
+        "description": "Fifth idea to be evaluated or the statement -No Idea 5-."
       },
       "Idea6": {
         "type": "string",
-        "description": "Sixth idea to be evaluated."
+        "description": "Sixth idea to be evaluated or the statement -No Idea 6-."
       },
       "Idea7": {
         "type": "string",
-        "description": "Seventh idea to be evaluated."
+        "description": "Seventh idea to be evaluated or the statement -No Idea 7-."
       },
       "Idea8": {
         "type": "string",
-        "description": "Eighth idea to be evaluated."
+        "description": "Eighth idea to be evaluated or the statement -No Idea 8-."
       },
       "Idea9": {
         "type": "string",
-        "description": "Ninth idea to be evaluated."
+        "description": "Ninth idea to be evaluated or the statement -No Idea 9-."
       }
     },
     "required": ["Idea1", "Idea2", "Idea3", "Idea4", "Idea5", "Idea6", "Idea7", "Idea8", "Idea9"],
