@@ -800,7 +800,7 @@ def chart_view():
             key="ret_val_flow",
             state=sst.flow_state,
             height=800,
-            layout=None,  # Use no layout so manual positions are respected
+            layout=LayeredLayout(direction="right"),
             fit_view=True,
             get_node_on_click=True,
             get_edge_on_click=False,
