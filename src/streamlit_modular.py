@@ -1022,6 +1022,13 @@ def general_creation_view(assigned_elements):
 
 
 def template_edit_subview():
+    # Add button to remove all artifacts from this template
+    if st.button("Remove all artifacts from this template", type="secondary"):
+        element_store = sst.data_store.get(sst.selected_template_name, {})
+        for key in element_store:
+            element_store[key] = []
+        update_data_store()
+        st.rerun()
     selected_template = sst.template_config[sst.selected_template_name]
     assigned_elements = selected_template["elements"]
     if assigned_elements is not None and len(assigned_elements) > 0:
