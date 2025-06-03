@@ -527,7 +527,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         top_p = st.session_state.top_p
 
     if generate_now_clicked:
-        with st.spinner("Processing..."):
+        with st.spinner("Generating..."):
             add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
             if not is_image:
                 handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
@@ -535,7 +535,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                 handle_response_image(element_name, prompt, selected_resources)
 
 
-def import_artifacts(element_name, import_now_clicked=False):
+def import_artifacts(element_name):
     element_config = sst.elements_config[element_name]
     if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
         st.write("Not available for this element")
@@ -558,7 +558,7 @@ def import_artifacts(element_name, import_now_clicked=False):
         st.json(schema)
 
     add_empty_lines(1)
-    if import_now_clicked:
+    if st.button("Import now!", type="primary"):
         with st.spinner("Processing..."):
             selected_resources = {}
             add_resources(selected_resources, None, None, None, uploaded_files)
@@ -599,19 +599,16 @@ def display_artifacts_view(element_selected, element_store):
         with st.container():
             columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
             with columns[1]:
-                if isinstance(artifact, str):
-                    st.markdown(artifact)
-                else:
-                    st.write(artifact)
+                st.markdown(artifact)
             with columns[3]:
-                if st.button(":x:", key=f"button_{element_selected}_{i}"):
+                if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
                     deleted_artifacts.append(artifact)
+
     remaining_artifacts = [artifact for artifact in artifacts_to_show if artifact not in deleted_artifacts]
     element_store[element_selected] = remaining_artifacts
     # If something was marked for deletion refresh
     if len(deleted_artifacts) != 0:
         st.rerun()
-
 
 def display_artifact_view_image(element_selected, element_store):
     st.subheader("Available Artifacts")
@@ -640,9 +637,9 @@ def get_elements_to_show(element_names, element_store, max_characters):
             artifact_images[element_name] = image_file
         else:
             element_artifacts = element_store[element_name]
-            # Only include non-empty, stripped artifacts
-            clean_artifacts = [artifact.strip() for artifact in element_artifacts if isinstance(artifact, str) and artifact.strip()]
-            artifact_text = "\n\n".join(f"- {artifact}" for artifact in clean_artifacts)
+            artifact_text = ""
+            for artifact in element_artifacts:
+                artifact_text += "- " + artifact + "  \n"
             if len(artifact_text) > max_characters:
                 max_characters = len(artifact_text)
             artifact_texts[element_name] = artifact_text
