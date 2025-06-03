@@ -279,7 +279,7 @@
   },
   "Test": {
     "display_name": "Test",
-    "connects": ["Continue"],
+    "connects": [],
     "description": "",
     "required": false,
     "elements": [],
