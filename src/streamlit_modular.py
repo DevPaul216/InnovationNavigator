@@ -21,6 +21,7 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
+import hashlib
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -267,11 +268,15 @@ def add_artifact(toggle_key, element_name, artifact_id, artifact):
 def display_generated_artifacts_view(element_name):
     # Combine generated artifacts and already assigned artifacts, show all with toggles
     generated = sst.generated_artifacts.get(element_name, {})
-    assigned = sst.data_store[sst.selected_template_name][element_name]
+    # --- Fix: Ensure the element exists in the data store ---
+    element_store = sst.data_store[sst.selected_template_name]
+    if element_name not in element_store:
+        element_store[element_name] = []
+    assigned = element_store[element_name]
     # Ensure assigned is always a list
     if isinstance(assigned, dict):
         assigned = list(assigned.values())
-        sst.data_store[sst.selected_template_name][element_name] = assigned
+        element_store[element_name] = assigned
     # Build a unique list: keep order, but don't duplicate
     all_artifacts = []
     artifact_keys = []
@@ -288,14 +293,9 @@ def display_generated_artifacts_view(element_name):
     if not all_artifacts:
         st.write("Nothing to show")
         return
-    element_store = sst.data_store[sst.selected_template_name]
     # --- Make the display more compact ---
     compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.2rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        # Remove st.divider() and use a thin line instead        # Removed divider for maximum compactness
-        # if i != 0:
-        #     st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
-        # Use a more compact container
         with st.container():
             columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
@@ -306,17 +306,14 @@ def display_generated_artifacts_view(element_name):
                     st.image(artifact, use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             with columns[3]:
-                # Show toggle ON if artifact is assigned, OFF otherwise
                 is_assigned = artifact in assigned or (not isinstance(artifact, str) and any(isinstance(a, str) and a.endswith('.jpg') for a in assigned))
                 toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
                 if toggled and not is_assigned:
                     # If artifact is an image, save to disk and store path
                     if not isinstance(artifact, str):
-                        import hashlib
                         directory_path = './stores/image_store'
                         if not os.path.exists(directory_path):
                             os.makedirs(directory_path)
-                        # Generate a unique filename based on hash
                         artifact.seek(0)
                         img = Image.open(artifact)
                         hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
@@ -334,9 +331,7 @@ def display_generated_artifacts_view(element_name):
                     else:
                         st.warning(check)
                 elif not toggled and is_assigned:
-                    # Remove by path if image
                     if not isinstance(artifact, str):
-                        # Remove any .jpg path from assigned
                         assigned[:] = [a for a in assigned if not (isinstance(a, str) and a.endswith('.jpg'))]
                     else:
                         assigned.remove(artifact)
@@ -856,6 +851,9 @@ def general_creation_view(assigned_elements):
 
     # --- Helper for displaying artifacts ---
     def show_artifacts(element_name, store, is_img=False):
+        # --- Fix: Ensure the element exists in the store ---
+        if element_name not in store:
+            store[element_name] = []
         artifacts = store[element_name]
         if not artifacts:
             st.info("No artifacts assigned yet.")
