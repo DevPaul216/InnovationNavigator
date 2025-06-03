@@ -1,0 +1,30 @@
+{
+  "name": "problemsandjobs",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "JobsToBeDone": {
+        "type": "array",
+        "description": "Around 10 jobs-to-be-done statements.",
+        "items": {
+          "type": "string",
+          "description": "A jobs-to-be-done statement.."
+        }
+      },
+      "ProblemStatement": {
+        "type": "array",
+        "description": "Around 10 problem statements.",
+        "items": {
+          "type": "string",
+          "description": "A single problem statement."
+        }
+      }
+    },
+    "required": [
+      "JobsToBeDone",
+      "Problem"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}
