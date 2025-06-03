@@ -1,0 +1,35 @@
+{
+  "name": "userfeedback",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "FeedbackText": {
+        "type": "array",
+        "description": "A list of feedback points provided by the user about the product, service and business model if relevant..",
+        "items": {
+          "type": "string",
+          "description": "A feedback point from the user."
+        }
+      },
+      "FeedbackRating": {
+        "type": "string",
+        "description": "A rating given by the user on a scale from one to ten including a short sentence summarizing their opinion.."
+      },
+      "FeedbackRecommendation": {
+        "type": "array",
+        "description": "A list of recommended actions or suggestions provided by the user.",
+        "items": {
+          "type": "string",
+          "description": "A recommended action or suggestion for improving or furthering the product."
+        }
+      }
+    },
+    "required": [
+      "FeedbackText",
+      "FeedbackRating",
+      "FeedbackRecommendation"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}

@@ -164,7 +164,7 @@
     "required": true,
     "type": "group",
     "used_templates": ["Problem","Design Challenge"],
-    "elements": [ "Portrait", "Name", "Demographics","About","Problem_Attitude","Pains","Gains","Quote"],
+    "elements": ["Name", "Demographics","About","Problem_Attitude","Pains","Gains","Quote"],
     "prompt_name": "prompt_persona",
     "schema_name": "schema_persona",
     "prompt_name_import": "prompt_import",
@@ -769,7 +769,6 @@
     "type": "group",
     "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
     "elements": ["ProductImage1","ProductImage2","ProductImage3"],
-    "prompt_name": "prompt_conceptimages",
     "schema_name": "schema_generic_object",
     "resources": ["documents","websearch","website"]
   },
@@ -778,6 +777,7 @@
     "display_name": "Product Image 1",
     "description": "An image representing the product concept",
     "type": "image",
+    "prompt_name": "prompt_productimage1",
     "required": false,
     "max": 1
   },
@@ -786,6 +786,7 @@
     "display_name": "Product Image 2",
     "description": "An additional image representing the product concept",
     "type": "image",
+    "prompt_name": "prompt_productimage2",
     "required": false,
     "max": 1
   },
@@ -794,6 +795,7 @@
     "display_name": "Product Image 3",
     "description": "Another image representing the product concept",
     "type": "image",
+    "prompt_name": "prompt_productimage3",
     "required": false,
     "max": 1
   },
@@ -804,9 +806,9 @@
     "required": false,
     "type": "group",
     "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
-    "elements": ["Portrait", "ProductImage1","FeedbackText","FeedbackRating", "FeedbackRecommendation"],
-    "prompt_name": "prompt_generic",
-    "schema_name": "schema_generic_array"
+    "elements": ["FeedbackText","FeedbackRating", "FeedbackRecommendation"],
+    "prompt_name": "prompt_userfeedback",
+    "schema_name": "schema_userfeedback"
   },
   "FeedbackText": {
     "display_name": "Feedback Text",

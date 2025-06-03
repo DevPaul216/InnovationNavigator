@@ -786,11 +786,13 @@ def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
     columns = st.columns([1, 1, 1, 2], vertical_alignment="center")
     with columns[0]:
-        # The order of elements in the selectbox is determined by the order of 'assigned_elements',
-        # which comes from the 'elements' list in the template config (templates_config.json)
-        element_selected = st.selectbox(label="Select Element to generate: ", help="Select the element to generate artifacts for PLACEHOLDER",
-                                        options=assigned_elements,
-                                        format_func=element_selection_format_func)
+        # Allow multiple selection of elements to generate artifacts for
+        elements_selected = st.multiselect(
+            label="Select Elements to generate:",
+            help="Select one or more elements or element groups to generate artifacts for",
+            options=assigned_elements,
+            format_func=element_selection_format_func
+        )
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
     # Move Generate Now! button to the right of select mode
@@ -800,86 +802,77 @@ def general_creation_view(assigned_elements):
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    element_store = sst.data_store[sst.selected_template_name]
-    element_config = sst.elements_config[element_selected]
-    is_single = True
-    is_image = False
-    if "type" in element_config:
-        if element_config["type"] == "image":
-            is_image = True
-        else:
-            is_single = False
-    # The display layout for grouped elements below uses the order from the template config's 'elements' list,
-    # and arranges them according to the 'display' property in the template config (column-by-column)
+    if not elements_selected:
+        st.info("Select at least one element to proceed.")
+        return
     selected_template_config = sst.template_config[sst.selected_template_name]
     vertical_gap = 7
-    if creation_mode == "Manual":
-        if is_single:
-            with st.container(border=True):
-                if not is_image:
-                    artifact_input_subview(element_selected, element_store)
-                else:
-                    image_input_subview(element_selected, element_store)
-        else:
-            # --- ORDER FOR GROUPED ELEMENTS (Manual) ---
-            # elements_group order comes from the template config's 'elements' list
-            elements_group = element_config["elements"]
-            position = 0
-            for row_config in selected_template_config['display']:
-                sub_rows = row_config['format']
-                height = row_config['height']
-                number_cols = len(sub_rows)
-                cols = st.columns(number_cols, vertical_alignment='center')
-                for col, sub_row in zip(cols, sub_rows):
-                    with col:
-                        height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                        for number_subrows in range(0, sub_row):
-                            if position < len(elements_group):
-                                element_name = elements_group[position]
-                                with st.container(border=True, height=height_single):
-                                    st.subheader(get_config_value(element_name, False))
-                                    st.markdown(get_config_value(element_name, False, "description"))
-                                    artifact_input_subview(element_name, element_store)
-                                    st.divider()
-                                    display_artifacts_view(element_name, element_store)
+    for element_selected in elements_selected:
+        element_store = sst.data_store[sst.selected_template_name]
+        element_config = sst.elements_config[element_selected]
+        is_single = True
+        is_image = False
+        if "type" in element_config:
+            if element_config["type"] == "image":
+                is_image = True
+            else:
+                is_single = False
+        if creation_mode == "Manual":
+            if is_single:
+                with st.container(border=True):
+                    if not is_image:
+                        artifact_input_subview(element_selected, element_store)
+                    else:
+                        image_input_subview(element_selected, element_store)
+            else:
+                # --- ORDER FOR GROUPED ELEMENTS (Manual) ---
+                elements_group = element_config["elements"]
+                position = 0
+                for row_config in selected_template_config['display']:
+                    sub_rows = row_config['format']
+                    height = row_config['height']
+                    number_cols = len(sub_rows)
+                    cols = st.columns(number_cols, vertical_alignment='center')
+                    for col, sub_row in zip(cols, sub_rows):
+                        with col:
+                            height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                            for number_subrows in range(0, sub_row):
+                                if position < len(elements_group):
+                                    element_name = elements_group[position]
+                                    with st.container(border=True, height=height_single):
+                                        pass
+                                    position += 1
+        elif creation_mode == "Generate" or creation_mode == "Import":
+            if creation_mode == "Generate":
+                generate_artifacts(element_selected, is_image, generate_now_clicked)
+            if creation_mode == "Import":
+                import_artifacts(element_selected, generate_now_clicked)
+            st.divider()
+            if is_single:
+                st.subheader(f"Generated Artifacts for {get_config_value(element_selected, for_template=False)}")
+                display_generated_artifacts_view(element_selected)
+            else:
+                # --- ORDER FOR GROUPED ELEMENTS (Generate/Import) ---
+                elements_group = element_config["elements"]
+                position = 0
+                for row_config in selected_template_config['display']:
+                    sub_rows = row_config['format']
+                    height = row_config['height']
+                    number_cols = len(sub_rows)
+                    cols = st.columns(number_cols, vertical_alignment='center')
+                    for col, sub_row in zip(cols, sub_rows):
+                        with col:
+                            height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                            for number_subrows in range(0, sub_row):
+                                if position < len(elements_group):
+                                    pass
                                 position += 1
-    elif creation_mode == "Generate" or creation_mode == "Import":
-        if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
-        if creation_mode == "Import":
-            import_artifacts(element_selected, generate_now_clicked)
-        st.divider()
         if is_single:
-            st.subheader("Generated Artifacts")
-            display_generated_artifacts_view(element_selected)
-        else:
-            # --- ORDER FOR GROUPED ELEMENTS (Generate/Import) ---
-            # elements_group order comes from the template config's 'elements' list
-            elements_group = element_config["elements"]
-            position = 0
-            for row_config in selected_template_config['display']:
-                sub_rows = row_config['format']
-                height = row_config['height']
-                number_cols = len(sub_rows)
-                cols = st.columns(number_cols, vertical_alignment='center')
-                for col, sub_row in zip(cols, sub_rows):
-                    with col:
-                        height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                        for number_subrows in range(0, sub_row):
-                            if position < len(elements_group):
-                                element_name = elements_group[position]
-                                with st.container(border=True, height=height_single):
-                                    st.subheader(get_config_value(element_name, False))
-                                    st.markdown(get_config_value(element_name, False, "description"))
-                                    display_generated_artifacts_view(element_name)
-                                    st.divider()
-                                position += 1
-    if is_single:
-        st.divider()
-        if not is_image:
-            pass  # Removed redundant display_artifacts_view
-        else:
-            display_artifact_view_image(element_selected, element_store)
+            st.divider()
+            if not is_image:
+                pass  # Removed redundant display_artifacts_view
+            else:
+                display_artifact_view_image(element_selected, element_store)
 
 
 def template_edit_subview():
