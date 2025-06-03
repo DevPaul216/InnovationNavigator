@@ -688,7 +688,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
     # Each iteration add a row to the display
     for row_config in selected_template_config['display']:
         sub_rows = row_config['format']
-        # height = row_config['height']
+        height = row_config['height']
         number_cols = len(sub_rows)
         cols = st.columns(number_cols, vertical_alignment='center')
         for col, sub_row in zip(cols, sub_rows):
@@ -704,11 +704,13 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                             container = st.container(border=False)
                             sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
                             with sub_columns[1]:
+                                # Combine name and description in a single line
                                 element_config = sst.elements_config[element_name]
                                 display_name = element_name
                                 if "display_name" in element_config:
                                     display_name = element_config["display_name"]
-                                st.subheader(display_name)
+                                description = element_config.get("description", "")
+                                st.markdown(f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> <span style='color:#888;font-size:0.98em'>{description}</span>", unsafe_allow_html=True)
                                 if element_name in artifact_texts:
                                     artifact_text = artifact_texts[element_name]
                                     if len(artifact_text) > 0:
@@ -878,8 +880,13 @@ def general_creation_view(assigned_elements):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
                                 with st.container(border=True, height=height_single):
-                                    st.subheader(get_config_value(element_name, False))
-                                    st.markdown(get_config_value(element_name, False, "description"))
+                                    # Combine name and description in a single line
+                                    element_config = sst.elements_config[element_name]
+                                    display_name = element_name
+                                    if "display_name" in element_config:
+                                        display_name = element_config["display_name"]
+                                    description = element_config.get("description", "")
+                                    st.markdown(f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> <span style='color:#888;font-size:0.98em'>{description}</span>", unsafe_allow_html=True)
                                     artifact_input_subview(element_name, element_store)
                                     st.divider()
                                     display_artifacts_view(element_name, element_store)
@@ -983,8 +990,13 @@ def general_creation_view(assigned_elements):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
                                 with st.container(border=True, height=height_single):
-                                    st.subheader(get_config_value(element_name, False))
-                                    st.markdown(get_config_value(element_name, False, "description"))
+                                    # Combine name and description in a single line
+                                    element_config = sst.elements_config[element_name]
+                                    display_name = element_name
+                                    if "display_name" in element_config:
+                                        display_name = element_config["display_name"]
+                                    description = element_config.get("description", "")
+                                    st.markdown(f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> <span style='color:#888;font-size:0.98em'>{description}</span>", unsafe_allow_html=True)
                                     display_generated_artifacts_view(element_name)
                                     st.divider()
                                 position += 1
