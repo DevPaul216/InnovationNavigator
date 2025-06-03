@@ -1,5 +1,5 @@
 {
-  "name": "idealist",
+  "name": "IdeaList_group",
   "schema": {
     "type": "object",
     "properties": {
