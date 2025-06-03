@@ -723,7 +723,7 @@
   },
 
  "ProductConcept_Group": {
-    "display_name": "Product Concept",
+    "display_name": "Product Concept Details",
     "description": "A group of elements defining the product concept for the innovation",
     "required": true,
     "type": "group",
