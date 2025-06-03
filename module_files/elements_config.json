@@ -613,7 +613,7 @@
       "Idea1_Sustainability", "Idea2_Sustainability", "Idea3_Sustainability", "Idea4_Sustainability", "Idea5_Sustainability", "Idea6_Sustainability", "Idea7_Sustainability", "Idea8_Sustainability", "Idea9_Sustainability"
     ],
     "prompt_name": "prompt_ratingmatrix",
-    "schema_name": "schema_generic_object",
+    "schema_name": "schema_ratingmatrix",
     "max": 36,
     "resources": ["documents", "websearch", "website"]
   },
