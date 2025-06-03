@@ -194,7 +194,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             # Special formatting for key templates
             special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
             if template_name.lower() in special_templates:
-                style = {"backgroundColor": "white", "width": "180px", "padding": "1px", "border": "2px solid #bbb"}
+                style = {"backgroundColor": "white", "width": "400px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
                     pos=(0, 0),
@@ -779,12 +779,11 @@ def chart_view():
 
     legend_subview()
 
-
-    with st.container(border=True):  # Add border to the container of the flow chart
+    with st.container(border=True):
         updated_state = streamlit_flow(
             key="ret_val_flow",
             state=sst.flow_state,
-            height=800,  # Adjusted height for better visibility
+            height=800,
             layout=LayeredLayout(direction="right"),
             fit_view=True,
             get_node_on_click=True,
@@ -793,8 +792,10 @@ def chart_view():
             allow_zoom=False,
             pan_on_drag=False,
         )
-    sst.selected_template_name = updated_state.selected_id
-    if sst.selected_template_name is not None:
+    # Prevent selection of special templates
+    special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
+    if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
+        sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
         sst.sidebar_state = "expanded"
         st.rerun()
