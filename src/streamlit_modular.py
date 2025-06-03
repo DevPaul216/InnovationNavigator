@@ -850,19 +850,33 @@ def general_creation_view(assigned_elements):
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
             generate_artifacts(element_selected, is_image, generate_now_clicked)
-            # --- Auto-assign logic after generation (single elements only) ---
-            if is_single and generate_now_clicked and auto_assign_max:
-                generated = sst.generated_artifacts.get(element_selected, {})
-                assigned = element_store[element_selected]
-                element_config = sst.elements_config[element_selected]
-                max_entries = element_config.get("max", len(generated))
-                # Only add if not already assigned
-                new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
-                to_add = new_artifacts[:max_entries - len(assigned)]
-                if to_add:
-                    assigned.extend(to_add)
-                    update_data_store()
-                    st.rerun()
+            # --- Auto-assign logic after generation (single and grouped elements) ---
+            if generate_now_clicked and auto_assign_max:
+                if is_single:
+                    generated = sst.generated_artifacts.get(element_selected, {})
+                    assigned = element_store[element_selected]
+                    element_config = sst.elements_config[element_selected]
+                    max_entries = element_config.get("max", len(generated))
+                    new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                    to_add = new_artifacts[:max_entries - len(assigned)]
+                    if to_add:
+                        assigned.extend(to_add)
+                        update_data_store()
+                        st.rerun()
+                else:
+                    # For grouped elements, iterate over each sub-element
+                    elements_group = element_config["elements"]
+                    for group_element in elements_group:
+                        generated = sst.generated_artifacts.get(group_element, {})
+                        assigned = element_store[group_element]
+                        group_element_config = sst.elements_config[group_element]
+                        max_entries = group_element_config.get("max", len(generated))
+                        new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                        to_add = new_artifacts[:max_entries - len(assigned)]
+                        if to_add:
+                            assigned.extend(to_add)
+                            update_data_store()
+                            st.rerun()
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()
