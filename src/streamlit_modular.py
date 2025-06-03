@@ -535,8 +535,8 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                 handle_response_image(element_name, prompt, selected_resources)
 
         # --- AUTO-GENERATE SPECIAL ELEMENTS IF CONFIGURED ---
-        element_config = sst.elements_config[element_name]
-        if "auto_generate" in element_config:
+        # Only trigger if this is a group element and not already auto-generating
+        if not is_image and "auto_generate" in element_config:
             for auto_element in element_config["auto_generate"]:
                 auto_config = sst.elements_config.get(auto_element)
                 if auto_config is not None:
@@ -545,7 +545,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     auto_prompt = load_prompt(auto_prompt_name) if auto_prompt_name else None
                     auto_schema = load_schema(auto_schema_name) if auto_schema_name else None
                     if auto_prompt and auto_schema:
-                        # Use the same selected_resources for context, or customize as needed
+                        # Use the current selected_resources as context
                         handle_response(auto_element, auto_prompt, auto_schema, selected_resources, temperature, top_p)
     # ...existing code...
 
