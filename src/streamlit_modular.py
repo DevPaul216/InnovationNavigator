@@ -278,19 +278,17 @@ def display_generated_artifacts_view(element_name):
         return
     element_store = sst.data_store[sst.selected_template_name]
     # --- Make the display more compact ---
-    compact_container_style = "padding: 0.1rem 0.2rem 0.1rem 0.2rem; margin-bottom: 0.05rem; border-radius: 4px; border: 1px solid #eee; background: #fafbfc;"
+    compact_container_style = "padding: 0.05rem 0.2rem 0.05rem 0.2rem; margin-bottom: 0.01rem; border-radius: 3px; border: 1px solid #eee; background: #fafbfc; line-height: 1.1;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        # Use a more compact container with no leading empty column
-        columns = st.columns([6, 1], gap="small")
+        columns = st.columns([10, 1], gap="small")
         with columns[0]:
             st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
             if isinstance(artifact, str):
-                st.markdown(artifact)
+                st.markdown(f'<span style="display:block; margin:0; padding:0; line-height:1.2;">{artifact}</span>', unsafe_allow_html=True)
             else:
                 st.image(artifact, use_column_width=True)
             st.markdown('</div>', unsafe_allow_html=True)
         with columns[1]:
-            # Show toggle ON if artifact is assigned, OFF otherwise
             is_assigned = artifact in assigned
             toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
             if toggled and not is_assigned:
