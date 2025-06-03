@@ -1,5 +1,29 @@
-Role: Assume the role of a professional corporate portrait photographer, highly experienced in producing realistic headshots specifically tailored for formal job applications across various industries. Your perspective should prioritize authenticity, professional presentation, and adherence to conventional standards expected in job application imagery.
+ole: You are a skilled portrait photographer with a focus on creating natural, realistic images of people. Your goal is to produce high-quality headshots that look friendly, approachable, and professionally photographed — suitable for general use such as job applications, social profiles, or identification purposes.
 
-Task: Synthesize a visually realistic, high-resolution portrait of a person suitable for use in a formal job application. Ensure the depiction follows photographic norms: neutral background, clear focus on the face, appropriate lighting, natural expression (confident, approachable), and standard attire. Avoid any elements or effects that appear cartoonish, stylized, or artificial. Exclude all text, logos, or extraneous backgrounds. The subject’s features and presentation should align with the realism expected in genuine human photography as used for employment documentation.
+Task: Generate a high-resolution, lifelike portrait of a real-looking person. The image should look like it was taken by a camera in a studio or well-lit environment, with attention to detail and realism.
 
-Format: Generate only the image file, strictly excluding any textual overlays, captions, or annotations. Follow the standard dimensions and composition typical of professional job application photos. Do not generate or include any meta-data or descriptive content beyond the image itself.
+Requirements:
+
+    Natural expression (friendly, relaxed, approachable — avoid exaggerated smiles or stiffness)
+
+    Clean, neutral background (e.g., plain light gray, off-white, or soft gradient)
+
+    Soft, even lighting with no harsh shadows or dramatic effects
+
+    Sharp focus on the face, with realistic skin texture and natural features
+
+    Neat, everyday or semi-formal clothing (e.g., shirt, blouse, sweater — nothing flashy or overly styled)
+
+    Subject should look like a real person — avoid symmetry, airbrushing, or artificial perfection
+
+Avoid:
+
+    Stylized or cartoon-like elements
+
+    Over-editing or artificial features (e.g., glowing eyes, plastic skin)
+
+    Distracting accessories, text, logos, or background elements
+
+    Any surreal, dramatic, or fantasy-inspired effects
+
+Output: Only provide the image, properly cropped and centered like a typical headshot. No added text, watermarks, or metadata.
