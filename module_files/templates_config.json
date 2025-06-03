@@ -170,7 +170,7 @@
     "description": "This template compares multiple ideas against each other, evaluating them based on criteria such as desirability, feasibility, viability, and sustainability (DFVS). This structured comparison helps identify the most promising solutions for further development.",
     "required": false,
     "connects": ["Value Proposition Canvas"],
-    "elements": ["IdeaList", "CategoryList", "RatingMatrix","Recommendation"],
+    "elements": ["IdeaList_group","RatingMatrix_group","Recommendation"],
     "display": [{ "format": [9,9,9,9,9], "height": 1000 },
                 { "format": [1], "height": 200 }]
   },
