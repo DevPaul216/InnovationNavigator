@@ -285,7 +285,7 @@ def display_generated_artifacts_view(element_name):
         #     st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
         # Use a more compact container
         with st.container():
-            columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
+            columns = st.columns([2.5, 0.2, 1], gap="small")
             with columns[1]:
                 st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
                 if isinstance(artifact, str):
