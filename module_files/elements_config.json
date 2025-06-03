@@ -473,7 +473,7 @@
     "required": true,
     "used_templates": ["Ideation"],
     "prompt_name": "prompt_ideastoevaluate",
-    "schema_name": "schema_dfvs",
+    "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 10,
