@@ -631,7 +631,6 @@ def display_artifacts_view(element_selected, element_store):
     deleted_artifacts = []
     for i, artifact in enumerate(artifacts_to_show):
         if i != 0:
-            st.divider()
         with st.container():
             columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
             with columns[1]:
