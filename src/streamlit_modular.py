@@ -793,7 +793,7 @@ def chart_view():
             pan_on_drag=False,
         )
     # Prevent selection of special templates
-    special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
+    special_templates = ["align", "discover", "define", "develop", "deliver", "continue","Empathize", "Define+", "Ideate", "Prototype", "Test"]
     if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"

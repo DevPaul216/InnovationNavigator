@@ -243,6 +243,47 @@
     "connects": [],
     "elements": ["Solution"],
     "display": [{ "format": [1], "height": 600 }]
+  },
+
+  "Empathize": {
+    "display_name": "Empathize",
+    "connects": ["Define+"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Define+": {
+    "display_name": "Define+",
+    "connects": ["Ideate"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Ideate": {
+    "display_name": "Ideate",
+    "connects": ["Prototype"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Prototype": {
+    "display_name": "Prototype",
+    "connects": ["Test"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Test": {
+    "display_name": "Test",
+    "connects": ["Continue"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
   }
 }
 
