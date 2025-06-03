@@ -534,6 +534,9 @@
     "resources": ["documents","websearch","website"]
   },
 
+
+
+
   "IdeaList_group": {
     "display_name": "Idea List",
     "description": "A group containing up to 9 ideas for evaluation.",
@@ -835,10 +838,13 @@
   },
   "Recommendation": {
     "display_name": "Recommendation",
-    "description": "A one-paragraph recommendation based on the idea ratings.",
+    "description": "A short recommendation based on the idea ratings, discussing 1-2 of the best ideas.",
     "required": true,
     "max": 1,
-    "resources": ["documents", "websearch", "website"]
+    "used_templates": ["Idea Comparison"],
+    "resources": ["documents", "websearch", "website"],
+    "prompt_name": "prompt_recommendation",
+    "schema_name": "schema_generic_object"
   },
 
   "ValuePropositionCanvas_Group": {

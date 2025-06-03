@@ -171,7 +171,7 @@
     "required": false,
     "connects": ["Value Proposition Canvas"],
     "elements": ["IdeaList_group","RatingMatrix_group","Recommendation"],
-    "display": [{ "format": [9,9,9,9,9], "height": 1000 },
+    "display": [{ "format": [9,9,9,9,9], "height": 2000 },
                 { "format": [1], "height": 200 }]
   },
 
