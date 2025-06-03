@@ -198,9 +198,16 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             "deliver": "250px",
             "continue": "300px"
         }
+        # For consistent spacing, assign explicit x positions for special templates
+        special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
+        special_template_positions = {}
+        special_spacing = 50  # px, adjust as needed for desired spacing
+        special_start_x = 0
+        for idx, name in enumerate(special_templates):
+            special_template_positions[name] = (special_start_x + idx * special_spacing, 0)
+
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
             if template_name.lower() in special_templates:
                 width = special_template_widths.get(template_name.lower(), "300px")
                 style = {
@@ -209,9 +216,10 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     "padding": "1px",
                     "border": "2px solid #bbb"
                 }
+                pos = special_template_positions.get(template_name.lower(), (0, 0))
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=(0, 0),
+                    pos=pos,
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
