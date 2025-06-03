@@ -277,16 +277,19 @@ def display_generated_artifacts_view(element_name):
         st.write("Nothing to show")
         return
     element_store = sst.data_store[sst.selected_template_name]
-    # --- Make the display ultra-compact ---
-    ultra_compact_style = "padding: 0 0 0 0; margin: 0 0 0 0; border: none; background: none; line-height: 1.2;"
+    # --- Make the display more compact ---
+    compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.2rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        # No divider, no border, no background, minimal padding
+        # Remove st.divider() and use a thin line instead        # Removed divider for maximum compactness
+        # if i != 0:
+        #     st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
+        # Use a more compact container
         with st.container():
-            columns = st.columns([0.05, 3, 0.05, 0.7], gap="extra small")
+            columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
-                st.markdown(f'<div style="{ultra_compact_style}">', unsafe_allow_html=True)
+                st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
                 if isinstance(artifact, str):
-                    st.markdown(f'<span style="font-size:1em;">{artifact}</span>', unsafe_allow_html=True)
+                    st.markdown(artifact)
                 else:
                     st.image(artifact, use_column_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
