@@ -150,7 +150,7 @@
     "display_name": "Idea Generation",
     "description": "Ideation involves generating a diverse range of ideas through structured brainstorming methods, including basic idea generation, the ABC method, and lateral thinking. This process ensures a comprehensive exploration of potential solutions.",
     "required": true,
-    "connects": ["Idea Evaluation"],
+    "connects": ["Idea Evaluation","Idea Comparison"],
     "elements": ["IdeasSimple", "IdeasABC", "Ideas3"],
     "display": [{ "format": [1, 1, 1], "height": 400 }]
   },
@@ -164,6 +164,17 @@
       { "format": [1, 4], "height": 600 },
       { "format": [1], "height": 200 }]
   },
+
+  "Idea Comparison": {
+    "display_name": "Idea Comparison",
+    "description": "This template compares multiple ideas against each other, evaluating them based on criteria such as desirability, feasibility, viability, and sustainability (DFVS). This structured comparison helps identify the most promising solutions for further development.",
+    "required": false,
+    "connects": ["Value Proposition Canvas"],
+    "elements": ["IdeaList", "CategoryList", "RatingMatrix","Recommendation"],
+    "display": [{ "format": [9,9,9,9,9], "height": 1000 },
+                { "format": [1], "height": 200 }]
+  },
+
   "Value Proposition Canvas": {
     "display_name": "Value Proposition Canvas",
     "description": "This template clarifies the fit between your solution and customer needs, explicitly connecting customer pains and gains to the benefits your solution provides. It ensures your innovation effectively meets user requirements and delivers clear value.",

@@ -409,7 +409,6 @@
     "display_name": "Problems and Jobs",
     "description": "A group of elements defining the problems and jobs to be done",
     "required": true,
-    "max": 5,
     "type": "group",
     "used_templates": ["Design Challenge","Customer Persona","Empathy Map"],
     "elements": ["ProblemStatement","JobsToBeDone","IdeasSimple","IdeasABC","Ideas3"],
@@ -425,7 +424,7 @@
     "display_name": "Problem Statement",
     "description": "A clear and concise statement of the problem to be solved",
     "required": true,
-    "max": 10,
+    "max": 5,
     "resources": ["documents","websearch","website"]
   },
 
@@ -433,7 +432,7 @@
     "display_name": "Jobs-To-Be-Done",
     "description": "The jobs or tasks the customer needs to accomplish",
     "required": true,
-    "max": 10,
+    "max": 5,
     "resources": ["documents","websearch","website"]
   },
 
@@ -446,7 +445,7 @@
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
-    "max": 10,
+    "max": 3,
     "resources": ["documents","websearch","website"]
   },
   "IdeasABC": {
@@ -458,7 +457,7 @@
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
-    "max": 10,
+    "max": 3,
     "resources": ["documents","websearch","website"]
   },
   "Ideas3": {
@@ -470,7 +469,7 @@
     "schema_name": "schema_generic_array",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
-    "max": 10,
+    "max": 3,
     "resources": ["documents","websearch","website"]
   },
   "IdeasToEvaluate": {
