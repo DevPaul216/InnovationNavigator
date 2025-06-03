@@ -13,14 +13,14 @@
       },
       "FeedbackRating": {
         "type": "string",
-        "description": "A rating given by the user on a scale from one to ten including a short sentence summarizing their opinion.."
+        "description": "A rating given by the user on a scale from one to ten including a short sentence summarizing their opinion around 50 words long."
       },
       "FeedbackRecommendation": {
         "type": "array",
         "description": "A list of recommended actions or suggestions provided by the user.",
         "items": {
           "type": "string",
-          "description": "A recommended action or suggestion for improving or furthering the product."
+          "description": "A detailed recommended action or suggestion for improving or furthering the product."
         }
       }
     },

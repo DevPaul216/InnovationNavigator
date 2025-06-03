@@ -889,7 +889,7 @@ def general_creation_view(assigned_elements):
             generate_artifacts(element_selected, is_image, generate_now_clicked)
             # --- Auto-assign logic after generation (single and grouped elements) ---
             if generate_now_clicked and auto_assign_max:
-                rerun_needed = False
+                rerun_needed = False  # Ensure rerun_needed is always defined
                 if is_single:
                     generated = sst.generated_artifacts.get(element_selected, {})
                     assigned = element_store[element_selected]
@@ -909,7 +909,6 @@ def general_creation_view(assigned_elements):
                     else:
                         if to_add:
                             assigned.extend(to_add)
-                            update_data_store()
                             rerun_needed = True
                 else:
                     # For grouped elements, iterate over each sub-element
@@ -934,8 +933,9 @@ def general_creation_view(assigned_elements):
                             if to_add:
                                 assigned.extend(to_add)
                                 rerun_needed = True
-            if rerun_needed:
-                update_data_store()
+                if rerun_needed:
+                    update_data_store()
+                    st.rerun()
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()
