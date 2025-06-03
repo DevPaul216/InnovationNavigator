@@ -534,352 +534,640 @@
     "resources": ["documents","websearch","website"]
   },
 
-"IdeaList_Group": {
-  "display_name": "Idea List",
-  "description": "A group containing a list of ideas (idea1, idea2, ..., idea9) to be evaluated.",
-  "required": true,
-  "type": "group",
-  "elements": ["Idea1", "Idea2", "Idea3", "Idea4", "Idea5", "Idea6", "Idea7", "Idea8", "Idea9"],
-  "max": 9,
-  "resources": ["documents","websearch","website"]
-},
-"Idea1": {
-  "display_name": "Idea 1",
-  "description": "The first idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea2": {
-  "display_name": "Idea 2",
-  "description": "The second idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea3": {
-  "display_name": "Idea 3",
-  "description": "The third idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea4": {
-  "display_name": "Idea 4",
-  "description": "The fourth idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea5": {
-  "display_name": "Idea 5",
-  "description": "The fifth idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea6": {
-  "display_name": "Idea 6",
-  "description": "The sixth idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea7": {
-  "display_name": "Idea 7",
-  "description": "The seventh idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea8": {
-  "display_name": "Idea 8",
-  "description": "The eighth idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea9": {
-  "display_name": "Idea 9",
-  "description": "The ninth idea to be evaluated.",
-  "required": false,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"RatingMatrix_Group": {
-  "display_name": "Rating Matrix",
-  "description": "A group containing the evaluation matrix for each idea across Desirability, Feasibility, Viability, and Sustainability (9x4 elements).",
-  "required": true,
-  "type": "group",
-  "elements": [
-    "Idea1_Desirability", "Idea1_Feasibility", "Idea1_Viability", "Idea1_Sustainability",
-    "Idea2_Desirability", "Idea2_Feasibility", "Idea2_Viability", "Idea2_Sustainability",
-    "Idea3_Desirability", "Idea3_Feasibility", "Idea3_Viability", "Idea3_Sustainability",
-    "Idea4_Desirability", "Idea4_Feasibility", "Idea4_Viability", "Idea4_Sustainability",
-    "Idea5_Desirability", "Idea5_Feasibility", "Idea5_Viability", "Idea5_Sustainability",
-    "Idea6_Desirability", "Idea6_Feasibility", "Idea6_Viability", "Idea6_Sustainability",
-    "Idea7_Desirability", "Idea7_Feasibility", "Idea7_Viability", "Idea7_Sustainability",
-    "Idea8_Desirability", "Idea8_Feasibility", "Idea8_Viability", "Idea8_Sustainability",
-    "Idea9_Desirability", "Idea9_Feasibility", "Idea9_Viability", "Idea9_Sustainability"
-  ],
-  "resources": ["documents","websearch","website"]
-},
-"Idea1_Desirability": {
-  "display_name": "Idea 1 Desirability",
-  "description": "Desirability rating for Idea 1.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea1_Feasibility": {
-  "display_name": "Idea 1 Feasibility",
-  "description": "Feasibility rating for Idea 1.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea1_Viability": {
-  "display_name": "Idea 1 Viability",
-  "description": "Viability rating for Idea 1.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea1_Sustainability": {
-  "display_name": "Idea 1 Sustainability",
-  "description": "Sustainability rating for Idea 1.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea2_Desirability": {
-  "display_name": "Idea 2 Desirability",
-  "description": "Desirability rating for Idea 2.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea2_Feasibility": {
-  "display_name": "Idea 2 Feasibility",
-  "description": "Feasibility rating for Idea 2.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea2_Viability": {
-  "display_name": "Idea 2 Viability",
-  "description": "Viability rating for Idea 2.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea2_Sustainability": {
-  "display_name": "Idea 2 Sustainability",
-  "description": "Sustainability rating for Idea 2.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea3_Desirability": {
-  "display_name": "Idea 3 Desirability",
-  "description": "Desirability rating for Idea 3.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea3_Feasibility": {
-  "display_name": "Idea 3 Feasibility",
-  "description": "Feasibility rating for Idea 3.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea3_Viability": {
-  "display_name": "Idea 3 Viability",
-  "description": "Viability rating for Idea 3.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea3_Sustainability": {
-  "display_name": "Idea 3 Sustainability",
-  "description": "Sustainability rating for Idea 3.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea4_Desirability": {
-  "display_name": "Idea 4 Desirability",
-  "description": "Desirability rating for Idea 4.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea4_Feasibility": {
-  "display_name": "Idea 4 Feasibility",
-  "description": "Feasibility rating for Idea 4.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea4_Viability": {
-  "display_name": "Idea 4 Viability",
-  "description": "Viability rating for Idea 4.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea4_Sustainability": {
-  "display_name": "Idea 4 Sustainability",
-  "description": "Sustainability rating for Idea 4.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea5_Desirability": {
-  "display_name": "Idea 5 Desirability",
-  "description": "Desirability rating for Idea 5.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea5_Feasibility": {
-  "display_name": "Idea 5 Feasibility",
-  "description": "Feasibility rating for Idea 5.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea5_Viability": {
-  "display_name": "Idea 5 Viability",
-  "description": "Viability rating for Idea 5.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea5_Sustainability": {
-  "display_name": "Idea 5 Sustainability",
-  "description": "Sustainability rating for Idea 5.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea6_Desirability": {
-  "display_name": "Idea 6 Desirability",
-  "description": "Desirability rating for Idea 6.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea6_Feasibility": {
-  "display_name": "Idea 6 Feasibility",
-  "description": "Feasibility rating for Idea 6.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea6_Viability": {
-  "display_name": "Idea 6 Viability",
-  "description": "Viability rating for Idea 6.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea6_Sustainability": {
-  "display_name": "Idea 6 Sustainability",
-  "description": "Sustainability rating for Idea 6.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea7_Desirability": {
-  "display_name": "Idea 7 Desirability",
-  "description": "Desirability rating for Idea 7.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea7_Feasibility": {
-  "display_name": "Idea 7 Feasibility",
-  "description": "Feasibility rating for Idea 7.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea7_Viability": {
-  "display_name": "Idea 7 Viability",
-  "description": "Viability rating for Idea 7.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea7_Sustainability": {
-  "display_name": "Idea 7 Sustainability",
-  "description": "Sustainability rating for Idea 7.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea8_Desirability": {
-  "display_name": "Idea 8 Desirability",
-  "description": "Desirability rating for Idea 8.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea8_Feasibility": {
-  "display_name": "Idea 8 Feasibility",
-  "description": "Feasibility rating for Idea 8.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea8_Viability": {
-  "display_name": "Idea 8 Viability",
-  "description": "Viability rating for Idea 8.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea8_Sustainability": {
-  "display_name": "Idea 8 Sustainability",
-  "description": "Sustainability rating for Idea 8.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea9_Desirability": {
-  "display_name": "Idea 9 Desirability",
-  "description": "Desirability rating for Idea 9.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea9_Feasibility": {
-  "display_name": "Idea 9 Feasibility",
-  "description": "Feasibility rating for Idea 9.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea9_Viability": {
-  "display_name": "Idea 9 Viability",
-  "description": "Viability rating for Idea 9.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Idea9_Sustainability": {
-  "display_name": "Idea 9 Sustainability",
-  "description": "Sustainability rating for Idea 9.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
-"Recommendation": {
-  "display_name": "Recommendation",
-  "description": "A one-paragraph recommendation based on the evaluation of all ideas.",
-  "required": true,
-  "max": 1,
-  "resources": ["documents","websearch","website"]
-},
+  "IdeaList_group": {
+    "display_name": "Idea List",
+    "description": "A group containing up to 9 ideas for evaluation.",
+    "required": true,
+    "type": "group",
+    "elements": ["Idea1", "Idea2", "Idea3", "Idea4", "Idea5", "Idea6", "Idea7", "Idea8", "Idea9"],
+    "prompt_name": "prompt_idealist",
+    "schema_name": "schema_generic_array",
+    "max": 9,
+    "resources": ["documents", "websearch", "website"]
+  },
+  "Idea1": {
+    "display_name": "Idea 1",
+    "description": "First idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2": {
+    "display_name": "Idea 2",
+    "description": "Second idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3": {
+    "display_name": "Idea 3",
+    "description": "Third idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4": {
+    "display_name": "Idea 4",
+    "description": "Fourth idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5": {
+    "display_name": "Idea 5",
+    "description": "Fifth idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6": {
+    "display_name": "Idea 6",
+    "description": "Sixth idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7": {
+    "display_name": "Idea 7",
+    "description": "Seventh idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8": {
+    "display_name": "Idea 8",
+    "description": "Eighth idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "Idea9": {
+    "display_name": "Idea 9",
+    "description": "Ninth idea to be evaluated.",
+    "required": false,
+    "max": 1
+  },
+  "RatingMatrix_group": {
+    "display_name": "Rating Matrix",
+    "description": "A group containing desirability, feasibility, viability, and sustainability ratings for each idea.",
+    "required": true,
+    "type": "group",
+    "elements": [
+      "Idea1_Desirability", "Idea1_Feasibility", "Idea1_Viability", "Idea1_Sustainability",
+      "Idea2_Desirability", "Idea2_Feasibility", "Idea2_Viability", "Idea2_Sustainability",
+      "Idea3_Desirability", "Idea3_Feasibility", "Idea3_Viability", "Idea3_Sustainability",
+      "Idea4_Desirability", "Idea4_Feasibility", "Idea4_Viability", "Idea4_Sustainability",
+      "Idea5_Desirability", "Idea5_Feasibility", "Idea5_Viability", "Idea5_Sustainability",
+      "Idea6_Desirability", "Idea6_Feasibility", "Idea6_Viability", "Idea6_Sustainability",
+      "Idea7_Desirability", "Idea7_Feasibility", "Idea7_Viability", "Idea7_Sustainability",
+      "Idea8_Desirability", "Idea8_Feasibility", "Idea8_Viability", "Idea8_Sustainability",
+      "Idea9_Desirability", "Idea9_Feasibility", "Idea9_Viability", "Idea9_Sustainability"
+    ],
+    "prompt_name": "prompt_ratingmatrix",
+    "schema_name": "schema_generic_array",
+    "max": 36,
+    "resources": ["documents", "websearch", "website"]
+  },
+  "Idea1_Desirability": {
+    "display_name": "Idea 1 Desirability",
+    "description": "Desirability rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea1_Feasibility": {
+    "display_name": "Idea 1 Feasibility",
+    "description": "Feasibility rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea1_Viability": {
+    "display_name": "Idea 1 Viability",
+    "description": "Viability rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea1_Sustainability": {
+    "display_name": "Idea 1 Sustainability",
+    "description": "Sustainability rating for Idea 1.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Desirability": {
+    "display_name": "Idea 2 Desirability",
+    "description": "Desirability rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Feasibility": {
+    "display_name": "Idea 2 Feasibility",
+    "description": "Feasibility rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Viability": {
+    "display_name": "Idea 2 Viability",
+    "description": "Viability rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea2_Sustainability": {
+    "display_name": "Idea 2 Sustainability",
+    "description": "Sustainability rating for Idea 2.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Desirability": {
+    "display_name": "Idea 3 Desirability",
+    "description": "Desirability rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Feasibility": {
+    "display_name": "Idea 3 Feasibility",
+    "description": "Feasibility rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Viability": {
+    "display_name": "Idea 3 Viability",
+    "description": "Viability rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea3_Sustainability": {
+    "display_name": "Idea 3 Sustainability",
+    "description": "Sustainability rating for Idea 3.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Desirability": {
+    "display_name": "Idea 4 Desirability",
+    "description": "Desirability rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Feasibility": {
+    "display_name": "Idea 4 Feasibility",
+    "description": "Feasibility rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Viability": {
+    "display_name": "Idea 4 Viability",
+    "description": "Viability rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea4_Sustainability": {
+    "display_name": "Idea 4 Sustainability",
+    "description": "Sustainability rating for Idea 4.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Desirability": {
+    "display_name": "Idea 5 Desirability",
+    "description": "Desirability rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Feasibility": {
+    "display_name": "Idea 5 Feasibility",
+    "description": "Feasibility rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Viability": {
+    "display_name": "Idea 5 Viability",
+    "description": "Viability rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea5_Sustainability": {
+    "display_name": "Idea 5 Sustainability",
+    "description": "Sustainability rating for Idea 5.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Desirability": {
+    "display_name": "Idea 6 Desirability",
+    "description": "Desirability rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Feasibility": {
+    "display_name": "Idea 6 Feasibility",
+    "description": "Feasibility rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Viability": {
+    "display_name": "Idea 6 Viability",
+    "description": "Viability rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea6_Sustainability": {
+    "display_name": "Idea 6 Sustainability",
+    "description": "Sustainability rating for Idea 6.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Desirability": {
+    "display_name": "Idea 7 Desirability",
+    "description": "Desirability rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Feasibility": {
+    "display_name": "Idea 7 Feasibility",
+    "description": "Feasibility rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Viability": {
+    "display_name": "Idea 7 Viability",
+    "description": "Viability rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea7_Sustainability": {
+    "display_name": "Idea 7 Sustainability",
+    "description": "Sustainability rating for Idea 7.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Desirability": {
+    "display_name": "Idea 8 Desirability",
+    "description": "Desirability rating for Idea 8.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Feasibility": {
+    "display_name": "Idea 8 Feasibility",
+    "description": "Feasibility rating for Idea 8.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Viability": {
+    "display_name": "Idea 8 Viability",
+    "description": "Viability rating for Idea 8.",
+    "required": false,
+    "max": 1
+  },
+  "Idea8_Sustainability": {
+    "display_name": "Idea 8 Sustainability",
+    "description": "Sustainability rating for Idea 8.",
+    "required": false,
+    "max": 1
+  },
+  "Idea9_Desirability": {
+    "display_name": "Idea 9 Desirability",
+    "description": "Desirability rating for Idea 9.",
+    "required": false,
+    "max": 1
+  },
+  "Idea9_Feasibility": {
+    "display_name": "Idea 9 Feasibility",
+    "description": "Feasibility rating for Idea 9.",
+    "required": false,
+    "max": 1
+  },
+  "Idea9_Viability": {
+    "display_name": "Idea 9 Viability",
+    "description": "Viability rating for Idea 9.",
+    "required": false,
+    "max": 1
+  },
+  "Idea9_Sustainability": {
+    "display_name": "Idea 9 Sustainability",
+    "description": "Sustainability rating for Idea 9.",
+    "required": false,
+    "max": 1
+  },
+  "Recommendation": {
+    "display_name": "Recommendation",
+    "description": "A one-paragraph recommendation based on the idea ratings.",
+    "required": true,
+    "max": 1,
+    "resources": ["documents", "websearch", "website"]
+  },
+
+  "ValuePropositionCanvas_Group": {
+    "display_name": "Value Proposition Canvas",
+    "description": "A group of elements defining the value proposition for the customer",
+    "required": true,
+    "type": "group",
+    "used_templates": ["Idea Evaluation","Customer Persona","Empathy Map"],
+    "elements": ["CustomerJobs","CustomerPains","CustomerGains","ProductsAndServices","PainRelievers","GainCreators"],
+    "prompt_name": "prompt_valuepropositioncanvas",
+    "schema_name": "schema_valuepropositioncanvas",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_valuepropositioncanvas",
+    "resources": ["documents","websearch","website"]
+  },
+  "CustomerJobs": {
+    "display_name": "Customer Jobs",
+    "description": "The tasks or jobs the customer needs to accomplish",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "CustomerPains": {
+    "display_name": "Pains",
+    "description": "The challenges or difficulties faced by the customer",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "CustomerGains": {
+    "display_name": "Gains",
+    "description": "The benefits or value the customer seeks",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "ProductsAndServices": {
+    "display_name": "Products and Services",
+    "description": "The products and services offered to the customer",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "PainRelievers": {
+    "display_name": "Pain Relievers",
+    "description": "Solutions that address customer pains",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "GainCreators": {
+    "display_name": "Gain Creators",
+    "description": "Solutions that create value for the customer",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "BusinessModelCanvas_Group": {
+    "display_name": "Business Model Canvas",
+    "description": "A group of elements defining the business model for delivering value",
+    "required": true,
+    "type": "group",
+    "used_templates": ["Value Proposition Canvas","Strategic Foundation","Resources"],
+    "elements": ["KeyPartnerships","KeyActivities","KeyResources","ValuePropositionSummary","CustomerRelationships","Channels","CustomerSegmentSummary","CostStructure","RevenueStreams"],
+    "prompt_name": "prompt_businessmodelcanvas",
+    "schema_name": "schema_businessmodelcanvas",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_businessmodelcanvas",
+    "resources": ["documents","websearch","website"]
+  },
+  "KeyPartnerships": {
+    "display_name": "Key Partnerships",
+    "description": "The key partnerships required for the business model",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "KeyActivities": {
+    "display_name": "Key Activities",
+    "description": "The key activities required for the business model",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "KeyResources": {
+    "display_name": "Key Resources",
+    "description": "The key resources required for the business model",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "ValuePropositionSummary": {
+    "display_name": "Value Proposition Summary",
+    "description": "A summary of the value proposition",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "CustomerRelationships": {
+    "display_name": "Customer Relationships",
+    "description": "The relationships maintained with customers",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Channels": {
+    "display_name": "Channels",
+    "description": "The channels used to reach customers",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "CustomerSegmentSummary": {
+    "display_name": "Customer Segment Summary",
+    "description": "A summary of the customer segments",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "CostStructure": {
+    "display_name": "Cost Structure",
+    "description": "The cost structure of the business model",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "RevenueStreams": {
+    "display_name": "Revenue Streams",
+    "description": "The revenue streams of the business model",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "TestCard_Group": {
+    "display_name": "Test Card",
+    "description": "A group of elements for designing and testing hypotheses",
+    "required": true,
+    "type": "group",
+    "used_templates": ["Business Model Canvas"],
+    "elements": ["Hypothesis","Test","Metric","Criteria"],
+    "prompt_name": "prompt_testcard",
+    "schema_name": "schema_testcard",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_testcard",
+    "resources": ["documents","websearch","website"]
+  },
+  "Hypothesis": {
+    "display_name": "Hypothesis",
+    "description": "The hypothesis to be tested",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Test": {
+    "display_name": "Test",
+    "description": "The test to validate the hypothesis",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Metric": {
+    "display_name": "Metric",
+    "description": "The metrics used to measure success",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Criteria": {
+    "display_name": "Criteria",
+    "description": "The criteria for evaluating success",
+    "required": true,
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "LikelyOutcome": {
+    "display_name": "Likely Outcome",
+    "description": "The expected results or outcomes of the conducted experiments",
+    "required": true,
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "prompt_name": "prompt_likelyoutcome",
+    "schema_name": "schema_generic_object",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_generic_object",
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+
+ "ProductConcept_Group": {
+    "display_name": "Product Concept Details",
+    "description": "A group of elements defining the product concept for the innovation",
+    "required": true,
+    "type": "group",
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "elements": ["ProductName","ProductDescription","ProductFeatures","ProductBenefits"],
+    "prompt_name": "prompt_productconceptdetails",
+    "schema_name": "schema_productconceptdetails",
+    "resources": ["documents","websearch","website"]
+  },
+
+  "ProductName": {
+    "display_name": "Product Name",
+    "description": "The name of the product being developed",
+    "required": true,
+    "max": 1
+  },
+
+  "ProductDescription": {
+    "display_name": "Product Description",
+    "description": "A detailed description of the product",
+    "required": true,
+    "max": 1
+  },
+
+  "ProductFeatures": {
+    "display_name": "Product Features",
+    "description": "Key features of the product that differentiate it from competitors",
+    "required": true,
+    "max": 5
+  },
+
+  "ProductBenefits": {
+    "display_name": "Product Benefits",
+    "description": "The benefits the product provides to the customer",
+    "required": true,
+    "max": 5
+  },
+
+
+
+  "ProductImage1": {
+    "display_name": "Product Image 1",
+    "description": "An image representing the product concept",
+    "type": "image",
+    "required": false,
+    "resources": ["documents","websearch","website"],
+    "prompt_name": "prompt_productimage1",
+    "max": 1,
+    "used_templates": ["ProductConcept", "Customer Persona"]
+  },
+
+  "ProductImage2": {
+    "display_name": "Product Image 2",
+    "description": "An additional image representing the product concept",
+    "type": "image",
+    "required": false,
+    "prompt_name": "prompt_productimage2",
+    "max": 1,
+    "used_templates": ["ProductConcept", "Customer Persona"]
+  },
+
+  "ProductImage3": {
+    "display_name": "Product Image 3",
+    "description": "Another image representing the product concept",
+    "type": "image",
+    "required": false,
+    "prompt_name": "prompt_productimage3",
+    "max": 1,
+    "used_templates": ["ProductConcept", "Customer Persona"]
+  },
+
+  "UserFeedback_Group": {
+    "display_name": "User Feedback",
+    "description": "A group of elements capturing user feedback on the product concept",
+    "required": false,
+    "type": "group",
+    "used_templates": ["Customer Persona", "ProductConcept", "Value Proposition Canvas"],
+    "elements": ["FeedbackText","FeedbackRating", "FeedbackRecommendation"],
+    "prompt_name": "prompt_userfeedback",
+    "schema_name": "schema_userfeedback"
+  },
+  "FeedbackText": {
+    "display_name": "Feedback Text",
+    "description": "The text of the feedback provided by the user",
+    "required": true,
+    "max": 10
+  },
+
+  "FeedbackRating": {
+    "display_name": "Feedback Rating",
+    "description": "The rating given by the user for the product concept",
+    "required": true,
+    "max": 10
+  },
+
+  "FeedbackRecommendation": {
+      "display_name": "Feedback Recommendation",
+      "description": "Any recommendations or suggestions provided by the user",
+      "required": true,
+      "max": 10
+    },
+
+
+  "Learnings": {
+    "display_name": "Learnings from Innovation Journey",
+    "description": "Insights and lessons learned from the innovation process",
+    "required": false,
+    "used_templates": ["Test Card","Business Model Canvas"],
+    "prompt_name": "prompt_learnings",
+    "schema_name": "schema_generic_array",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_generic_array",
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Impact": {
+    "display_name": "Impact on Business Model",
+    "description": "The effect of the solution on the business model and overall strategy",
+    "required": true,
+    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "prompt_name": "prompt_impact",
+    "schema_name": "schema_generic_array",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_generic_array",
+    "max": 5,
+    "resources": ["documents","websearch","website"]
+  },
+  "Solution": {
+    "display_name": "Solution",
+    "description": "The proposed solution designed to address the identified problem",
+    "required": true,
+    "used_templates": ["Business Model Canvas","Customer Persona","Design Challenge"],
+    "prompt_name": "prompt_solution",
+    "schema_name": "schema_generic_array",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_generic_array",
+    "max": 1,
+    "resources": ["documents","websearch","website"]
+  }
+}
