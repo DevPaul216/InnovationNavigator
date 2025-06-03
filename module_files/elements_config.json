@@ -755,18 +755,7 @@
     "max": 5
   },
 
-  "ProductConceptImages_Group": {
-    "display_name": "Product Concept Images",
-    "description": "Images representing the product concept",
-    "required": false,
-    "type": "group",
-    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
-    "elements": ["ProductImage1","ProductImage2","ProductImage3"],
-    "prompt_name": "prompt_productconceptimages_all",
-    "schema_name": "schema_generic_object",
-    "resources": ["documents","websearch","website"],
-    "max": 5
-  },
+
 
   "ProductImage1": {
     "display_name": "Product Image 1",

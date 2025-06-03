@@ -147,7 +147,7 @@
     "description": "This template captures the essence of your innovation, including its name, description, and key features..",
     "required": true,
     "connects": ["UserFeedback"],
-    "elements": ["ProductConcept_Group", "ProductConceptImages_Group"],
+    "elements": ["ProductConcept_Group", "ProductImage1", "ProductImage2", "ProductImage3"],
     "display": [{ "format": [1], "height": 150},
                 { "format": [1,1,1], "height": 300},
                 { "format": [1,1,1], "height": 500}]
