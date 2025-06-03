@@ -765,7 +765,7 @@
     "resources": ["documents","websearch","website"],
     "prompt_name": "prompt_productimage1",
     "max": 2,
-    "used_templates": ["Product Concept Details", "Customer Persona"]
+    "used_templates": ["ProductConcept", "Customer Persona"]
   },
 
   "ProductImage2": {
@@ -775,7 +775,7 @@
     "required": false,
     "prompt_name": "prompt_productimage2",
     "max": 2,
-    "used_templates": ["Product Concept Details", "Customer Persona"]
+    "used_templates": ["ProductConcept", "Customer Persona"]
   },
 
   "ProductImage3": {
@@ -785,7 +785,7 @@
     "required": false,
     "prompt_name": "prompt_productimage3",
     "max": 2,
-    "used_templates": ["Product Concept Details", "Customer Persona"]
+    "used_templates": ["ProductConcept", "Customer Persona"]
   },
 
   "UserFeedback_Group": {
