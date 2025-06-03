@@ -456,25 +456,11 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     
                     selected_resources[name_display] = resource_text
 
-    # --- GROUP IMAGE GENERATION LOGIC ---
-    if "type" in element_config and element_config["type"] == "group" and generate_now_clicked:
-        # For each sub-element, if it's an image, generate using its own prompt
-        for sub_element in element_config.get("elements", []):
-            sub_config = sst.elements_config.get(sub_element, {})
-            if sub_config.get("type") == "image" and "prompt_name" in sub_config:
-                prompt_name = sub_config["prompt_name"]
-                prompt = load_prompt(prompt_name)
-                if prompt is None:
-                    st.error(f"No prompt assigned for {sub_element}")
-                    continue
-                with st.spinner(f"Generating image for {sub_config.get('display_name', sub_element)}..."):
-                    # You can adjust the number of images per element if needed
-                    generated_images = []
-                    for _ in range(sub_config.get("max", 1)):
-                        generated_image = make_request_image(prompt, additional_information_dict=selected_resources)
-                        generated_images.append(generated_image)
-                    add_to_generated_artifacts(sub_element, generated_images)
-        return  # Skip the rest of the function for group image generation
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    if prompt is None:
+        st.error("There is no prompt assigned")
+        return
 
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)

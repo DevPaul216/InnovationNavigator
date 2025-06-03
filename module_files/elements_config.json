@@ -334,7 +334,7 @@
     "required": false,
     "type": "group",
     "used_templates": ["Resources","Strategic Foundation", "Design Challenge"],
-    "elements": ["MegaTrends","MacroTrends","MesoTrends","MicroTrends"],
+    "elements": ["MegaTrends","MacroTrends","MicroTrends"],
     "prompt_name": "prompt_trends",
     "schema_name": "schema_trends",
     "prompt_name_import": "prompt_import",
@@ -352,13 +352,6 @@
   "MacroTrends": {
     "display_name": "Macro Trends",
     "description": "Broad, multi-year trends that influence entire sectors or regions, often driven by mega trends (e.g., urbanization, digital transformation).",
-    "required": false,
-    "max": 10,
-    "resources": ["documents","websearch","website"]
-  },
-  "MesoTrends": {
-    "display_name": "Meso Trends",
-    "description": "Industry- or market-specific trends that emerge within a particular sector or community, shaping competitive dynamics (e.g., rise of remote work in tech industry).",
     "required": false,
     "max": 10,
     "resources": ["documents","websearch","website"]
