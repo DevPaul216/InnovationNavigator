@@ -733,7 +733,7 @@ def display_template_view(selected_template_name):
     max_characters = 0
     element_names = list(element_store.keys())
     artifact_texts, artifact_images = get_elements_to_show(element_names, element_store, max_characters)
-    vertical_gap = 7
+    vertical_gap = 2
     display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
                              vertical_gap)
 
@@ -881,10 +881,8 @@ def general_creation_view(assigned_elements):
                                     st.subheader(get_config_value(element_name, False))
                                     st.markdown(get_config_value(element_name, False, "description"))
                                     artifact_input_subview(element_name, element_store)
+                                    st.divider()
                                     display_artifacts_view(element_name, element_store)
-                                    # Add a thin divider only between entries, not after the last one
-                                    if position < len(elements_group) - 1:
-                                        st.markdown('<hr style="margin:4px 0 4px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
