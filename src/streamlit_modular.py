@@ -27,7 +27,6 @@ data_store_path = os.path.join("stores", "data_stores")
 COLOR_BLOCKED = "rgb(250, 240, 220)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
-COLOR_PARTLY_COMPLETED = "rgb(255, 220, 100)"  # New color for partly completed
 
 
 def align_data_store():
@@ -205,8 +204,6 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     style = {'background-color': COLOR_BLOCKED, "color": 'black'}
                 elif template_name in completed_templates:
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
-                elif template_name in partly_completed_templates:
-                    style = {'background-color': COLOR_PARTLY_COMPLETED, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
@@ -231,31 +228,20 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
 def init_graph():
     connection_states = {}
     completed_templates = []
-    partly_completed_templates = []
     for template_name, template_config in sst.template_config.items():
         is_fulfilled = True
-        is_partly_fulfilled = False
         is_required = "required" not in template_config or template_config["required"]
         if is_required:
             elements = template_config["elements"]
-            required_count = 0
-            filled_count = 0
             for element_name in elements:
                 element_config = sst.elements_config[element_name]
                 if element_config["required"]:
-                    required_count += 1
                     element_store = sst.data_store[template_name]
                     for element_values in element_store.values():
-                        if element_values is not None and len(element_values) > 0:
-                            filled_count += 1
-                        else:
+                        if element_values is None or len(element_values) == 0:
                             is_fulfilled = False
-            if filled_count > 0 and filled_count < required_count:
-                is_partly_fulfilled = True
         if is_fulfilled:
             completed_templates.append(template_name)
-        elif is_partly_fulfilled:
-            partly_completed_templates.append(template_name)
         for target in template_config["connects"]:
             edge_id = f"{template_name}-{target}"
             connection_states[edge_id] = is_fulfilled
@@ -265,7 +251,7 @@ def init_graph():
         if template_name not in completed_templates or template_name in blocked_templates:
             blocked_templates.extend(connections)
     blocked_templates = list(set(blocked_templates))
-    return connection_states, completed_templates, partly_completed_templates, blocked_templates
+    return connection_states, completed_templates, blocked_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
@@ -768,11 +754,6 @@ def legend_subview():
     with legend_cols[2]:
         st.markdown(
             f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
-            unsafe_allow_html=True,
-        )
-    with legend_cols[3]:
-        st.markdown(
-            f"<div style='background-color: {COLOR_PARTLY_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Partly Completed",
             unsafe_allow_html=True,
         )
 
