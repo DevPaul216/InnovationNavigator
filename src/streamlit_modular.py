@@ -1111,6 +1111,40 @@ def artifact_input_subview(element_selected, element_store):
             st.warning(check)
 
 
+# --- Helper for displaying artifacts ---
+def show_artifacts(element_name, store, is_img=False):
+    # --- Fix: Ensure the element exists in the store ---
+    if element_name not in store:
+        store[element_name] = []
+    artifacts = store[element_name]
+    if not artifacts:
+        st.info("No artifacts assigned yet.")
+        return
+    # Use a more compact grid layout for artifacts
+    n_cols = 1 if is_img else 2  # Images: 1 per row, Text: 2 per row
+    for i in range(0, len(artifacts), n_cols):
+        cols = st.columns(n_cols, gap="small")
+        for j in range(n_cols):
+            idx = i + j
+            if idx >= len(artifacts):
+                break
+            artifact = artifacts[idx]
+            with cols[j]:
+                with st.container(border=True):
+                    # Make the field larger and more readable
+                    if is_img:
+                        st.image(artifact, use_container_width=True)
+                    else:
+                        st.markdown(f'<div style="font-size:1.1em; min-height:70px; padding:0.5em 0.7em; word-break:break-word;">{artifact}</div>', unsafe_allow_html=True)
+                    # Place delete button at the bottom right
+                    st.markdown('<div style="display:flex; justify-content:flex-end; margin-top:0.2em;">' +
+                                st.button(":x:", key=f"del_{element_name}_{idx}").__str__() + '</div>', unsafe_allow_html=True)
+                    if st.session_state.get(f"del_{element_name}_{idx}"):
+                        store[element_name].pop(idx)
+                        update_data_store()
+                        st.rerun()
+
+
 def add_image_to_image_store(element_selected, element_store, image):
     directory_path = './stores/image_store'
     if not os.path.exists(directory_path):
