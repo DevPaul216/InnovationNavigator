@@ -783,30 +783,30 @@ def chart_view():
         sst.sidebar_state = "expanded"
         st.rerun()
 
-    # Overlay a semi-transparent logo on the overview using HTML/CSS (centered, wider, and lower)
-    logo_path = os.path.join("misc", "BackgroundDoubleDiamondPhases.png")
-    if os.path.exists(logo_path):
-        import base64
-        with open(logo_path, "rb") as image_file:
-            encoded = base64.b64encode(image_file.read()).decode()
-        st.markdown(
-            f"""
-            <div style="
-                position: fixed;
-                top: 220px;
-                left: 58%;
-                transform: translateX(-50%);
-                z-index: 9999;
-                pointer-events: none;
-                width: 2100px;
-                display: flex;
-                justify-content: center;
-            ">
-                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 2100px; opacity: 0.18;"/>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    # # Overlay a semi-transparent logo on the overview using HTML/CSS (centered, wider, and lower)
+    # logo_path = os.path.join("misc", "BackgroundDoubleDiamondPhases.png")
+    # if os.path.exists(logo_path):
+    #     import base64
+    #     with open(logo_path, "rb") as image_file:
+    #         encoded = base64.b64encode(image_file.read()).decode()
+    #     st.markdown(
+    #         f"""
+    #         <div style="
+    #             position: fixed;
+    #             top: 220px;
+    #             left: 58%;
+    #             transform: translateX(-50%);
+    #             z-index: 9999;
+    #             pointer-events: none;
+    #             width: 2100px;
+    #             display: flex;
+    #             justify-content: center;
+    #         ">
+    #             <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 2100px; opacity: 0.18;"/>
+    #         </div>
+    #         """,
+    #         unsafe_allow_html=True
+    #     )
 
 
 def element_selection_format_func(item):
