@@ -278,31 +278,37 @@ def display_generated_artifacts_view(element_name):
         return
     element_store = sst.data_store[sst.selected_template_name]
     # --- Make the display more compact ---
-    compact_container_style = "padding: 0.05rem 0.2rem 0.05rem 0.2rem; margin-bottom: 0.01rem; border-radius: 3px; border: 1px solid #eee; background: #fafbfc; line-height: 1.1;"
+    compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.2rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        columns = st.columns([10, 1], gap="small")
-        with columns[0]:
-            st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
-            if isinstance(artifact, str):
-                st.markdown(f'<span style="display:block; margin:0; padding:0; line-height:1.2;">{artifact}</span>', unsafe_allow_html=True)
-            else:
-                st.image(artifact, use_column_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-        with columns[1]:
-            is_assigned = artifact in assigned
-            toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
-            if toggled and not is_assigned:
-                check = check_can_add(element_store, element_name, [artifact])
-                if check is None:
-                    assigned.append(artifact)
+        # Remove st.divider() and use a thin line instead        # Removed divider for maximum compactness
+        # if i != 0:
+        #     st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
+        # Use a more compact container
+        with st.container():
+            columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
+            with columns[1]:
+                st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
+                if isinstance(artifact, str):
+                    st.markdown(artifact)
+                else:
+                    st.image(artifact, use_column_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+            with columns[3]:
+                # Show toggle ON if artifact is assigned, OFF otherwise
+                is_assigned = artifact in assigned
+                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
+                if toggled and not is_assigned:
+                    check = check_can_add(element_store, element_name, [artifact])
+                    if check is None:
+                        assigned.append(artifact)
+                        update_data_store()
+                        st.rerun()
+                    else:
+                        st.warning(check)
+                elif not toggled and is_assigned:
+                    assigned.remove(artifact)
                     update_data_store()
                     st.rerun()
-                else:
-                    st.warning(check)
-            elif not toggled and is_assigned:
-                assigned.remove(artifact)
-                update_data_store()
-                st.rerun()
 
 
 def format_func(option):
@@ -846,38 +852,42 @@ def general_creation_view(assigned_elements):
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
-            # --- Auto-assign logic after generation (single and grouped elements) ---
-            if generate_now_clicked and auto_assign_max:
-                rerun_needed = False
-                if is_single:
-                    generated = sst.generated_artifacts.get(element_selected, {})
-                    assigned = element_store[element_selected]
-                    element_config = sst.elements_config[element_selected]
-                    max_entries = element_config.get("max", len(generated))
+            if generate_now_clicked:
+                with st.spinner("Generating..."):
+                    generate_artifacts(element_selected, is_image, generate_now_clicked)
+            else:
+                generate_artifacts(element_selected, is_image, generate_now_clicked)
+        # --- Auto-assign logic after generation (single and grouped elements) ---
+        if generate_now_clicked and auto_assign_max:
+            rerun_needed = False
+            if is_single:
+                generated = sst.generated_artifacts.get(element_selected, {})
+                assigned = element_store[element_selected]
+                element_config = sst.elements_config[element_selected]
+                max_entries = element_config.get("max", len(generated))
+                new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                to_add = new_artifacts[:max_entries - len(assigned)]
+                if to_add:
+                    assigned.extend(to_add)
+                    update_data_store()
+                    rerun_needed = True
+            else:
+                # For grouped elements, iterate over each sub-element
+                elements_group = element_config["elements"]
+                for group_element in elements_group:
+                    generated = sst.generated_artifacts.get(group_element, {})
+                    assigned = element_store[group_element]
+                    group_element_config = sst.elements_config[group_element]
+                    max_entries = group_element_config.get("max", len(generated))
                     new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
                     to_add = new_artifacts[:max_entries - len(assigned)]
                     if to_add:
                         assigned.extend(to_add)
-                        update_data_store()
                         rerun_needed = True
-                else:
-                    # For grouped elements, iterate over each sub-element
-                    elements_group = element_config["elements"]
-                    for group_element in elements_group:
-                        generated = sst.generated_artifacts.get(group_element, {})
-                        assigned = element_store[group_element]
-                        group_element_config = sst.elements_config[group_element]
-                        max_entries = group_element_config.get("max", len(generated))
-                        new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
-                        to_add = new_artifacts[:max_entries - len(assigned)]
-                        if to_add:
-                            assigned.extend(to_add)
-                            rerun_needed = True
-                    if rerun_needed:
-                        update_data_store()
                 if rerun_needed:
-                    st.rerun()
+                    update_data_store()
+            if rerun_needed:
+                st.rerun()
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()
