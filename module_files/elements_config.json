@@ -780,7 +780,7 @@
     "description": "An image representing the product concept",
     "type": "image",
     "required": false,
-    "prompt_name": "prompt_productconceptimage1",
+    "prompt_name": "prompt_productimage1",
     "max": 2
   },
 
@@ -789,7 +789,7 @@
     "description": "An additional image representing the product concept",
     "type": "image",
     "required": false,
-    "prompt_name": "prompt_productconceptimage2",
+    "prompt_name": "prompt_productimage2",
     "max": 2
   },
 
@@ -798,7 +798,7 @@
     "description": "Another image representing the product concept",
     "type": "image",
     "required": false,
-    "prompt_name": "prompt_productconceptimage3",
+    "prompt_name": "prompt_productimage3",
     "max": 2
   },
 
