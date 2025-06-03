@@ -1,0 +1,21 @@
+{
+  "name": "idealist",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Ideas": {
+        "type": "array",
+        "description": "A list of up to 9 ideas for evaluation.",
+        "items": {
+          "type": "string",
+          "description": "An idea described in max 10 words."
+        }
+      }
+    },
+    "required": [
+      "Ideas"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}
