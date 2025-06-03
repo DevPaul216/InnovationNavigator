@@ -194,7 +194,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             # Special formatting for key templates
             special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
             if template_name.lower() in special_templates:
-                style = {"backgroundColor": "white", "width": "400px", "padding": "1px", "border": "2px solid #bbb"}
+                style = {"backgroundColor": "white", "width": "350px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
                     pos=(0, 0),
