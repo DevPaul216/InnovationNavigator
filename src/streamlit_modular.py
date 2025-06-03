@@ -191,7 +191,23 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            if template_name == "Start":
+            # Special formatting for key templates
+            special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
+            if template_name.lower() in special_templates:
+                style = {"backgroundColor": "white", "width": "180px", "padding": "1px", "border": "2px solid #bbb"}
+                node = StreamlitFlowNode(
+                    id=str(template_name),
+                    pos=(0, 0),
+                    data={'content': f"{template_display_name}"},
+                    node_type="default",
+                    source_position="right",
+                    target_position="left",
+                    style=style,
+                    draggable=False,
+                    focusable=False,
+                    selectable=False
+                )
+            elif template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
