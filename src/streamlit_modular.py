@@ -1035,17 +1035,13 @@ def template_edit_subview():
     if assigned_elements is not None and len(assigned_elements) > 0:
         # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
-        # Place Generate now and Remove all artifacts buttons in a row
-        button_cols = st.columns([1, 1])
-        with button_cols[0]:
-            st.session_state["template_generate_now"] = st.button("Generate now!", type="primary", use_container_width=True, key="template_generate_now_btn")
-        with button_cols[1]:
-            if st.button("Remove all artifacts from this template", type="secondary", use_container_width=True):
-                element_store = sst.data_store.get(sst.selected_template_name, {})
-                for key in element_store:
-                    element_store[key] = []
-                update_data_store()
-                st.rerun()
+        # Move the button here, below the template view but above the divider
+        if st.button("Remove all artifacts from this template", type="secondary"):
+            element_store = sst.data_store.get(sst.selected_template_name, {})
+            for key in element_store:
+                element_store[key] = []
+            update_data_store()
+            st.rerun()
         st.divider()
         function = view_assignment_dict["general"]
         if sst.selected_template_name in view_assignment_dict:
