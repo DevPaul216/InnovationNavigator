@@ -290,7 +290,7 @@ def display_generated_artifacts_view(element_name):
         return
     element_store = sst.data_store[sst.selected_template_name]
     # --- Make the display more compact ---
-    compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.2rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
+    compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.2rem; margin-bottom: 0.2rem; border-radius: 1px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
         # Remove st.divider() and use a thin line instead        # Removed divider for maximum compactness
         # if i != 0:
@@ -699,7 +699,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                         element_name = element_names[position]
                         # if element_name in artifact_images:
                         #    height_single = None
-                        with st.container(border=True):
+                        with st.container(border=True, height=height_single):
                             # with stylable_container(key="sc_" + str(position), css_styles=container_css):
                             container = st.container(border=False)
                             sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
@@ -879,7 +879,7 @@ def general_creation_view(assigned_elements):
                         for number_subrows in range(0, sub_row):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
-                                with st.container(border=True):
+                                with st.container(border=True, height=height_single):
                                     # Combine name and description in a single line
                                     element_config = sst.elements_config[element_name]
                                     display_name = element_name
@@ -989,7 +989,7 @@ def general_creation_view(assigned_elements):
                         for number_subrows in range(0, sub_row):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
-                                with st.container(border=True):
+                                with st.container(border=True, height=height_single):
                                     # Combine name and description in a single line
                                     element_config = sst.elements_config[element_name]
                                     display_name = element_name
