@@ -4,124 +4,43 @@
     "type": "object",
     "properties": {
       "Idea1": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "First idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "First idea to be evaluated."
       },
       "Idea2": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Second idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Second idea to be evaluated."
       },
       "Idea3": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Third idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Third idea to be evaluated."
       },
       "Idea4": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Fourth idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Fourth idea to be evaluated."
       },
       "Idea5": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Fifth idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Fifth idea to be evaluated."
       },
       "Idea6": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Sixth idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Sixth idea to be evaluated."
       },
       "Idea7": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Seventh idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Seventh idea to be evaluated."
       },
       "Idea8": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Eighth idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Eighth idea to be evaluated."
       },
       "Idea9": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "Ninth idea to be evaluated."
-          }
-        },
-        "required": [
-          "value"
-        ],
-        "additionalProperties": false
+        "type": "string",
+        "description": "Ninth idea to be evaluated."
       }
     },
     "additionalProperties": false
   },
-  "strict": false
+  "strict": true
 }
