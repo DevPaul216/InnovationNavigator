@@ -534,21 +534,6 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
             else:
                 handle_response_image(element_name, prompt, selected_resources)
 
-        # --- AUTO-GENERATE SPECIAL ELEMENTS IF CONFIGURED ---
-        # Only trigger if this is a group element and not already auto-generating
-        if not is_image and "auto_generate" in element_config:
-            for auto_element in element_config["auto_generate"]:
-                auto_config = sst.elements_config.get(auto_element)
-                if auto_config is not None:
-                    auto_prompt_name = auto_config.get("prompt_name")
-                    auto_schema_name = auto_config.get("schema_name")
-                    auto_prompt = load_prompt(auto_prompt_name) if auto_prompt_name else None
-                    auto_schema = load_schema(auto_schema_name) if auto_schema_name else None
-                    if auto_prompt and auto_schema:
-                        # Use the current selected_resources as context
-                        handle_response(auto_element, auto_prompt, auto_schema, selected_resources, temperature, top_p)
-    # ...existing code...
-
 
 def import_artifacts(element_name):
     element_config = sst.elements_config[element_name]
@@ -812,6 +797,13 @@ def general_creation_view(assigned_elements):
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+    # --- Add slide-toggle for auto-assign max artifacts ---
+    auto_assign_max = st.toggle(
+        "Auto-assign max allowed artifacts after generation",
+        key="auto_assign_max_toggle",
+        value=False,
+        help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+    )
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_single = True
@@ -858,6 +850,19 @@ def general_creation_view(assigned_elements):
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
             generate_artifacts(element_selected, is_image, generate_now_clicked)
+            # --- Auto-assign logic after generation (single elements only) ---
+            if is_single and generate_now_clicked and auto_assign_max:
+                generated = sst.generated_artifacts.get(element_selected, {})
+                assigned = element_store[element_selected]
+                element_config = sst.elements_config[element_selected]
+                max_entries = element_config.get("max", len(generated))
+                # Only add if not already assigned
+                new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                to_add = new_artifacts[:max_entries - len(assigned)]
+                if to_add:
+                    assigned.extend(to_add)
+                    update_data_store()
+                    st.rerun()
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()

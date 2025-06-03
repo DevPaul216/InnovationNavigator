@@ -44,8 +44,7 @@
     "schema_name": "schema_resources",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_resources",
-    "resources": ["documents","websearch","website"],
-    "auto_generate": ["ResourcesCombined"]
+    "resources": ["documents","websearch","website"]
   },
   "Physical Resources": {
     "display_name": "Physical Resources",
