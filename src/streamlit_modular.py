@@ -763,11 +763,11 @@ def chart_view():
             <div style="
                 position: fixed;
                 top: 220px;
-                left: 60%;
+                left: 50%;
                 transform: translateX(-50%);
                 z-index: 9999;
                 pointer-events: none;
-                width: 2000px;
+                width: 2200px;
                 display: flex;
                 justify-content: center;
             ">
