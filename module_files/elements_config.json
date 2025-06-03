@@ -762,8 +762,10 @@
     "description": "An image representing the product concept",
     "type": "image",
     "required": false,
+    "resources": ["documents","websearch","website"],
     "prompt_name": "prompt_productimage1",
-    "max": 2
+    "max": 2,
+    "used_templates": ["Product Concept Details", "Customer Persona"]
   },
 
   "ProductImage2": {
@@ -772,7 +774,8 @@
     "type": "image",
     "required": false,
     "prompt_name": "prompt_productimage2",
-    "max": 2
+    "max": 2,
+    "used_templates": ["Product Concept Details", "Customer Persona"]
   },
 
   "ProductImage3": {
@@ -781,7 +784,8 @@
     "type": "image",
     "required": false,
     "prompt_name": "prompt_productimage3",
-    "max": 2
+    "max": 2,
+    "used_templates": ["Product Concept Details", "Customer Persona"]
   },
 
   "UserFeedback_Group": {
