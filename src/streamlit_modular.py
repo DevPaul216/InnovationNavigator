@@ -189,12 +189,26 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
+        # Define individual widths for special templates
+        special_template_widths = {
+            "align": "350px",
+            "discover": "300px",
+            "define": "150px",
+            "develop": "300px",
+            "deliver": "250px",
+            "continue": "300px"
+        }
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            # Special formatting for key templates
             special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
             if template_name.lower() in special_templates:
-                style = {"backgroundColor": "white", "width": "300px", "padding": "1px", "border": "2px solid #bbb"}
+                width = special_template_widths.get(template_name.lower(), "300px")
+                style = {
+                    "backgroundColor": "white",
+                    "width": width,
+                    "padding": "1px",
+                    "border": "2px solid #bbb"
+                }
                 node = StreamlitFlowNode(
                     id=str(template_name),
                     pos=(0, 0),
@@ -229,7 +243,6 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             nodes.append(node)
         edges = []
         for source, value in sst.template_config.items():
-            # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
                 connection_state = connection_states[edge_id]
