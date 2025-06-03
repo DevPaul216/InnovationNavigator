@@ -767,11 +767,11 @@ def chart_view():
                 transform: translateX(-50%);
                 z-index: 9999;
                 pointer-events: none;
-                width: 2200px;
+                width: 2000px;
                 display: flex;
                 justify-content: center;
             ">
-                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 1800px; opacity: 0.18;"/>
+                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 2000px; opacity: 0.18;"/>
             </div>
             """,
             unsafe_allow_html=True
