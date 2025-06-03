@@ -767,7 +767,7 @@ def chart_view():
                 transform: translateX(-50%);
                 z-index: 9999;
                 pointer-events: none;
-                width: 1500px;
+                width: 1800px;
                 display: flex;
                 justify-content: center;
             ">
