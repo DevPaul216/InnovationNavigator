@@ -731,7 +731,8 @@ def display_template_view(selected_template_name):
     element_store = sst.data_store[selected_template_name]
     selected_template_config = sst.template_config[selected_template_name]
     max_characters = 0
-    element_names = list(element_store.keys())
+    # Use the order from the template config's 'elements' array
+    element_names = selected_template_config["elements"]
     artifact_texts, artifact_images = get_elements_to_show(element_names, element_store, max_characters)
     vertical_gap = 7
     display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
