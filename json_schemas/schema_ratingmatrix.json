@@ -1,0 +1,52 @@
+{
+  "name": "ratingmatrix",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Idea1_Desirability": { "type": "string", "description": "" },
+      "Idea2_Desirability": { "type": "string", "description": "" },
+      "Idea3_Desirability": { "type": "string", "description": "" },
+      "Idea4_Desirability": { "type": "string", "description": "" },
+      "Idea5_Desirability": { "type": "string", "description": "" },
+      "Idea6_Desirability": { "type": "string", "description": "" },
+      "Idea7_Desirability": { "type": "string", "description": "" },
+      "Idea8_Desirability": { "type": "string", "description": "" },
+      "Idea9_Desirability": { "type": "string", "description": "" },
+      "Idea1_Feasibility": { "type": "string", "description": "" },
+      "Idea2_Feasibility": { "type": "string", "description": "" },
+      "Idea3_Feasibility": { "type": "string", "description": "" },
+      "Idea4_Feasibility": { "type": "string", "description": "" },
+      "Idea5_Feasibility": { "type": "string", "description": "" },
+      "Idea6_Feasibility": { "type": "string", "description": "" },
+      "Idea7_Feasibility": { "type": "string", "description": "" },
+      "Idea8_Feasibility": { "type": "string", "description": "" },
+      "Idea9_Feasibility": { "type": "string", "description": "" },
+      "Idea1_Viability": { "type": "string", "description": "" },
+      "Idea2_Viability": { "type": "string", "description": "" },
+      "Idea3_Viability": { "type": "string", "description": "" },
+      "Idea4_Viability": { "type": "string", "description": "" },
+      "Idea5_Viability": { "type": "string", "description": "" },
+      "Idea6_Viability": { "type": "string", "description": "" },
+      "Idea7_Viability": { "type": "string", "description": "" },
+      "Idea8_Viability": { "type": "string", "description": "" },
+      "Idea9_Viability": { "type": "string", "description": "" },
+      "Idea1_Sustainability": { "type": "string", "description": "" },
+      "Idea2_Sustainability": { "type": "string", "description": "" },
+      "Idea3_Sustainability": { "type": "string", "description": "" },
+      "Idea4_Sustainability": { "type": "string", "description": "" },
+      "Idea5_Sustainability": { "type": "string", "description": "" },
+      "Idea6_Sustainability": { "type": "string", "description": "" },
+      "Idea7_Sustainability": { "type": "string", "description": "" },
+      "Idea8_Sustainability": { "type": "string", "description": "" },
+      "Idea9_Sustainability": { "type": "string", "description": "" }
+    },
+    "required": [
+      "Idea1_Desirability", "Idea2_Desirability", "Idea3_Desirability", "Idea4_Desirability", "Idea5_Desirability", "Idea6_Desirability", "Idea7_Desirability", "Idea8_Desirability", "Idea9_Desirability",
+      "Idea1_Feasibility", "Idea2_Feasibility", "Idea3_Feasibility", "Idea4_Feasibility", "Idea5_Feasibility", "Idea6_Feasibility", "Idea7_Feasibility", "Idea8_Feasibility", "Idea9_Feasibility",
+      "Idea1_Viability", "Idea2_Viability", "Idea3_Viability", "Idea4_Viability", "Idea5_Viability", "Idea6_Viability", "Idea7_Viability", "Idea8_Viability", "Idea9_Viability",
+      "Idea1_Sustainability", "Idea2_Sustainability", "Idea3_Sustainability", "Idea4_Sustainability", "Idea5_Sustainability", "Idea6_Sustainability", "Idea7_Sustainability", "Idea8_Sustainability", "Idea9_Sustainability"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}
