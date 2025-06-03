@@ -197,7 +197,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                 style = {"backgroundColor": "white", "width": "300px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=(0, 0),
+                    pos=(100, 0),
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
