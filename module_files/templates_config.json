@@ -34,7 +34,7 @@
   },
   "Deliver": {
     "display_name": "Deliver",
-    "connects": ["Align"],
+    "connects": ["Continue"],
     "description": "",
     "required": false,
     "elements": [],
