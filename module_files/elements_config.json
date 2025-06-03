@@ -89,8 +89,8 @@
     "type": "group",
     "used_templates": ["Resources", "Strategic Foundation", "Problem"],
     "elements": ["HowMightWe", "StrategyCombined", "ResourcesCombined"],
-    "prompt_name": "prompt_designchallangegroup",
-    "schema_name": "schema_designchallange",
+    "prompt_name": "prompt_designchallenge",
+    "schema_name": "schema_designchallenge",
     "resources": ["documents","websearch","website"]
   },
 
