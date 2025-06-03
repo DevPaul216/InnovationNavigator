@@ -753,7 +753,7 @@ def chart_view():
         st.rerun()
 
     # Overlay a semi-transparent logo on the overview using HTML/CSS (centered, wider, and lower)
-    logo_path = os.path.join("misc", "DoubleDiamondPhases.png")
+    logo_path = os.path.join("misc", "BackgroundDoubleDiamondPhases.png")
     if os.path.exists(logo_path):
         import base64
         with open(logo_path, "rb") as image_file:
