@@ -897,10 +897,20 @@ def general_creation_view(assigned_elements):
                     max_entries = element_config.get("max", len(generated))
                     new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
                     to_add = new_artifacts[:max_entries - len(assigned)]
-                    if to_add:
-                        assigned.extend(to_add)
-                        update_data_store()
-                        rerun_needed = True
+                    # --- Fix for images: save BytesIO to disk and store path ---
+                    if is_image:
+                        for artifact in to_add:
+                            if not isinstance(artifact, str):
+                                add_image_to_image_store(element_selected, element_store, artifact)
+                                rerun_needed = True
+                            else:
+                                assigned.append(artifact)
+                                rerun_needed = True
+                    else:
+                        if to_add:
+                            assigned.extend(to_add)
+                            update_data_store()
+                            rerun_needed = True
                 else:
                     # For grouped elements, iterate over each sub-element
                     elements_group = element_config["elements"]
@@ -911,13 +921,21 @@ def general_creation_view(assigned_elements):
                         max_entries = group_element_config.get("max", len(generated))
                         new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
                         to_add = new_artifacts[:max_entries - len(assigned)]
-                        if to_add:
-                            assigned.extend(to_add)
-                            rerun_needed = True
-                    if rerun_needed:
-                        update_data_store()
-                if rerun_needed:
-                    st.rerun()
+                        # --- Fix for images in groups ---
+                        if group_element_config.get("type") == "image":
+                            for artifact in to_add:
+                                if not isinstance(artifact, str):
+                                    add_image_to_image_store(group_element, element_store, artifact)
+                                    rerun_needed = True
+                                else:
+                                    assigned.append(artifact)
+                                    rerun_needed = True
+                        else:
+                            if to_add:
+                                assigned.extend(to_add)
+                                rerun_needed = True
+            if rerun_needed:
+                update_data_store()
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()

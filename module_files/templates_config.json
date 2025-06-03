@@ -159,9 +159,9 @@
     "description": "Ask you user for feedback about your current product.",
     "required": false,
     "connects": ["InnovationLearnings"],
-    "elements": ["Portrait", "ProductImage1", "UserFeedback_Group"],
-    "display": [{ "format": [1,1], "height": 600},
-                { "format": [1,1,1], "height": 300 }]
+    "elements": ["UserFeedback_Group", "Portrait", "ProductImage1"],
+    "display": [{ "format": [1,1,1], "height": 300 },
+      { "format": [1,1], "height": 600}]
   },
 
 

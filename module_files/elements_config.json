@@ -793,7 +793,7 @@
     "description": "A group of elements capturing user feedback on the product concept",
     "required": false,
     "type": "group",
-    "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
+    "used_templates": ["Customer Persona", "ProductConcept", "Value Proposition Canvas"],
     "elements": ["FeedbackText","FeedbackRating", "FeedbackRecommendation"],
     "prompt_name": "prompt_userfeedback",
     "schema_name": "schema_userfeedback"
@@ -802,21 +802,21 @@
     "display_name": "Feedback Text",
     "description": "The text of the feedback provided by the user",
     "required": true,
-    "max": 1
+    "max": 10
   },
 
   "FeedbackRating": {
     "display_name": "Feedback Rating",
     "description": "The rating given by the user for the product concept",
     "required": true,
-    "max": 1
+    "max": 10
   },
 
   "FeedbackRecommendation": {
       "display_name": "Feedback Recommendation",
       "description": "Any recommendations or suggestions provided by the user",
       "required": true,
-      "max": 1
+      "max": 10
     },
 
 
