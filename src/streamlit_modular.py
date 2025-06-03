@@ -631,13 +631,14 @@ def display_artifacts_view(element_selected, element_store):
     deleted_artifacts = []
     for i, artifact in enumerate(artifacts_to_show):
         if i != 0:
-        with st.container():
-            columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
-            with columns[1]:
-                st.markdown(artifact)
-            with columns[3]:
-                if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
-                    deleted_artifacts.append(artifact)
+            # st.divider()
+            with st.container():
+                columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
+                with columns[1]:
+                    st.markdown(artifact)
+                with columns[3]:
+                    if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
+                        deleted_artifacts.append(artifact)
 
     remaining_artifacts = [artifact for artifact in artifacts_to_show if artifact not in deleted_artifacts]
     element_store[element_selected] = remaining_artifacts
