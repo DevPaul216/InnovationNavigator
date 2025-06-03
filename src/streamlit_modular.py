@@ -699,7 +699,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                         element_name = element_names[position]
                         # if element_name in artifact_images:
                         #    height_single = None
-                        with st.container(border=True, height=height_single):
+                        with st.container(border=True):
                             # with stylable_container(key="sc_" + str(position), css_styles=container_css):
                             container = st.container(border=False)
                             sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
@@ -879,7 +879,7 @@ def general_creation_view(assigned_elements):
                         for number_subrows in range(0, sub_row):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
-                                with st.container(border=True, height=height_single):
+                                with st.container(border=True):
                                     # Combine name and description in a single line
                                     element_config = sst.elements_config[element_name]
                                     display_name = element_name
@@ -989,7 +989,7 @@ def general_creation_view(assigned_elements):
                         for number_subrows in range(0, sub_row):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
-                                with st.container(border=True, height=height_single):
+                                with st.container(border=True):
                                     # Combine name and description in a single line
                                     element_config = sst.elements_config[element_name]
                                     display_name = element_name
