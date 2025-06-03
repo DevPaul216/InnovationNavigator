@@ -666,6 +666,9 @@ def get_elements_to_show(element_names, element_store, max_characters):
     artifact_images = {}
     for element_name in element_names:
         element_config = sst.elements_config[element_name]
+        # Ensure the element exists in the store, else initialize as empty list
+        if element_name not in element_store:
+            element_store[element_name] = []
         if 'type' in element_config and element_config['type'] == 'image':
             image_file = None
             if len(element_store[element_name]) > 0:
