@@ -729,8 +729,8 @@
     "type": "group",
     "used_templates": ["Test Card","Business Model Canvas","InnovationLearnings"],
     "elements": ["ProductName","ProductDescription","ProductFeatures","ProductBenefits"],
-    "prompt_name": "prompt_generic",
-    "schema_name": "schema_generic_object",
+    "prompt_name": "prompt_productconceptdetails",
+    "schema_name": "schema_productconceptdetails",
     "resources": ["documents","websearch","website"]
   },
 

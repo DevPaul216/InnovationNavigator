@@ -1,0 +1,42 @@
+{
+    "name": "product_concept_details",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "ProductName": {
+                "type": "string",
+                "description": "The name of the product being developed."
+            },
+            "ProductDescription": {
+                "type": "string",
+                "description": "A detailed description of the product."
+            },
+            "ProductFeatures": {
+                "type": "array",
+                "description": "Key features of the product that differentiate it from competitors.",
+                "items": {
+                    "type": "string",
+                    "description": "A specific feature of the product."
+                },
+                "maxItems": 5
+            },
+            "ProductBenefits": {
+                "type": "array",
+                "description": "The benefits the product provides to the customer.",
+                "items": {
+                    "type": "string",
+                    "description": "A specific benefit of the product."
+                },
+                "maxItems": 5
+            }
+        },
+        "required": [
+            "ProductName",
+            "ProductDescription",
+            "ProductFeatures",
+            "ProductBenefits"
+        ],
+        "additionalProperties": false
+    },
+    "strict": true
+}

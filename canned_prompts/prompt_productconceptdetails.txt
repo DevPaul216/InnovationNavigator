@@ -1,0 +1,2 @@
+You will be provided with a range of inforamtion regarding a product.
+Your job is to generate a detailed descriptions of the product in multiple ways
