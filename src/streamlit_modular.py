@@ -280,9 +280,9 @@ def display_generated_artifacts_view(element_name):
     # --- Make the display more compact ---
     compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.5rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        # Remove st.divider() and use a thin line instead
-        if i != 0:
-            st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
+        # Remove st.divider() and use a thin line instead        # Removed divider for maximum compactness
+        # if i != 0:
+        #     st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
         # Use a more compact container
         with st.container():
             columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
