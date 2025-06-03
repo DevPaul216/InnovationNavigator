@@ -200,8 +200,18 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             "continue": 300
         }
         special_gap = 20  # px between special nodes
+
+        # Calculate starting x so that the first special node is at 0,
+        # and each subsequent node is placed after the previous node's width + gap
         special_x = 0
-        for i, template_name in enumerate(sst.template_config.keys()):
+        special_node_positions = {}
+        for template_name in sst.template_config.keys():
+            if template_name.lower() in special_templates:
+                width_px = special_template_widths.get(template_name.lower(), 300)
+                special_node_positions[template_name] = special_x
+                special_x += width_px + special_gap
+
+        for template_name in sst.template_config.keys():
             template_display_name = get_config_value(template_name)
             if template_name.lower() in special_templates:
                 width_px = special_template_widths.get(template_name.lower(), 300)
@@ -213,7 +223,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                 }
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=(special_x, 0),
+                    pos=(special_node_positions[template_name], 0),
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
@@ -223,7 +233,6 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     focusable=False,
                     selectable=False
                 )
-                special_x += width_px + special_gap
             elif template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
