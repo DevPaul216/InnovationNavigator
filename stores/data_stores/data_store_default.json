@@ -20,13 +20,13 @@
     },
     "Design Challenge": {
         "HowMightWe": {},
-        "ResourcesCombined": {},
-        "StrategyCombined": {}
+        "StrategyCombined": {},
+        "ResourcesCombined": {}
     },
     "Customer Persona": {
-        "Name": {},
         "Demographics": {},
         "About": {},
+        "Name": {},
         "Problem_Attitude": {},
         "Pains": {},
         "Gains": {},
@@ -113,11 +113,12 @@
         "ProductImage3": {}
     },
     "UserFeedback": {
-        "Portrait": {},
-        "ProductImage1": {},
         "FeedbackText": {},
         "FeedbackRating": {},
-        "FeedbackRecommendation": {}
+        "FeedbackRecommendation": {},
+        "Portrait": {},
+        "ProductImage1": {},
+        "ProductImage2": {}
     },
     "InnovationLearnings": {
         "Learnings": {},

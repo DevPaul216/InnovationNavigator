@@ -13,12 +13,12 @@
       },
       "StrategyCombined": {
         "type": "string",
-        "description": "A short sumamrizing intorduction to the company or organization and its strategic goals."
+        "description": "A short sumamrizing intorduction to the company or organization and its strategic goals around 50-100 words long."
 
       },
       "ResourcesCombined": {
         "type": "string",
-        "description": "A short sumamrizing introduction to the resources available to the company or organization, including financial, human, and technological resources."
+        "description": "A short sumamrizing introduction to the resources available to the company or organization, including financial, human, and technological resources around 50-100 words long."
 
       }
     },
