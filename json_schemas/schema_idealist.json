@@ -40,7 +40,7 @@
         "description": "Ninth idea to be evaluated."
       }
     },
-    "required": [],
+    "required": ["Idea1", "Idea2", "Idea3", "Idea4", "Idea5", "Idea6", "Idea7", "Idea8", "Idea9"],
     "additionalProperties": false
   },
   "strict": true
