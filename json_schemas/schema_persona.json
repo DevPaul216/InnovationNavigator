@@ -32,12 +32,8 @@
         }
       },
       "Problem_Attitude": {
-        "type": "array",
-        "description": "An array of up to five different items describing how the persona feels or behaves toward the problem or challenge they face.",
-        "items": {
-          "type": "string",
-          "description": "A specific attitude or behavior toward the problem."
-        }
+        "type": "String",
+        "description": "A short statement describing the personas character in genral and thier attitude towards the problem they face. This should be a single paragrpah of around 50 words that captures the essence of their mindset or approach to challenges.",
       },
       "Quote": {
         "type": "array",

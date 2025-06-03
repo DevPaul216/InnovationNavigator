@@ -163,7 +163,7 @@
     "required": true,
     "type": "group",
     "used_templates": ["Problem","Design Challenge"],
-    "elements": ["Demographics","About","Name","Problem_Attitude","Pains","Gains","Quote"],
+    "elements": ["Name","Demographics","Quote","Problem_Attitude","About","Pains","Gains"],
     "prompt_name": "prompt_persona",
     "schema_name": "schema_persona",
     "prompt_name_import": "prompt_import",

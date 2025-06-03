@@ -789,7 +789,7 @@ def chart_view():
             get_node_on_click=True,
             get_edge_on_click=False,
             show_controls=True,
-            allow_zoom=False,
+            allow_zoom=True,
             pan_on_drag=False,
         )
     # Prevent selection of special templates
