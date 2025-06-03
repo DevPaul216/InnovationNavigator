@@ -942,6 +942,30 @@ def general_creation_view(assigned_elements):
         if is_single:
             st.subheader("Generated Artifacts")
             display_generated_artifacts_view(element_selected)
+            # --- Auto-assign logic: runs if toggle is on and there are unassigned generated artifacts ---
+            if auto_assign_max:
+                rerun_needed = False
+                generated = sst.generated_artifacts.get(element_selected, {})
+                assigned = element_store[element_selected]
+                element_config = sst.elements_config[element_selected]
+                max_entries = element_config.get("max", len(generated))
+                new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                to_add = new_artifacts[:max_entries - len(assigned)]
+                if is_image:
+                    for artifact in to_add:
+                        if not isinstance(artifact, str):
+                            add_image_to_image_store(element_selected, element_store, artifact)
+                            rerun_needed = True
+                        else:
+                            assigned.append(artifact)
+                            rerun_needed = True
+                else:
+                    if to_add:
+                        assigned.extend(to_add)
+                        rerun_needed = True
+                if rerun_needed:
+                    update_data_store()
+                    st.rerun()
         else:
             # --- ORDER FOR GROUPED ELEMENTS (Generate/Import) ---
             # elements_group order comes from the template config's 'elements' list
@@ -964,6 +988,31 @@ def general_creation_view(assigned_elements):
                                     display_generated_artifacts_view(element_name)
                                     st.divider()
                                 position += 1
+            # --- Auto-assign for grouped elements ---
+            if auto_assign_max:
+                rerun_needed = False
+                for group_element in elements_group:
+                    generated = sst.generated_artifacts.get(group_element, {})
+                    assigned = element_store[group_element]
+                    group_element_config = sst.elements_config[group_element]
+                    max_entries = group_element_config.get("max", len(generated))
+                    new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                    to_add = new_artifacts[:max_entries - len(assigned)]
+                    if group_element_config.get("type") == "image":
+                        for artifact in to_add:
+                            if not isinstance(artifact, str):
+                                add_image_to_image_store(group_element, element_store, artifact)
+                                rerun_needed = True
+                            else:
+                                assigned.append(artifact)
+                                rerun_needed = True
+                    else:
+                        if to_add:
+                            assigned.extend(to_add)
+                            rerun_needed = True
+                if rerun_needed:
+                    update_data_store()
+                    st.rerun()
     if is_single:
         st.divider()
         if not is_image:

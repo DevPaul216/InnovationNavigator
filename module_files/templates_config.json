@@ -49,8 +49,8 @@
     "connects": ["Empathy Map"],
     "elements": ["Persona_Group", "Portrait"],
     "display": [
-      { "format": [1, 2, 2], "height": 700 },
-      { "format": [1, 1, 1], "height": 300 }]
+      { "format": [1, 1, 1], "height": 700 },
+      { "format": [2, 2, 1], "height": 300 }]
   },
   "Empathy Map": {
     "display_name": "Empathy Map",
