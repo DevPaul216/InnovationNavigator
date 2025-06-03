@@ -96,7 +96,7 @@ def make_request_structured(prompt_text, additional_information_dict=None, image
     return completion.choices[0].message.content
 
 
-def make_request_image(prompt, model="dall-e-3", additional_information_dict=None):
+def make_request_image(prompt, model="gpt-image-1", additional_information_dict=None):
     openai_api_key = get_openai_api_key()
     if additional_information_dict is not None and len(additional_information_dict) > 0:
         prompt += "\nPlease also consider the following pieces of information for this task:\n"
@@ -108,7 +108,7 @@ def make_request_image(prompt, model="dall-e-3", additional_information_dict=Non
         model=model,
         prompt=prompt,
         size="1024x1024",
-        quality="low",
+        quality="standard",
         n=1
     )
 
