@@ -10,7 +10,7 @@
   },
   "Define": {
     "display_name": "Define",
-    "connects": ["Ideate"]
+    "connects": ["Develop"]
   },
   "Develop": {
     "display_name": "Develop",
