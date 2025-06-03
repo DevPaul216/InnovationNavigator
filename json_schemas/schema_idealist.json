@@ -40,6 +40,7 @@
         "description": "Ninth idea to be evaluated."
       }
     },
+    "required": [],
     "additionalProperties": false
   },
   "strict": true
