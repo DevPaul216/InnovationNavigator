@@ -763,7 +763,7 @@ def chart_view():
             <div style="
                 position: fixed;
                 top: 220px;
-                left: 50%;
+                left: 25%;
                 transform: translateX(-50%);
                 z-index: 9999;
                 pointer-events: none;
@@ -771,7 +771,7 @@ def chart_view():
                 display: flex;
                 justify-content: center;
             ">
-                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 1200px; opacity: 0.18;"/>
+                <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 1800px; opacity: 0.18;"/>
             </div>
             """,
             unsafe_allow_html=True
