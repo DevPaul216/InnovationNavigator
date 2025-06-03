@@ -22,7 +22,7 @@
     },
     "required": [
       "JobsToBeDone",
-      "Problem"
+      "ProblemStatement"
     ],
     "additionalProperties": false
   },
