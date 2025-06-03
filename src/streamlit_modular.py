@@ -689,7 +689,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                 if artifact_images[element_name] is not None:
                                     container.image(artifact_images[element_name])
                                 else:
-                                    text_to_show = ":heavy_exclamation_mark: Kein Bild zum Anzeigen vorhanden"
+                                    text_to_show = ":heavy_exclamation_mark: No image available :heavy_exclamation_mark:"
                                     st.markdown(text_to_show)
                             position += 1
 
@@ -807,6 +807,8 @@ def general_creation_view(assigned_elements):
             is_image = True
         else:
             is_single = False
+    selected_template_config = sst.template_config[sst.selected_template_name]
+    vertical_gap = 7
     if creation_mode == "Manual":
         if is_single:
             with st.container(border=True):
@@ -815,24 +817,27 @@ def general_creation_view(assigned_elements):
                 else:
                     image_input_subview(element_selected, element_store)
         else:
+            # Use the same layout as display_elements_subview
             elements_group = element_config["elements"]
-            elements_group_copy = elements_group.copy()
             position = 0
-            max_elements_row = 2
-            columns_inner = st.columns(max_elements_row)
-            while len(elements_group_copy) > 0:
-                with columns_inner[position]:
-                    with st.container(border=True):
-                        element_name = elements_group_copy.pop(0)
-                        st.subheader(get_config_value(element_name, False))
-                        st.markdown(get_config_value(element_name, False, "description"))
-                        artifact_input_subview(element_name, element_store)
-                        st.divider()
-                        display_artifacts_view(element_name, element_store)
-                        position += 1
-                if position >= max_elements_row:
-                    columns_inner = st.columns(max_elements_row)
-                    position = 0
+            for row_config in selected_template_config['display']:
+                sub_rows = row_config['format']
+                height = row_config['height']
+                number_cols = len(sub_rows)
+                cols = st.columns(number_cols, vertical_alignment='center')
+                for col, sub_row in zip(cols, sub_rows):
+                    with col:
+                        height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                        for number_subrows in range(0, sub_row):
+                            if position < len(elements_group):
+                                element_name = elements_group[position]
+                                with st.container(border=True, height=height_single):
+                                    st.subheader(get_config_value(element_name, False))
+                                    st.markdown(get_config_value(element_name, False, "description"))
+                                    artifact_input_subview(element_name, element_store)
+                                    st.divider()
+                                    display_artifacts_view(element_name, element_store)
+                                position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
             generate_artifacts(element_selected, is_image, generate_now_clicked)
@@ -843,24 +848,26 @@ def general_creation_view(assigned_elements):
             st.subheader("Generated Artifacts")
             display_generated_artifacts_view(element_selected)
         else:
+            # Use the same layout as display_elements_subview
             elements_group = element_config["elements"]
-            elements_group_copy = elements_group.copy()
             position = 0
-            max_elements_row = 2
-            columns_inner = st.columns(max_elements_row)
-            while len(elements_group_copy) > 0:
-                with columns_inner[position]:
-                    with st.container(border=True):
-                        element_name = elements_group_copy.pop(0)
-                        st.subheader(get_config_value(element_name, False))
-                        st.markdown(get_config_value(element_name, False, "description"))
-                        display_generated_artifacts_view(element_name)
-                        st.divider()
-                        position += 1
-                if position >= max_elements_row and len(elements_group_copy) > 0:
-                    number_columns = min(max_elements_row, len(elements_group_copy))
-                    columns_inner = st.columns(number_columns)
-                    position = 0
+            for row_config in selected_template_config['display']:
+                sub_rows = row_config['format']
+                height = row_config['height']
+                number_cols = len(sub_rows)
+                cols = st.columns(number_cols, vertical_alignment='center')
+                for col, sub_row in zip(cols, sub_rows):
+                    with col:
+                        height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                        for number_subrows in range(0, sub_row):
+                            if position < len(elements_group):
+                                element_name = elements_group[position]
+                                with st.container(border=True, height=height_single):
+                                    st.subheader(get_config_value(element_name, False))
+                                    st.markdown(get_config_value(element_name, False, "description"))
+                                    display_generated_artifacts_view(element_name)
+                                    st.divider()
+                                position += 1
     if is_single:
         st.divider()
         if not is_image:
