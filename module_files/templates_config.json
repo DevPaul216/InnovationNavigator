@@ -37,7 +37,7 @@
     "description": "This template translates your innovation problem into clear and actionable \"How Might We\" questions. These questions set the stage for creative exploration, guiding your team’s brainstorming while ensuring relevance to the original issue.",
     "required": true,
     "connects": ["Customer Persona", "PESTEL-Analysis", "Trends"],
-    "elements": ["HowMightWe", "ResourcesCombined", "StrategyCombined"],
+    "elements": ["DesignChallenge_Group"],
     "display": [
       { "format": [1], "height": 200 },
       { "format": [1, 1], "height": 400 }]

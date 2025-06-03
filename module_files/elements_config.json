@@ -81,6 +81,19 @@
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
+
+  "DesignChallenge_Group": {
+    "display_name": "Combined Resources Group",
+    "description": "A group containing How-Might-We Questions, Resources Combined, and Strategy Combined elements.",
+    "required": false,
+    "type": "group",
+    "used_templates": ["Resources", "Strategic Foundation", "Problem"],
+    "elements": ["HowMightWe", "StrategyCombined", "ResourcesCombined"],
+    "prompt_name": "prompt_designchallangegroup",
+    "schema_name": "schema_designchallange",
+    "resources": ["documents","websearch","website"]
+  },
+
   "HowMightWe": {
     "display_name": "How-Might-We Questions",
     "description": "Solution-oriented questions that frame the problem in an actionable way",
@@ -94,7 +107,7 @@
     "resources": ["documents","websearch","website"]
   },
   "ResourcesCombined": {
-    "display_name": "Summary of available resources",
+    "display_name": "What we have available",
     "description": "A summary of all available resources",
     "required": false,
     "used_templates": ["Resources"],
@@ -106,7 +119,7 @@
     "resources": ["documents","websearch","website"]
   },
   "StrategyCombined": {
-    "display_name": "Strategic Foundation of Organization",
+    "display_name": "Who we are...",
     "description": "The strategic foundation of the organization",
     "required": false,
     "used_templates": ["Strategic Foundation"],
@@ -117,6 +130,7 @@
     "max": 2,
     "resources": ["documents","websearch","website"]
   },
+
   "StrategicFoundation_Group": {
     "display_name": "Strategic Foundation",
     "description": "A group of elements defining the organization's strategic foundation",
@@ -158,6 +172,9 @@
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
+
+
+
   "Persona_Group": {
     "display_name": "Customer Persona",
     "description": "A group of elements defining a customer persona for innovation purposes",

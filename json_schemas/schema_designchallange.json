@@ -1,0 +1,36 @@
+{
+  "name": "design_challenge_group",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "HowMightWe": {
+        "type": "array",
+        "description": "A list of solution-oriented 'How Might We' questions that frame the problem in an actionable way.",
+        "items": {
+          "type": "string",
+          "description": "A single 'How Might We' question."
+        },
+        "maxItems": 10
+      },
+      "StrategyCombined": {
+        "type": "object",
+        "description": "A summary of the strategic foundation of the organization.",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "ResourcesCombined": {
+        "type": "object",
+        "description": "A summary of all available resources.",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "required": [
+      "HowMightWe",
+      "StrategyCombined",
+      "ResourcesCombined"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}
