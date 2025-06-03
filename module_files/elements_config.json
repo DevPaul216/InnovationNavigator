@@ -99,36 +99,21 @@
     "description": "Solution-oriented questions that frame the problem in an actionable way",
     "required": true,
     "used_templates": ["Problem"],
-    "prompt_name": "prompt_howmightwe",
-    "schema_name": "schema_generic_array",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_array",
-    "max": 10,
-    "resources": ["documents","websearch","website"]
+    "max": 10
   },
   "ResourcesCombined": {
     "display_name": "What we have available",
     "description": "A summary of all available resources",
     "required": false,
     "used_templates": ["Resources"],
-    "prompt_name": "prompt_resourcescombined",
-    "schema_name": "schema_generic_object",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_object",
-    "max": 1,
-    "resources": ["documents","websearch","website"]
+    "max": 1
   },
   "StrategyCombined": {
     "display_name": "Who we are...",
     "description": "The strategic foundation of the organization",
     "required": false,
     "used_templates": ["Strategic Foundation"],
-    "prompt_name": "prompt_strategycombined",
-    "schema_name": "schema_generic_object",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_object",
-    "max": 2,
-    "resources": ["documents","websearch","website"]
+    "max": 2
   },
 
   "StrategicFoundation_Group": {

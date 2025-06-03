@@ -9,8 +9,7 @@
         "items": {
           "type": "string",
           "description": "A single 'How Might We' question."
-        },
-        "maxItems": 10
+        }
       },
       "StrategyCombined": {
         "type": "object",
