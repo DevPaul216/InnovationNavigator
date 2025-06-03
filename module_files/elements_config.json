@@ -542,7 +542,7 @@
     "used_templates": ["Ideation"],
     "elements": ["Idea1", "Idea2", "Idea3", "Idea4", "Idea5", "Idea6", "Idea7", "Idea8", "Idea9"],
     "prompt_name": "prompt_ideastoevaluate",
-    "schema_name": "schema_generic_object",
+    "schema_name": "schema_idealist",
     "max": 9,
     "resources": ["documents", "websearch", "website"]
   },

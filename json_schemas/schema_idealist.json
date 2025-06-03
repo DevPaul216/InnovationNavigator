@@ -1,20 +1,18 @@
 {
-  "name": "IdeaList_group",
+  "name": "idealist",
   "schema": {
     "type": "object",
     "properties": {
-      "Ideas": {
-        "type": "array",
-        "description": "A list of up to 9 ideas for evaluation.",
-        "items": {
-          "type": "string",
-          "description": "An idea described in max 10 words."
-        }
-      }
+      "Idea1": { "type": "string", "description": "First idea to be evaluated." },
+      "Idea2": { "type": "string", "description": "Second idea to be evaluated." },
+      "Idea3": { "type": "string", "description": "Third idea to be evaluated." },
+      "Idea4": { "type": "string", "description": "Fourth idea to be evaluated." },
+      "Idea5": { "type": "string", "description": "Fifth idea to be evaluated." },
+      "Idea6": { "type": "string", "description": "Sixth idea to be evaluated." },
+      "Idea7": { "type": "string", "description": "Seventh idea to be evaluated." },
+      "Idea8": { "type": "string", "description": "Eighth idea to be evaluated." },
+      "Idea9": { "type": "string", "description": "Ninth idea to be evaluated." }
     },
-    "required": [
-      "Ideas"
-    ],
     "additionalProperties": false
   },
   "strict": true
