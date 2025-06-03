@@ -567,7 +567,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                 handle_response_image(element_name, prompt, selected_resources)
 
 
-def import_artifacts(element_name):
+def import_artifacts(element_name, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
     if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
         st.write("Not available for this element")
