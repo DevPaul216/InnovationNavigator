@@ -286,7 +286,7 @@ def display_generated_artifacts_view(element_name):
                 if isinstance(artifact, str):
                     st.markdown(artifact)
                 else:
-                    st.write(artifact)
+                    st.image(artifact)
             with columns[3]:
                 # Show toggle ON if artifact is assigned, OFF otherwise
                 is_assigned = artifact in assigned
