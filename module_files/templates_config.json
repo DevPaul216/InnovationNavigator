@@ -2,23 +2,52 @@
   
   "Align": {
     "display_name": "Align",
-    "connects": ["Discover"]
+    "connects": ["Discover"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
   },
   "Discover": {
     "display_name": "Discover",
-    "connects": ["Define"]
+    "connects": ["Define"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
   },
   "Define": {
     "display_name": "Define",
-    "connects": ["Develop"]
+    "connects": ["Develop"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
   },
   "Develop": {
     "display_name": "Develop",
-    "connects": ["Deliver"]
+    "connects": ["Deliver"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
   },
   "Deliver": {
     "display_name": "Deliver",
-    "connects": ["Align"]
+    "connects": ["Align"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+
+  "Continue": {
+    "display_name": "Continue",
+    "connects": [],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
   },
 
   "Start": {
