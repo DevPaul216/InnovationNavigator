@@ -124,6 +124,18 @@ def get_full_data_store_path():
 def update_data_store():
     # Synchronize shared elements before saving
     synchronize_shared_elements(sst.data_store, sst.elements_config, sst.template_config)
+    # --- Fix: Remove any BytesIO objects before saving ---
+    for template, element_store in sst.data_store.items():
+        for element, values in element_store.items():
+            if isinstance(values, list):
+                filtered = []
+                for v in values:
+                    if hasattr(v, 'getvalue') and callable(v.getvalue):
+                        # This is a BytesIO or similar, skip it and warn
+                        print(f"Warning: Skipping BytesIO object in {template} -> {element}")
+                        continue
+                    filtered.append(v)
+                element_store[element] = filtered
     full_path = get_full_data_store_path()
     with open(full_path, "w", encoding="utf-8") as file:
         json.dump(sst.data_store, file, indent=4)
@@ -291,7 +303,7 @@ def display_generated_artifacts_view(element_name):
                 if isinstance(artifact, str):
                     st.markdown(artifact)
                 else:
-                    st.image(artifact, use_column_width=True)
+                    st.image(artifact, use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             with columns[3]:
                 # Show toggle ON if artifact is assigned, OFF otherwise
@@ -1239,7 +1251,7 @@ def open_sidebar():
         st.rerun()
 
     # button to open Data Store Browser
-    if st.sidebar.button(label="Browse Collected Information", type="secondary", use_container_width=True):
+    if st.sidebar.button(label="Database", type="secondary", use_container_width=True):
         sst.selected_template_name = None
         sst.current_view = "datastore_browser"
         sst.sidebar_state = "expanded"

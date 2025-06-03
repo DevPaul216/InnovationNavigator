@@ -764,7 +764,7 @@
     "required": false,
     "resources": ["documents","websearch","website"],
     "prompt_name": "prompt_productimage1",
-    "max": 2,
+    "max": 1,
     "used_templates": ["ProductConcept", "Customer Persona"]
   },
 
@@ -774,7 +774,7 @@
     "type": "image",
     "required": false,
     "prompt_name": "prompt_productimage2",
-    "max": 2,
+    "max": 1,
     "used_templates": ["ProductConcept", "Customer Persona"]
   },
 
@@ -784,7 +784,7 @@
     "type": "image",
     "required": false,
     "prompt_name": "prompt_productimage3",
-    "max": 2,
+    "max": 1,
     "used_templates": ["ProductConcept", "Customer Persona"]
   },
 

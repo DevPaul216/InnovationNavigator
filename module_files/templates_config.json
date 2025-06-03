@@ -150,7 +150,7 @@
     "elements": ["ProductConcept_Group", "ProductImage1", "ProductImage2", "ProductImage3"],
     "display": [{ "format": [1], "height": 150},
                 { "format": [1,1,1], "height": 300},
-                { "format": [1,1,1], "height": 500}]
+                { "format": [1,1,1], "height": 800}]
   },
 
 

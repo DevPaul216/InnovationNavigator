@@ -9,7 +9,8 @@
         "Human Resources": {},
         "Financial Resources": {},
         "Intellectual Property": {},
-        "KnowHow and Information": {}
+        "KnowHow and Information": {},
+        "ResourcesCombined": {}
     },
     "Strategic Foundation": {
         "Organization Name": {},
@@ -23,21 +24,21 @@
         "StrategyCombined": {}
     },
     "Customer Persona": {
-        "Portrait": {},
         "Name": {},
         "Demographics": {},
         "About": {},
         "Problem_Attitude": {},
         "Pains": {},
         "Gains": {},
-        "Quote": {}
+        "Quote": {},
+        "Portrait": {}
     },
     "Empathy Map": {
         "ThinkFeel": {},
         "Hear": {},
+        "Pains": {},
         "See": {},
         "SayDo": {},
-        "Pains": {},
         "Gains": {}
     },
     "PESTEL-Analysis": {
@@ -51,7 +52,6 @@
     "Trends": {
         "MegaTrends": {},
         "MacroTrends": {},
-        "MesoTrends": {},
         "MicroTrends": {}
     },
     "SWOT-Analysis": {
