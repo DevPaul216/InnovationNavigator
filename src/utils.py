@@ -108,7 +108,7 @@ def make_request_image(prompt, model="gpt-image-1", additional_information_dict=
         model=model,
         prompt=prompt,
         size="1024x1024",
-        quality="standard",
+        quality="low",
         n=1
     )
 
