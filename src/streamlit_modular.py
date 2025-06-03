@@ -277,16 +277,22 @@ def display_generated_artifacts_view(element_name):
         st.write("Nothing to show")
         return
     element_store = sst.data_store[sst.selected_template_name]
+    # --- Make the display more compact ---
+    compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.5rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
+        # Remove st.divider() and use a thin line instead
         if i != 0:
-            st.divider()
+            st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
+        # Use a more compact container
         with st.container():
-            columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
+            columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
+                st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
                 if isinstance(artifact, str):
                     st.markdown(artifact)
                 else:
-                    st.image(artifact)
+                    st.image(artifact, use_column_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
             with columns[3]:
                 # Show toggle ON if artifact is assigned, OFF otherwise
                 is_assigned = artifact in assigned
@@ -294,10 +300,7 @@ def display_generated_artifacts_view(element_name):
                 if toggled and not is_assigned:
                     check = check_can_add(element_store, element_name, [artifact])
                     if check is None:
-                        if isinstance(artifact, str):
-                            assigned.append(artifact)
-                        else:
-                            add_image_to_image_store(element_name, element_store, artifact)
+                        assigned.append(artifact)
                         update_data_store()
                         st.rerun()
                     else:

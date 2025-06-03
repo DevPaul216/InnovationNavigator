@@ -75,7 +75,7 @@
     "required": false,
     "connects": ["SWOT-Analysis"],
     "elements": ["Trend_Group"],
-    "display": [{ "format": [4], "height": 1200 }]
+    "display": [{ "format": [3], "height": 1200 }]
   },
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",

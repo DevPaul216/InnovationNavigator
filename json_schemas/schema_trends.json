@@ -19,14 +19,6 @@
           "description": "A macro trend."
         }
       },
-      "MesoTrends": {
-        "type": "array",
-        "description": "Trends at the organizational or community level (e.g., company culture shifts, local partnerships).",
-        "items": {
-          "type": "string",
-          "description": "A meso trend."
-        }
-      },
       "MicroTrends": {
         "type": "array",
         "description": "Specific, emerging patterns or behaviors (e.g., adoption of a new tool, changes in customer preferences).",
