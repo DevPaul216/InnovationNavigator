@@ -800,7 +800,16 @@ def general_creation_view(assigned_elements):
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    # --- Add slide-toggle for auto-assign max artifacts ---
+
+    with columns[3]:
+            if generate_now_clicked:
+                with st.spinner("Generating..."):
+                    add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+                    if not is_image:
+                        handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+                    else:
+                        handle_response_image(element_name, prompt, selected_resources)
+            # --- Add slide-toggle for auto-assign max artifacts ---
     auto_assign_max = st.toggle(
         "Auto-assign max allowed artifacts after generation",
         key="auto_assign_max_toggle",
@@ -852,42 +861,38 @@ def general_creation_view(assigned_elements):
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            if generate_now_clicked:
-                with st.spinner("Generating..."):
-                    generate_artifacts(element_selected, is_image, generate_now_clicked)
-            else:
-                generate_artifacts(element_selected, is_image, generate_now_clicked)
-        # --- Auto-assign logic after generation (single and grouped elements) ---
-        if generate_now_clicked and auto_assign_max:
-            rerun_needed = False
-            if is_single:
-                generated = sst.generated_artifacts.get(element_selected, {})
-                assigned = element_store[element_selected]
-                element_config = sst.elements_config[element_selected]
-                max_entries = element_config.get("max", len(generated))
-                new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
-                to_add = new_artifacts[:max_entries - len(assigned)]
-                if to_add:
-                    assigned.extend(to_add)
-                    update_data_store()
-                    rerun_needed = True
-            else:
-                # For grouped elements, iterate over each sub-element
-                elements_group = element_config["elements"]
-                for group_element in elements_group:
-                    generated = sst.generated_artifacts.get(group_element, {})
-                    assigned = element_store[group_element]
-                    group_element_config = sst.elements_config[group_element]
-                    max_entries = group_element_config.get("max", len(generated))
+            generate_artifacts(element_selected, is_image, generate_now_clicked)
+            # --- Auto-assign logic after generation (single and grouped elements) ---
+            if generate_now_clicked and auto_assign_max:
+                rerun_needed = False
+                if is_single:
+                    generated = sst.generated_artifacts.get(element_selected, {})
+                    assigned = element_store[element_selected]
+                    element_config = sst.elements_config[element_selected]
+                    max_entries = element_config.get("max", len(generated))
                     new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
                     to_add = new_artifacts[:max_entries - len(assigned)]
                     if to_add:
                         assigned.extend(to_add)
+                        update_data_store()
                         rerun_needed = True
+                else:
+                    # For grouped elements, iterate over each sub-element
+                    elements_group = element_config["elements"]
+                    for group_element in elements_group:
+                        generated = sst.generated_artifacts.get(group_element, {})
+                        assigned = element_store[group_element]
+                        group_element_config = sst.elements_config[group_element]
+                        max_entries = group_element_config.get("max", len(generated))
+                        new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                        to_add = new_artifacts[:max_entries - len(assigned)]
+                        if to_add:
+                            assigned.extend(to_add)
+                            rerun_needed = True
+                    if rerun_needed:
+                        update_data_store()
                 if rerun_needed:
-                    update_data_store()
-            if rerun_needed:
-                st.rerun()
+                    st.rerun()
         if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
         st.divider()
