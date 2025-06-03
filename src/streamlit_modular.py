@@ -688,12 +688,12 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
     # Each iteration add a row to the display
     for row_config in selected_template_config['display']:
         sub_rows = row_config['format']
-        height = row_config['height']
+        # height = row_config['height']
         number_cols = len(sub_rows)
         cols = st.columns(number_cols, vertical_alignment='center')
         for col, sub_row in zip(cols, sub_rows):
             with col:
-                height_single = int(height / sub_row) - (sub_row - 1)
+                height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
                 for number_subrows in range(0, sub_row):
                     if position < len(element_names):
                         element_name = element_names[position]
