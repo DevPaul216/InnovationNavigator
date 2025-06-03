@@ -98,22 +98,19 @@
     "display_name": "How-Might-We Questions",
     "description": "Solution-oriented questions that frame the problem in an actionable way",
     "required": true,
-    "used_templates": ["Problem"],
-    "max": 10
+    "max": 5
   },
   "ResourcesCombined": {
     "display_name": "What we have available",
     "description": "A summary of all available resources",
     "required": false,
-    "used_templates": ["Resources"],
     "max": 1
   },
   "StrategyCombined": {
     "display_name": "Who we are...",
     "description": "The strategic foundation of the organization",
     "required": false,
-    "used_templates": ["Strategic Foundation"],
-    "max": 2
+    "max": 1
   },
 
   "StrategicFoundation_Group": {
