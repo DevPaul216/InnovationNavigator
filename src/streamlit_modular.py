@@ -278,37 +278,33 @@ def display_generated_artifacts_view(element_name):
         return
     element_store = sst.data_store[sst.selected_template_name]
     # --- Make the display more compact ---
-    compact_container_style = "padding: 0.2rem 0.5rem 0.2rem 0.2rem; margin-bottom: 0.2rem; border-radius: 6px; border: 1px solid #eee; background: #fafbfc;"
+    compact_container_style = "padding: 0.1rem 0.2rem 0.1rem 0.2rem; margin-bottom: 0.05rem; border-radius: 4px; border: 1px solid #eee; background: #fafbfc;"
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        # Remove st.divider() and use a thin line instead        # Removed divider for maximum compactness
-        # if i != 0:
-        #     st.markdown('<hr style="margin:2px 0 2px 0; border:0; border-top:1px solid #eee;"/>', unsafe_allow_html=True)
-        # Use a more compact container
-        with st.container():
-            columns = st.columns([0.01, 2.5, 0.2, 1], gap="small")
-            with columns[1]:
-                st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
-                if isinstance(artifact, str):
-                    st.markdown(artifact)
-                else:
-                    st.image(artifact, use_column_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-            with columns[3]:
-                # Show toggle ON if artifact is assigned, OFF otherwise
-                is_assigned = artifact in assigned
-                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
-                if toggled and not is_assigned:
-                    check = check_can_add(element_store, element_name, [artifact])
-                    if check is None:
-                        assigned.append(artifact)
-                        update_data_store()
-                        st.rerun()
-                    else:
-                        st.warning(check)
-                elif not toggled and is_assigned:
-                    assigned.remove(artifact)
+        # Use a more compact container with no leading empty column
+        columns = st.columns([6, 1], gap="small")
+        with columns[0]:
+            st.markdown(f'<div style="{compact_container_style}">', unsafe_allow_html=True)
+            if isinstance(artifact, str):
+                st.markdown(artifact)
+            else:
+                st.image(artifact, use_column_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+        with columns[1]:
+            # Show toggle ON if artifact is assigned, OFF otherwise
+            is_assigned = artifact in assigned
+            toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
+            if toggled and not is_assigned:
+                check = check_can_add(element_store, element_name, [artifact])
+                if check is None:
+                    assigned.append(artifact)
                     update_data_store()
                     st.rerun()
+                else:
+                    st.warning(check)
+            elif not toggled and is_assigned:
+                assigned.remove(artifact)
+                update_data_store()
+                st.rerun()
 
 
 def format_func(option):
