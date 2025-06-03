@@ -649,25 +649,21 @@ def get_elements_to_show(element_names, element_store, max_characters):
     return artifact_texts, artifact_images
 
 
-def display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
-                             vertical_gap):
-    position = 0
-    # Each iteration add a row to the display
+def display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config, vertical_gap):
+    # Arrange elements row by row (row-major order)
+    element_idx = 0
     for row_config in selected_template_config['display']:
         sub_rows = row_config['format']
         height = row_config['height']
         number_cols = len(sub_rows)
         cols = st.columns(number_cols, vertical_alignment='center')
-        for col, sub_row in zip(cols, sub_rows):
+        for col_idx, (col, sub_row) in enumerate(zip(cols, sub_rows)):
             with col:
                 height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                for number_subrows in range(0, sub_row):
-                    if position < len(element_names):
-                        element_name = element_names[position]
-                        # if element_name in artifact_images:
-                        #    height_single = None
+                for sub_row_idx in range(sub_row):
+                    if element_idx < len(element_names):
+                        element_name = element_names[element_idx]
                         with st.container(border=True, height=height_single):
-                            # with stylable_container(key="sc_" + str(position), css_styles=container_css):
                             container = st.container(border=False)
                             sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
                             with sub_columns[1]:
@@ -691,7 +687,7 @@ def display_elements_subview(artifact_texts, artifact_images, element_names, sel
                                 else:
                                     text_to_show = ":heavy_exclamation_mark: Kein Bild zum Anzeigen vorhanden"
                                     st.markdown(text_to_show)
-                            position += 1
+                        element_idx += 1
 
 
 def display_template_view(selected_template_name):
