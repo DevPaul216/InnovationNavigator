@@ -801,15 +801,7 @@ def general_creation_view(assigned_elements):
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
 
-    with columns[3]:
-            if generate_now_clicked:
-                with st.spinner("Generating..."):
-                    add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
-                    if not is_image:
-                        handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
-                    else:
-                        handle_response_image(element_name, prompt, selected_resources)
-            # --- Add slide-toggle for auto-assign max artifacts ---
+        # --- Add slide-toggle for auto-assign max artifacts ---
     auto_assign_max = st.toggle(
         "Auto-assign max allowed artifacts after generation",
         key="auto_assign_max_toggle",
