@@ -460,7 +460,7 @@ def handle_response_image(element_name, prompt, selected_resources):
     add_to_generated_artifacts(element_name, generated_images)
 
 
-def generate_artifacts(element_name, is_image=False, generate_now_clicked=False):
+def generate_artifacts(element_name, is_image=False, generate_now_clicked=False, home_url=None, query=None, number_entries_used=None, uploaded_files=None):
     element_config = sst.elements_config[element_name]
     required_items = element_config['used_templates']
     selected_resources = {}
@@ -513,9 +513,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         st.error("There is no prompt assigned")
         return
 
-    # --- Show resource selection view IMMEDIATELY (not in expander) ---
-    st.markdown("**Add external information source:**")
-    home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+    # Resource selection view is now handled in general_creation_view and passed as arguments
 
     schema = None   
      
@@ -835,7 +833,7 @@ def element_selection_format_func(item):
 
 def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
-    columns = st.columns([1, 1, 1, 2], vertical_alignment="center")
+    columns = st.columns([1, 1, 2, 1, 2], vertical_alignment="center")
     with columns[0]:
         # The order of elements in the selectbox is determined by the order of 'assigned_elements',
         # which comes from the 'elements' list in the template config (templates_config.json)
@@ -844,15 +842,19 @@ def general_creation_view(assigned_elements):
                                         format_func=element_selection_format_func)
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
-    # Move Generate Now! button to the right of select mode
+    # Move resource selector right next to mode selector
+    home_url = query = number_entries_used = uploaded_files = None
+    if creation_mode == "Generate":
+        with columns[2]:
+            st.markdown("**Add external information source:**")
+            home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
     generate_now_clicked = False
-    with columns[2]:
+    with columns[3]:
         if creation_mode == "Generate":
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-
-        # --- Add slide-toggle for auto-assign max artifacts ---
+    # --- Add slide-toggle for auto-assign max artifacts ---
     auto_assign_max = st.toggle(
         "Auto-assign max allowed artifacts after generation",
         key="auto_assign_max_toggle",
@@ -909,7 +911,7 @@ def general_creation_view(assigned_elements):
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
+            generate_artifacts(element_selected, is_image, generate_now_clicked, home_url, query, number_entries_used, uploaded_files)
             # --- Auto-assign logic after generation (single and grouped elements) ---
             if generate_now_clicked and auto_assign_max:
                 rerun_needed = False  # Ensure rerun_needed is always defined
@@ -1044,7 +1046,7 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            pass  # Removed redundant display_artifacts_view
+            pass
         else:
             display_artifact_view_image(element_selected, element_store)
 
