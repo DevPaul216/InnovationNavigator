@@ -474,6 +474,8 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         options=all_templates,  # Show all templates as options
         default=required_items  # Preselect only the ones defined in the config
     )
+    # --- Move resource selection view above expander and remove its expander ---
+    home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
     selected_elements = {}
     with st.expander("🧩 Choose individual elements from selected templates"):
         columns = st.columns(2)
@@ -501,10 +503,8 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     # Get the display name and description
                     name_display = sst.elements_config[name].get("display_name", name)
                     description = sst.elements_config[name].get("description", "No description available.")
-                    
                     # Format the resource text to include only the description and values
                     resource_text = f"_{description}_\n{resource_text}"
-                    
                     selected_resources[name_display] = resource_text
 
     prompt_name = element_config['prompt_name']
@@ -518,8 +518,6 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     if prompt is None:
         st.error("There is no prompt assigned")
         return
-    with st.expander(label="🌐 Add external information source"):
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
     schema = None   
      
     with st.expander(label="📝 View prompt"):  # added name of the prompt used to label
@@ -805,31 +803,6 @@ def chart_view():
         sst.current_view = "detail"
         sst.sidebar_state = "expanded"
         st.rerun()
-
-    # # Overlay a semi-transparent logo on the overview using HTML/CSS (centered, wider, and lower)
-    # logo_path = os.path.join("misc", "BackgroundDoubleDiamondPhases.png")
-    # if os.path.exists(logo_path):
-    #     import base64
-    #     with open(logo_path, "rb") as image_file:
-    #         encoded = base64.b64encode(image_file.read()).decode()
-    #     st.markdown(
-    #         f"""
-    #         <div style="
-    #             position: fixed;
-    #             top: 220px;
-    #             left: 58%;
-    #             transform: translateX(-50%);
-    #             z-index: 9999;
-    #             pointer-events: none;
-    #             width: 2100px;
-    #             display: flex;
-    #             justify-content: center;
-    #         ">
-    #             <img src="data:image/png;base64,{encoded}" style="width: 100%; max-width: 2100px; opacity: 0.18;"/>
-    #         </div>
-    #         """,
-    #         unsafe_allow_html=True
-    #     )
 
 
 def element_selection_format_func(item):
