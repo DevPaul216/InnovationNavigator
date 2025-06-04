@@ -1313,7 +1313,7 @@ def open_sidebar():
 
     # button for other stuff
     if st.sidebar.button(label="About", type="secondary", use_container_width=True):
-        sst.selected_template_name = "About"
+        sst.selected_template_name = "About :("
         sst.current_view = "about"
         sst.sidebar_state = "expanded"
         sst.update_graph = True
