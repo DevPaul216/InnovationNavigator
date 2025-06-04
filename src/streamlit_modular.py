@@ -31,8 +31,7 @@ COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
 import streamlit as st
 from streamlit_navigation_bar import st_navbar
 
-page = st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
-st.write(page)
+st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
 
 
 def align_data_store():
