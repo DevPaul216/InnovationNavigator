@@ -46,7 +46,7 @@ def open_sidebar():
         st.rerun()
 
     # button to open Data Store Browser
-    if st.sidebar.button(label="Database", type="secondary", use_container_width=True):
+    if st.sidebar.button(label="Database :)", type="secondary", use_container_width=True):
         sst.selected_template_name = None
         sst.current_view = "datastore_browser"
         sst.sidebar_state = "expanded"
