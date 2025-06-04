@@ -287,7 +287,6 @@ def display_generated_artifacts_view(element_name):
     # Combine generated artifacts and already assigned artifacts, show all with toggles
     generated = sst.generated_artifacts.get(element_name, {})
     assigned = sst.data_store[sst.selected_template_name][element_name]
-    # Ensure assigned is always a list
     if isinstance(assigned, dict):
         assigned = list(assigned.values())
         sst.data_store[sst.selected_template_name][element_name] = assigned
@@ -298,7 +297,15 @@ def display_generated_artifacts_view(element_name):
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
         # Use both id and hash of artifact for uniqueness
-        artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
+        # For images, use hash of bytes if possible
+        if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
+            try:
+                artifact_hash = hash(artifact.getvalue())
+            except Exception:
+                artifact_hash = hash(str(artifact))
+        else:
+            artifact_hash = hash(str(artifact))
+        artifact_keys.append(f"generated_{artifact_id}_{artifact_hash}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
         if artifact not in all_artifacts:
@@ -315,26 +322,30 @@ def display_generated_artifacts_view(element_name):
         with st.container():
             columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
-                # Remove the styled div entirely
-                if isinstance(artifact, str):
-                    st.markdown(artifact)
-                else:
+                # Show image if artifact is a path to an image file, else show as text
+                if isinstance(artifact, str) and artifact.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
                     st.image(artifact, use_container_width=True)
+                elif hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
+                    # Show BytesIO image
+                    st.image(artifact, use_container_width=True)
+                else:
+                    st.markdown(str(artifact))
             with columns[3]:
-                # Show toggle ON if artifact is assigned, OFF otherwise
-                is_assigned = artifact in assigned or (not isinstance(artifact, str) and any(isinstance(a, str) and a.endswith('.jpg') for a in assigned))
-                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
+                # Use a unique key for each toggle based on artifact_key and element_name
+                is_assigned = artifact in assigned
+                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
                 if toggled and not is_assigned:
-                    # If artifact is an image, save to disk and store path
-                    if not isinstance(artifact, str):
+                    # For BytesIO images, save to disk and store path
+                    if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
                         import hashlib
-                        directory_path = './stores/image_store'
-                        if not os.path.exists(directory_path):
-                            os.makedirs(directory_path)
-                        # Generate a unique filename based on hash
+                        import os
+                        from PIL import Image
                         artifact.seek(0)
                         img = Image.open(artifact)
                         hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
+                        directory_path = './stores/image_store'
+                        if not os.path.exists(directory_path):
+                            os.makedirs(directory_path)
                         filename = f"{element_name}_{sst.project_name}_{hash_digest}.jpg"
                         full_path = os.path.join(directory_path, filename)
                         img.save(full_path)
@@ -349,14 +360,10 @@ def display_generated_artifacts_view(element_name):
                     else:
                         st.warning(check)
                 elif not toggled and is_assigned:
-                    # Remove by path if image
-                    if not isinstance(artifact, str):
-                        # Remove any .jpg path from assigned
-                        assigned[:] = [a for a in assigned if not (isinstance(a, str) and a.endswith('.jpg'))]
-                    else:
+                    if artifact in assigned:
                         assigned.remove(artifact)
-                    update_data_store()
-                    st.rerun()
+                        update_data_store()
+                        st.rerun()
 
 
 def format_func(option):
@@ -796,6 +803,11 @@ def general_creation_view(assigned_elements):
     st.subheader("Generate Information Artifacts")
     # --- Main controls row ---
     top_cols = st.columns([1, 1, 1, 2], gap="medium")
+    # Set default mode to 'Generate' when switching templates
+    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
+        sst['creation_mode'] = 'Generate'
+        sst['last_template'] = sst.selected_template_name
+    creation_mode = sst.get('creation_mode', 'Generate')
     with top_cols[0]:
         element_selected = st.selectbox(
             label="Select Element to generate:",
@@ -807,9 +819,10 @@ def general_creation_view(assigned_elements):
         creation_mode = st.segmented_control(
             label="Select Mode:",
             options=["Manual", "Generate", "Import"],
-            default="Generate",
+            default=creation_mode,
             help="Select the mode to create artifacts."
         )
+        sst['creation_mode'] = creation_mode
     generate_now_clicked = False
     with top_cols[2]:
         if creation_mode == "Generate":
