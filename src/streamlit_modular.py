@@ -939,20 +939,21 @@ def template_edit_subview():
         display_template_view(sst.selected_template_name)
         st.divider()
         if st.button("Remove all artifacts from this template", type="secondary"):
-            # Find all elements that are shared across templates
+            # Find all elements that are shared across templates (including group elements)
             elements_to_clear = set(assigned_elements)
-            # Also clear group elements and shared elements
-            for template, config in sst.template_config.items():
-                if template == sst.selected_template_name:
-                    continue
-                for el in config.get("elements", []):
-                    if el in elements_to_clear:
-                        elements_to_clear.add(el)
+            # Recursively add group elements
+            def add_group_elements(el):
+                el_config = sst.elements_config.get(el, {})
+                if el_config.get("type") == "group":
+                    for sub_el in el_config.get("elements", []):
+                        elements_to_clear.add(sub_el)
+                        add_group_elements(sub_el)
+            for el in list(elements_to_clear):
+                add_group_elements(el)
             # Remove images from disk for image-type elements
             for el in elements_to_clear:
                 el_config = sst.elements_config.get(el, {})
                 if el_config.get("type") == "image":
-                    # Remove image file(s) if present
                     for template, element_store in sst.data_store.items():
                         img_paths = element_store.get(el, [])
                         for img_path in img_paths:
@@ -961,8 +962,9 @@ def template_edit_subview():
                                     os.remove(img_path)
                                 except Exception as e:
                                     print(f"Could not remove image {img_path}: {e}")
-                # Clear the element in all templates
-                for template, element_store in sst.data_store.items():
+            # Clear the element in all templates (for all element stores, for all elements to clear)
+            for template, element_store in sst.data_store.items():
+                for el in elements_to_clear:
                     if el in element_store:
                         element_store[el] = []
             update_data_store()
