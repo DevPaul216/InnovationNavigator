@@ -297,6 +297,7 @@ def display_generated_artifacts_view(element_name):
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
+        # Use both id and hash of artifact for uniqueness
         artifact_keys.append(f"generated_{artifact_id}_{hash(str(artifact))}")
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
@@ -307,31 +308,55 @@ def display_generated_artifacts_view(element_name):
         st.write("Nothing to show")
         return
     element_store = sst.data_store[sst.selected_template_name]
+    # --- Make the display more compact ---
+    compact_container_style = ""
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
+        # Use a more compact container without any background, border, or margin
         with st.container():
             columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
-                if isinstance(artifact, str) and artifact.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
-                    st.image(artifact, use_container_width=True)
+                # Remove the styled div entirely
+                if isinstance(artifact, str):
+                    st.markdown(artifact)
                 else:
-                    st.markdown(str(artifact))
+                    st.image(artifact, use_container_width=True)
             with columns[3]:
-                # Use a unique key for each toggle based on artifact_key
-                is_assigned = artifact in assigned
-                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
+                # Show toggle ON if artifact is assigned, OFF otherwise
+                is_assigned = artifact in assigned or (not isinstance(artifact, str) and any(isinstance(a, str) and a.endswith('.jpg') for a in assigned))
+                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{artifact_key}")
                 if toggled and not is_assigned:
-                    check = check_can_add(element_store, element_name, [artifact])
+                    # If artifact is an image, save to disk and store path
+                    if not isinstance(artifact, str):
+                        import hashlib
+                        directory_path = './stores/image_store'
+                        if not os.path.exists(directory_path):
+                            os.makedirs(directory_path)
+                        # Generate a unique filename based on hash
+                        artifact.seek(0)
+                        img = Image.open(artifact)
+                        hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
+                        filename = f"{element_name}_{sst.project_name}_{hash_digest}.jpg"
+                        full_path = os.path.join(directory_path, filename)
+                        img.save(full_path)
+                        artifact_to_add = full_path
+                    else:
+                        artifact_to_add = artifact
+                    check = check_can_add(element_store, element_name, [artifact_to_add])
                     if check is None:
-                        assigned.append(artifact)
+                        assigned.append(artifact_to_add)
                         update_data_store()
                         st.rerun()
                     else:
                         st.warning(check)
                 elif not toggled and is_assigned:
-                    if artifact in assigned:
+                    # Remove by path if image
+                    if not isinstance(artifact, str):
+                        # Remove any .jpg path from assigned
+                        assigned[:] = [a for a in assigned if not (isinstance(a, str) and a.endswith('.jpg'))]
+                    else:
                         assigned.remove(artifact)
-                        update_data_store()
-                        st.rerun()
+                    update_data_store()
+                    st.rerun()
 
 
 def format_func(option):
