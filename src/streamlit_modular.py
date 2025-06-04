@@ -765,8 +765,7 @@ def legend_subview():
 
 
 def get_progress_stats():
-    total_elements = 0
-    filled_elements = 0
+    per_template_fractions = []
     templates_with_2_3_filled = 0
     total_templates = 0
     for template_name, template_config in sst.template_config.items():
@@ -786,14 +785,14 @@ def get_progress_stats():
                     num_filled += 1
                 elif isinstance(values, str) and values.strip():
                     num_filled += 1
-        total_elements += num_elements
-        filled_elements += num_filled
-        if num_elements > 0 and num_filled / num_elements >= 2/3:
+        frac_filled = num_filled / num_elements if num_elements > 0 else 0
+        per_template_fractions.append(frac_filled)
+        if frac_filled >= 2/3:
             templates_with_2_3_filled += 1
-    frac_elements_filled = filled_elements / total_elements if total_elements > 0 else 0
+    avg_template_filled = sum(per_template_fractions) / len(per_template_fractions) if per_template_fractions else 0
     frac_templates_2_3 = templates_with_2_3_filled / total_templates if total_templates > 0 else 0
-    progress = (frac_elements_filled + frac_templates_2_3) / 2
-    return progress, frac_elements_filled, frac_templates_2_3
+    progress = (avg_template_filled + frac_templates_2_3) / 2
+    return progress, avg_template_filled, frac_templates_2_3
 
 
 def chart_view():
