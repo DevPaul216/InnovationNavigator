@@ -193,14 +193,23 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             "align", "discover", "define", "develop", "deliver", "continue",
             "empathize", "define+", "ideate", "prototype", "test"
         ]
-        # --- Main graph nodes (auto-generated) ---
-        for i, template_name in enumerate(sst.template_config.keys()):
+        # Separate phase nodes (the 5 new ones)
+        phase_nodes = ["empathize", "define+", "ideate", "prototype", "test"]
+        phase_y = 300  # y position for phase nodes (below main graph)
+        phase_x_start = 0
+        phase_x_gap = 400  # horizontal gap between phase nodes
+        main_x = 0
+        main_y = 0
+        main_x_gap = 220
+        # Place main nodes (excluding the 5 phase nodes)
+        main_nodes = [k for k in sst.template_config.keys() if k.lower() not in phase_nodes]
+        for i, template_name in enumerate(main_nodes):
             template_display_name = get_config_value(template_name)
-            if template_name.lower() in special_templates[:6]:  # Only the original 6 get special style here
+            if template_name.lower() in special_templates:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=(0, 0),
+                    pos=(main_x + i * main_x_gap, main_y),
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
@@ -210,20 +219,14 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     focusable=False,
                     selectable=False
                 )
-                nodes.append(node)
             elif template_name == "Start":
-                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
+                node = StreamlitFlowNode(id=str(template_name), pos=(main_x + i * main_x_gap, main_y),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
-                nodes.append(node)
             elif template_name == "End":
-                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
+                node = StreamlitFlowNode(id=str(template_name), pos=(main_x + i * main_x_gap, main_y),
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
-                nodes.append(node)
-            elif template_name.lower() in special_templates[6:]:
-                # Skip the new 5 for now, add them below
-                continue
             else:
                 if template_name in blocked_templates:
                     style = {'background-color': COLOR_BLOCKED, "color": 'black'}
@@ -231,36 +234,31 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
-                node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
+                node = StreamlitFlowNode(id=template_name, pos=(main_x + i * main_x_gap, main_y), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
                                          style={**style, "width": "90px", "padding": "1px"})
-                nodes.append(node)
-        # --- Add the 5 new phase nodes below the main graph ---
-        phase_nodes = ["empathize", "define+", "ideate", "prototype", "test"]
-        y_pos = 300  # Place below the main graph
-        x_spacing = 400
-        for idx, phase_name in enumerate(phase_nodes):
-            if phase_name in sst.template_config:
-                template_display_name = get_config_value(phase_name)
-                style = {"backgroundColor": "white", "width": "350px", "padding": "1px", "border": "2px solid #bbb"}
-                node = StreamlitFlowNode(
-                    id=str(phase_name),
-                    pos=(idx * x_spacing, y_pos),
-                    data={'content': f"{template_display_name}"},
-                    node_type="default",
-                    source_position="right",
-                    target_position="left",
-                    style=style,
-                    draggable=False,
-                    focusable=False,
-                    selectable=False
-                )
-                nodes.append(node)
-        # --- Edges ---
+            nodes.append(node)
+        # Place the 5 phase nodes below the main graph, spaced horizontally
+        for j, template_name in enumerate(phase_nodes):
+            template_display_name = get_config_value(template_name)
+            style = {"backgroundColor": "white", "width": "350px", "padding": "1px", "border": "2px solid #bbb"}
+            node = StreamlitFlowNode(
+                id=str(template_name),
+                pos=(phase_x_start + j * phase_x_gap, phase_y),
+                data={'content': f"{template_display_name}"},
+                node_type="default",
+                source_position="right",
+                target_position="left",
+                style=style,
+                draggable=False,
+                focusable=False,
+                selectable=False
+            )
+            nodes.append(node)
+        # Edges
         edges = []
         for source, value in sst.template_config.items():
-            # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
                 connection_state = connection_states[edge_id]
