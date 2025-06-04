@@ -28,6 +28,12 @@ COLOR_BLOCKED = "rgb(250, 240, 220)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
 
+import streamlit as st
+from streamlit_navigation_bar import st_navbar
+
+page = st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
+st.write(page)
+
 
 def align_data_store():
     for template_name, template_config in sst.template_config.items():
