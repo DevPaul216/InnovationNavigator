@@ -33,7 +33,7 @@
       },
       "Problem_Attitude": {
         "type": "String",
-        "description": "A short statement describing the personas character in genral and thier attitude towards the problem they face. This should be a single paragrpah of around 50 words that captures the essence of their mindset or approach to challenges.",
+        "description": "A short statement describing the personas character in genral and thier attitude towards the problem they face. This should be a single paragrpah of around 50 words that captures the essence of their mindset or approach to challenges."
       },
       "Quote": {
         "type": "array",
