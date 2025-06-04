@@ -830,53 +830,11 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
-    #st.subheader("Generate Information Artifacts")
-    # --- Main controls row ---
-    top_cols = st.columns([1, 1, 1, 2], gap="medium")
-    # Set default mode to 'Generate' when switching templates
-    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
-        sst['creation_mode'] = 'Generate'
-        sst['last_template'] = sst.selected_template_name
-    creation_mode = sst.get('creation_mode', 'Generate')
-    with top_cols[0]:
-        element_selected = st.selectbox(
-            label="Select Element to generate:",
-            help="Select the element to generate artifacts for.",
-            options=assigned_elements,
-            format_func=element_selection_format_func
-        )
-    with top_cols[1]:
-        # Use st.radio for robust single selection, avoid session state key conflicts
-        new_creation_mode = st.radio(
-            label="Select Mode:",
-            options=["Manual", "Generate", "Import"],
-            index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
-            help="Select the mode to create artifacts."
-        )
-        if new_creation_mode != creation_mode:
-            sst['creation_mode'] = new_creation_mode
-            st.rerun()
-        creation_mode = new_creation_mode
-    generate_now_clicked = False
-    with top_cols[2]:
-        if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
-        elif creation_mode == "Import":
-            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    with top_cols[3]:
-        auto_assign_max = False
-        if creation_mode != "Manual":
-            auto_assign_max = st.toggle(
-                "Auto-assign max allowed artifacts after generation",
-                key="auto_assign_max_toggle",
-                value=False,
-                help="Automatically assigns the maximum allowed number of generated artifacts after generation."
-            )
-
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_image = element_config.get("type") == "image"
     is_single = not (element_config.get("type") == "group")
+    elements_group = element_config["elements"] if not is_single else []
     selected_template_config = sst.template_config[sst.selected_template_name]
     vertical_gap = 1
 
@@ -942,42 +900,157 @@ def general_creation_view(assigned_elements):
             if not manual:
                 st.divider()
 
-    if creation_mode == "Manual":
-        if is_single:
-            with st.container(border=True):
-                if not is_image:
-                    artifact_input_subview(element_selected, element_store)
-                else:
-                    image_input_subview(element_selected, element_store)
-                display_generated_artifacts_view(element_selected)
-        else:
-            elements_group = element_config["elements"]
-            display_group_elements(elements_group, manual=True)
-    elif creation_mode in ("Generate", "Import"):
+    # --- Main controls row ---
+    top_cols = st.columns([1, 1], gap="medium")
+    # Set default mode to 'Generate' when switching templates
+    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
+        sst['creation_mode'] = 'Generate'
+        sst['last_template'] = sst.selected_template_name
+    creation_mode = sst.get('creation_mode', 'Generate')
+    with top_cols[0]:
+        element_selected = st.selectbox(
+            label="Select Element to generate:",
+            help="Select the element to generate artifacts for.",
+            options=assigned_elements,
+            format_func=element_selection_format_func
+        )
+        generate_now_clicked = False
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
-            if generate_now_clicked and auto_assign_max:
-                if is_single:
-                    auto_assign_artifacts([element_selected], is_image)
-                else:
-                    elements_group = element_config["elements"]
-                    auto_assign_artifacts(elements_group)
-        if creation_mode == "Import":
-            import_artifacts(element_selected, generate_now_clicked)
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+        elif creation_mode == "Import":
+            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+        auto_assign_max = False
+        if creation_mode != "Manual":
+            auto_assign_max = st.toggle(
+                "Auto-assign max allowed artifacts after generation",
+                key="auto_assign_max_toggle",
+                value=False,
+                help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+            )
+        # Use st.radio for robust single selection, avoid session state key conflicts
+        new_creation_mode = st.radio(
+            label="Select Mode:",
+            options=["Manual", "Generate", "Import"],
+            index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
+            help="Select the mode to create artifacts."
+        )
+        if new_creation_mode != creation_mode:
+            sst['creation_mode'] = new_creation_mode
+            st.rerun()
+        creation_mode = new_creation_mode
+    with top_cols[1]:
+        # Move resource selection to the top of the right column
+        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
+        st.session_state.setdefault("temperature", 1.0)
+        st.session_state.setdefault("top_p", 1.0)
+        cols = st.columns(3)
+        if cols[0].button("Creative", key="creative_button"):
+            st.session_state.update(temperature=1.6, top_p=1.0)
+        if cols[1].button("Logic", key="logic_button"):
+            st.session_state.update(temperature=0.2, top_p=1.0)
+        if cols[2].button("Simplify", key="simple_button"):
+            st.session_state.update(temperature=1.0, top_p=0.1)
+        temperature = st.slider(
+            "Temperature",
+            min_value=0.0,
+            max_value=1.8,
+            step=0.1,
+            key="temperature"
+        )
+        top_p = st.slider(
+            "Top-P",
+            min_value=0.0,
+            max_value=1.0,
+            step=0.1,
+            key="top_p"
+        )
+        temperature = st.session_state.temperature
+        top_p = st.session_state.top_p
+
+    # --- Combine Template selection and individual elements selection ---
+    with st.expander("Template & Element selection (information sources)"):
+        all_templates = list(sst.template_config.keys())
+        selected_keys = st.multiselect(
+            label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+            placeholder="Choose templates to use",
+            options=all_templates,
+            default=sst.elements_config[element_selected]['used_templates']
+        )
+        selected_elements = {}
+        columns = st.columns(2)
+        position = 0
+        for selected_key in selected_keys:
+            element_store = sst.data_store[selected_key]
+            with columns[position]:
+                element_names = [element for element in element_store.keys() if element != element_selected]
+                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                           options=element_names,
+                                           default=element_names, key=f"multiselect_{selected_key}")
+                selected_elements[selected_key] = selection
+                position += 1
+            if position >= 2:
+                position = 0
+        selected_resources = {}
+        for selected_key, selected_elements_list in selected_elements.items():
+            element_store = sst.data_store[selected_key]
+            for name in selected_elements_list:
+                resource_text = ""
+                element_value = element_store[name]
+                for value in element_value:
+                    resource_text += f"- {value}\n"
+                if resource_text.strip() != "":
+                    name_display = sst.elements_config[name].get("display_name", name)
+                    description = sst.elements_config[name].get("description", "No description available.")
+                    resource_text = f"_{description}_\n{resource_text}"
+                    selected_resources[name_display] = resource_text
+
+    # --- Combine Prompt and Schema into one expander ---
+    element_config = sst.elements_config[element_selected]
+    is_image = element_config.get("type") == "image"
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    schema = None
+    if not is_image:
+        schema_name = element_config['schema_name']
+        schema = load_schema(schema_name)
+    with st.expander("Prompt & Response Schema"):
+        st.markdown("**Prompt:** " + prompt_name + ".txt")
+        if prompt:
+            st.markdown(prompt)
+        else:
+            st.error("There is no prompt assigned")
+        if not is_image and schema is not None:
+            st.divider()
+            st.markdown("**Schema:** " + schema_name + ".json")
+            st.json(schema)
         st.divider()
+        st.markdown("**Contextual Information:**")
+        user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+        st.markdown(user_prompt)
+
+    if generate_now_clicked:
+        with st.spinner("Generating..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not is_image:
+                handle_response(element_selected, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_selected, prompt, selected_resources)
+
+    # --- Auto-assign artifacts if needed ---
+    if generate_now_clicked and auto_assign_max:
         if is_single:
-            st.subheader("Generated Artifacts")
-            display_generated_artifacts_view(element_selected)
-            if auto_assign_max:
-                auto_assign_artifacts([element_selected], is_image)
+            auto_assign_artifacts([element_selected], is_image)
         else:
             elements_group = element_config["elements"]
-            display_group_elements(elements_group)
-            if auto_assign_max:
-                auto_assign_artifacts(elements_group)
-    if is_single and is_image:
-        st.divider()
-        display_artifact_view_image(element_selected, element_store)
+            auto_assign_artifacts(elements_group)
+
+    # --- Display assigned and generated artifacts ---
+    if is_single:
+        st.subheader("Generated Artifacts")
+        display_generated_artifacts_view(element_selected)
+    else:
+        elements_group = element_config["elements"]
+        display_group_elements(elements_group)
 
 
 def template_edit_subview():
