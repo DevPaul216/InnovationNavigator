@@ -189,14 +189,14 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
+        special_templates = [
+            "align", "discover", "define", "develop", "deliver", "continue",
+            "empathize", "define+", "ideate", "prototype", "test"
+        ]
+        # --- Main graph nodes (auto-generated) ---
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            # Special formatting for key templates
-            special_templates = [
-                "align", "discover", "define", "develop", "deliver", "continue",
-                "empathize", "define+", "ideate", "prototype", "test"
-            ]
-            if template_name.lower() in special_templates:
+            if template_name.lower() in special_templates[:6]:  # Only the original 6 get special style here
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
@@ -210,14 +210,20 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     focusable=False,
                     selectable=False
                 )
+                nodes.append(node)
             elif template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
+                nodes.append(node)
             elif template_name == "End":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
+                nodes.append(node)
+            elif template_name.lower() in special_templates[6:]:
+                # Skip the new 5 for now, add them below
+                continue
             else:
                 if template_name in blocked_templates:
                     style = {'background-color': COLOR_BLOCKED, "color": 'black'}
@@ -229,7 +235,29 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
                                          style={**style, "width": "90px", "padding": "1px"})
-            nodes.append(node)
+                nodes.append(node)
+        # --- Add the 5 new phase nodes below the main graph ---
+        phase_nodes = ["empathize", "define+", "ideate", "prototype", "test"]
+        y_pos = 300  # Place below the main graph
+        x_spacing = 400
+        for idx, phase_name in enumerate(phase_nodes):
+            if phase_name in sst.template_config:
+                template_display_name = get_config_value(phase_name)
+                style = {"backgroundColor": "white", "width": "350px", "padding": "1px", "border": "2px solid #bbb"}
+                node = StreamlitFlowNode(
+                    id=str(phase_name),
+                    pos=(idx * x_spacing, y_pos),
+                    data={'content': f"{template_display_name}"},
+                    node_type="default",
+                    source_position="right",
+                    target_position="left",
+                    style=style,
+                    draggable=False,
+                    focusable=False,
+                    selectable=False
+                )
+                nodes.append(node)
+        # --- Edges ---
         edges = []
         for source, value in sst.template_config.items():
             # Skip edges connected to the "Prompts" template
