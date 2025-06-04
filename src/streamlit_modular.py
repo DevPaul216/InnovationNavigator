@@ -830,9 +830,8 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
-    #st.subheader("Generate Information Artifacts")
     # --- Main controls row ---
-    top_cols = st.columns([1, 1, 1, 2], gap="medium")
+    top_cols = st.columns([1, 1], gap="medium")
     # Set default mode to 'Generate' when switching templates
     if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
         sst['creation_mode'] = 'Generate'
@@ -845,25 +844,15 @@ def general_creation_view(assigned_elements):
             options=assigned_elements,
             format_func=element_selection_format_func
         )
-    with top_cols[1]:
-        # Use st.radio for robust single selection, avoid session state key conflicts
-        new_creation_mode = st.radio(
-            label="Select Mode:",
-            options=["Manual", "Generate", "Import"],
-            index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
-            help="Select the mode to create artifacts."
-        )
-        if new_creation_mode != creation_mode:
-            sst['creation_mode'] = new_creation_mode
-            st.rerun()
-        creation_mode = new_creation_mode
+    # --- Action controls row (below element selection, above resources/params) ---
+    action_cols = st.columns([1, 1, 2], gap="small")
     generate_now_clicked = False
-    with top_cols[2]:
+    with action_cols[0]:
         if creation_mode == "Generate":
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    with top_cols[3]:
+    with action_cols[1]:
         auto_assign_max = False
         if creation_mode != "Manual":
             auto_assign_max = st.toggle(
@@ -872,565 +861,103 @@ def general_creation_view(assigned_elements):
                 value=False,
                 help="Automatically assigns the maximum allowed number of generated artifacts after generation."
             )
-
-    element_store = sst.data_store[sst.selected_template_name]
-    element_config = sst.elements_config[element_selected]
-    is_image = element_config.get("type") == "image"
-    is_single = not (element_config.get("type") == "group")
-    selected_template_config = sst.template_config[sst.selected_template_name]
-    vertical_gap = 1
-
-    def auto_assign_artifacts(elements, is_image_type=False):
-        rerun_needed = False
-        for element in elements:
-            generated = sst.generated_artifacts.get(element, {})
-            assigned = element_store[element]
-            config = sst.elements_config[element]
-            max_entries = config.get("max", len(generated))
-            new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
-            to_add = new_artifacts[:max_entries - len(assigned)]
-            if config.get("type") == "image":
-                rerun_needed = _assign_image_artifacts(element, element_store, to_add) or rerun_needed
-            else:
-                if to_add:
-                    assigned.extend(to_add)
-                    rerun_needed = True
-        if rerun_needed:
-            update_data_store()
-            st.rerun()
-
-    def _assign_image_artifacts(element, element_store, to_add):
-        rerun = False
-        for artifact in to_add:
-            if not isinstance(artifact, str):
-                add_image_to_image_store(element, element_store, artifact)
-                rerun = True
-            else:
-                element_store[element].append(artifact)
-                rerun = True
-        return rerun
-
-    def display_group_elements(elements_group, manual=False):
-        position = 0
-        for row_config in selected_template_config['display']:
-            sub_rows = row_config['format']
-            height = row_config['height'] * 2
-            number_cols = len(sub_rows)
-            cols = st.columns(number_cols, vertical_alignment='center')
-            for col, sub_row in zip(cols, sub_rows):
-                with col:
-                    height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                    for _ in range(sub_row):
-                        if position < len(elements_group):
-                            _display_group_element(elements_group[position], height_single, manual)
-                            position += 1
-
-    def _display_group_element(element_name, height_single, manual):
-        config = sst.elements_config[element_name]
-        display_name = config.get("display_name", element_name)
-        description = config.get("description", "")
-        with st.container(border=True, height=height_single):
-            st.markdown(
-                f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
-                f"<span style='color:#888;font-size:0.98em'>{description}</span>",
-                unsafe_allow_html=True)
-            if manual:
-                artifact_input_subview(element_name, element_store)
-                st.divider()
-                st.markdown("**Assigned & Available Artifacts**")
-            display_generated_artifacts_view(element_name)
-            if not manual:
-                st.divider()
-
-    if creation_mode == "Manual":
-        if is_single:
-            with st.container(border=True):
-                if not is_image:
-                    artifact_input_subview(element_selected, element_store)
-                else:
-                    image_input_subview(element_selected, element_store)
-                display_generated_artifacts_view(element_selected)
-        else:
-            elements_group = element_config["elements"]
-            display_group_elements(elements_group, manual=True)
-    elif creation_mode in ("Generate", "Import"):
-        if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
-            if generate_now_clicked and auto_assign_max:
-                if is_single:
-                    auto_assign_artifacts([element_selected], is_image)
-                else:
-                    elements_group = element_config["elements"]
-                    auto_assign_artifacts(elements_group)
-        if creation_mode == "Import":
-            import_artifacts(element_selected, generate_now_clicked)
-        st.divider()
-        if is_single:
-            st.subheader("Generated Artifacts")
-            display_generated_artifacts_view(element_selected)
-            if auto_assign_max:
-                auto_assign_artifacts([element_selected], is_image)
-        else:
-            elements_group = element_config["elements"]
-            display_group_elements(elements_group)
-            if auto_assign_max:
-                auto_assign_artifacts(elements_group)
-    if is_single and is_image:
-        st.divider()
-        display_artifact_view_image(element_selected, element_store)
-
-
-def template_edit_subview():
-    selected_template = sst.template_config[sst.selected_template_name]
-    assigned_elements = selected_template["elements"]
-    if assigned_elements is not None and len(assigned_elements) > 0:
-        # st.subheader("Overview")
-        display_template_view(sst.selected_template_name)
-        # Add confirmation for removing all artifacts
-        if 'remove_all_confirm' not in sst:
-            sst['remove_all_confirm'] = False
-        if not sst['remove_all_confirm']:
-            if st.button("Remove all artifacts from this template", type="secondary"):
-                sst['remove_all_confirm'] = True
-                st.rerun()
-        else:
-            st.warning("Are you sure you want to remove all artifacts from this template? This cannot be undone.")
-            cols = st.columns([1,1])
-            with cols[0]:
-                if st.button("Yes, remove all", type="primary"):
-                    # Find all elements that are shared across templates (including group elements)
-                    elements_to_clear = set(assigned_elements)
-                    # Recursively add group elements
-                    def add_group_elements(el):
-                        el_config = sst.elements_config.get(el, {})
-                        if el_config.get("type") == "group":
-                            for sub_el in el_config.get("elements", []):
-                                elements_to_clear.add(sub_el)
-                                add_group_elements(sub_el)
-                    for el in list(elements_to_clear):
-                        add_group_elements(el)
-                    # Remove images from disk for image-type elements
-                    for el in elements_to_clear:
-                        el_config = sst.elements_config.get(el, {})
-                        if el_config.get("type") == "image":
-                            for template, element_store in sst.data_store.items():
-                                if el in element_store:
-                                    # Optionally: remove image file from disk here
-                                    pass
-                    # Clear the element in all templates (for all element stores, for all elements to clear)
-                    for template, element_store in sst.data_store.items():
-                        for el in elements_to_clear:
-                            if el in element_store:
-                                element_store[el] = []
-                    update_data_store()
-                    sst['remove_all_confirm'] = False
-                    st.rerun()
-            with cols[1]:
-                if st.button("Cancel"):
-                    sst['remove_all_confirm'] = False
-                    st.rerun()
-        st.divider()
-        function = view_assignment_dict["general"]
-        if sst.selected_template_name in view_assignment_dict:
-            function = view_assignment_dict[sst.selected_template_name]
-        function(assigned_elements)
-    else:
-        st.warning("No functions available. Check configuration!")
-
-
-# def special_view_idea_generation(assigned_elements):
-#     element_selected = st.selectbox(key="Select_Idea", label="Select Element to generate: ",
-#                                     options=assigned_elements,
-#                                     format_func=element_selection_format_func)
-#     element_store = sst.data_store[sst.selected_template_name]
-#     selected_idea = idea_generation_view()
-#     st.divider()
-#     display_artifacts_view(element_selected, element_store)
-#     if selected_idea is not None:
-#         element_store[element_selected] = [selected_idea]
-#         update_data_store()
-#         st.rerun()
-
-
-def confirm_single_subview(element_selected, element_store):
-    confirm_selection = confirm_generated_artifacts_view(element_selected)
-    if confirm_selection:
-        values_to_add = sst.confirmed_artifacts[element_selected].values()
-        check = check_can_add(element_store, element_selected, values_to_add)
-        if check is None:
-            for confirmed_artifact in values_to_add:
-                if isinstance(confirmed_artifact, str):
-                    element_store[element_selected].append(confirmed_artifact)
-                else:
-                    add_image_to_image_store(element_selected, element_store, confirmed_artifact)
-            update_data_store()
-            st.rerun()
-        else:
-            st.warning(check)
-
-
-def confirm_generated_artifacts_view(element_name):
-    with st.container(border=False):
-        display_generated_artifacts_view(element_name)
-        if element_name in sst.confirmed_artifacts and len(sst.confirmed_artifacts[element_name]) > 0:
-            add_empty_lines(3)
-            columns = st.columns([1, 3, 1])
-            with columns[1]:
-                if st.button("Confirm selected Artifacts", key=f"button_{element_name}", use_container_width=True):
-                    return True
-        return False
-
-
-def check_can_add(element_store, element_selected, elements_to_add):
-    if element_selected in sst.elements_config:
+    # --- Resource selection and Generation parameters side by side ---
+    resource_param_cols = st.columns([1, 1], gap="large")
+    with resource_param_cols[0]:
         element_config = sst.elements_config[element_selected]
-        for element_to_add in elements_to_add:
-            if element_to_add in element_store[element_selected]:
-                return "This entry is already there"
-        number_current_entries = len(element_store[element_selected])
-        if "max" in element_config:
-            max_entries = element_config["max"]
-            if number_current_entries + len(elements_to_add) > max_entries:
-                return f"Maximum of '{max_entries}' entries allowed. Remove some existing artifacts or choose less to continue."
-    return None
+        required_items = element_config.get('used_templates', [])
+        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
+    with resource_param_cols[1]:
+        st.session_state.setdefault("temperature", 1.0)
+        st.session_state.setdefault("top_p", 1.0)
+        cols = st.columns(3)
+        if cols[0].button("Creative", key="creative_button"):
+            st.session_state.update(temperature=1.6, top_p=1.0)
+        if cols[1].button("Logic", key="logic_button"):
+            st.session_state.update(temperature=0.2, top_p=1.0)
+        if cols[2].button("Simplify", key="simple_button"):
+            st.session_state.update(temperature=1.0, top_p=0.1)
+        temperature = st.slider(
+            "Temperature",
+            min_value=0.0,
+            max_value=1.8,
+            step=0.1,
+            key="temperature"
+        )
+        top_p = st.slider(
+            "Top-P",
+            min_value=0.0,
+            max_value=1.0,
+            step=0.1,
+            key="top_p"
+        )
+        temperature = st.session_state.temperature
+        top_p = st.session_state.top_p
 
+    # --- Combine Template selection and individual elements selection ---
+    selected_resources = {}
+    with st.expander("Template & Element selection (information sources)"):
+        all_templates = list(sst.template_config.keys())
+        selected_keys = st.multiselect(
+            label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+            placeholder="Choose templates to use",
+            options=all_templates,
+            default=required_items
+        )
+        selected_elements = {}
+        columns = st.columns(2)
+        position = 0
+        for selected_key in selected_keys:
+            element_store = sst.data_store[selected_key]
+            with columns[position]:
+                element_names = [element for element in element_store.keys() if element != element_selected]
+                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                           options=element_names,
+                                           default=element_names, key=f"multiselect_{selected_key}")
+                selected_elements[selected_key] = selection
+                position += 1
+            if position >= 2:
+                position = 0
+        for selected_key, selected_elements_list in selected_elements.items():
+            element_store = sst.data_store[selected_key]
+            for name in selected_elements_list:
+                resource_text = ""
+                element_value = element_store[name]
+                for value in element_value:
+                    resource_text += f"- {value}\n"
+                if resource_text.strip() != "":
+                    name_display = sst.elements_config[name].get("display_name", name)
+                    description = sst.elements_config[name].get("description", "No description available.")
+                    resource_text = f"_{description}_\n{resource_text}"
+                    selected_resources[name_display] = resource_text
 
-def artifact_input_subview(element_selected, element_store):
-    input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}",
-                              label_visibility="collapsed")
-    if st.button("Confirm", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
-        check = check_can_add(element_store, element_selected, [input_text])
-        if check is None:
-            element_store[element_selected].append(input_text)
-            update_data_store()
-            st.rerun()
+    # --- Combine Prompt and Schema into one expander ---
+    is_image = element_config.get("type", "") == "image"
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    schema = None
+    if not is_image:
+        schema_name = element_config['schema_name']
+        schema = load_schema(schema_name)
+    with st.expander("Prompt & Response Schema"):
+        st.markdown("**Prompt:** " + prompt_name + ".txt")
+        if prompt:
+            st.markdown(prompt)
         else:
-            st.warning(check)
+            st.error("There is no prompt assigned")
+        if not is_image and schema is not None:
+            st.divider()
+            st.markdown("**Schema:** " + schema_name + ".json")
+            st.json(schema)
+        st.divider()
+        st.markdown("**Contextual Information:**")
+        user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+        st.markdown(user_prompt)
 
-
-def add_image_to_image_store(element_selected, element_store, image):
-    directory_path = './stores/image_store'
-    if not os.path.exists(directory_path):
-        os.makedirs(directory_path)
-    image = Image.open(image)
-    filename = element_selected + "_" + sst.project_name + '.jpg'
-    full_path = os.path.join(directory_path, filename)
-    image.save(full_path)
-    element_store[element_selected] = [full_path]
-
-
-def image_input_subview(element_selected, element_store):
-    uploaded_file = st.file_uploader("Wähle ein Bild aus ...", type=[".jpg", ".jpeg", ".png", ".gif"])
-    if uploaded_file is not None:
-        st.image(uploaded_file)
-    if st.button("Bestätigen", disabled=uploaded_file is None):
-        # decoded_image = Image.open()
-        buffered = io.BytesIO(uploaded_file.read())
-        # decoded_image.save(buffered, format="PNG")
-        check = check_can_add(element_store, element_selected, [buffered])
-        if check is None:
-            add_image_to_image_store(element_selected, element_store, buffered)
-            st.rerun()
-        else:
-            st.warning(check)
-
-
-def detail_view():
-    st.write("")
-    st.write("")
-    template_names = list(sst.template_config.keys())
-    try:
-        idx = template_names.index(sst.selected_template_name)
-        prev_template = template_names[idx - 1] if idx > 0 else None
-        next_template = template_names[idx + 1] if idx + 1 < len(template_names) else None
-    except Exception:
-        prev_template = None
-        next_template = None
-
-    # Hide navigation buttons on the projects screen (when selected_template_name == 'Start')
-    show_nav = str(sst.selected_template_name).lower() != "start"
-    nav_cols = st.columns([1, 1, 1], gap="large")
-    with nav_cols[0]:
-        if prev_template and show_nav:
-            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary"):
-                sst.selected_template_name = prev_template
-                sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
-                st.rerun()
-    with nav_cols[1]:
-        if show_nav:
-            if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
-                sst.selected_template_name = None
-                sst.current_view = "chart"
-                sst.sidebar_state = "expanded"
-                st.rerun()
-    with nav_cols[2]:
-        if next_template and show_nav:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary"):
-                sst.selected_template_name = next_template
-                sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
-                st.rerun()
-
-    # Centered template name and description with larger text
-    st.markdown(f"""
-        <div style='text-align: center;'>
-            <h1 style='margin-bottom: 0.1em; font-size:2.7em;'>{get_config_value(sst.selected_template_name, config_value='display_name')}</h1>
-            <div style='font-size: 1.0em; color: #666; margin-bottom:0.5em;'>{get_config_value(sst.selected_template_name, config_value='description')}</div>
-        </div>
-    """, unsafe_allow_html=True)
-    if str(sst.selected_template_name).lower() == "start":
-        start_sub_view()
-    elif str(sst.selected_template_name).lower() == "end":
-        end_sub_view()
-    else:
-        template_edit_subview()
-    update_data_store()
-
-
-def about_view():
-    st.title("Welcome")
-    st.markdown(
-        "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
-        unsafe_allow_html=True)
-    # Add disclaimer
-    st.markdown("---")
-    st.markdown("# **Disclaimer - Read before use**")
-    
-    st.markdown("---")
-    st.markdown("## **1. Experimental Nature**")
-    st.markdown(
-        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an “as-is” and “as-available” basis and may include:"
-    )
-    st.markdown(
-        """
-        * **Bugs** or technical errors that could affect performance.
-        * **Incomplete functionality** or features that are still being tested or refined.
-        * **Inaccurate or misleading content**, due to the evolving nature of the AI models.
-        """
-    )
-    st.markdown(
-        "We encourage users to **explore and experiment** with the tool and to share **feedback that can guide future improvements**. However, this tool **should not be used to inform mission-critical decisions**, especially in business, legal, financial, medical, or strategic contexts."
-    )
-    st.markdown("---")
-    st.markdown("## **2. Data Privacy**")
-    st.markdown(
-        "We are committed to safeguarding your data, but it is important to be aware of the following:"
-    )
-    st.markdown(
-        """
-        * The tool may temporarily **process user input to generate results**, but we do **not retain or share personal data**, unless explicitly stated or with your consent.
-        * Since the Innovation Navigator leverages **third-party APIs and AI services** (e.g., for language processing or data analysis), user input **may be transmitted to external services** for processing.
-        * We strongly recommend that users **avoid entering any confidential, sensitive, or personally identifiable information (PII)** when using the tool.
-        """
-    )
-    st.markdown(
-        "Your use of the tool constitutes acceptance of this data handling policy."
-    )
-    st.markdown("---")
-    st.markdown("## **3. Safety and Ethical Use**")
-    st.markdown(
-        "The Innovation Navigator is intended solely for **educational, creative, and exploratory use**. Users are expected to:"
-    )
-    st.markdown(
-        """
-        * **Refrain from using the tool to produce or disseminate harmful, misleading, unethical, or illegal content**.
-        * Ensure that their usage complies with all applicable **laws, regulations, and institutional policies**.
-        * Understand that outputs generated by the AI **do not represent factual or authoritative advice**, and should be interpreted with care.
-        """
-    )
-    st.markdown(
-        "We reserve the right to restrict access to the tool if misuse is detected."
-    )
-    st.markdown("---")
-    st.markdown("## **4. Limitations of AI**")
-    st.markdown(
-        "The AI systems that power the Innovation Navigator are based on advanced, but imperfect, machine learning models. As such:"
-    )
-    st.markdown(
-        """
-        * They may generate **outputs that are inaccurate, irrelevant, or biased**, reflecting limitations in training data or model design.
-        * They **do not possess human judgment, understanding, or intentionality**, and should not be treated as authoritative sources.
-        * Users are advised to **critically evaluate any content** produced and **consult subject matter experts** before taking action based on AI-generated insights.
-        """
-    )
-    st.markdown("---")
-    st.markdown("## **5. Limited Availability**")
-    st.markdown(
-        "At this stage, the Innovation Navigator is being offered as part of a **limited release** for research, testing, and user feedback. It is:"
-    )
-    st.markdown(
-        """
-        * Intended for use by a **select group of participants** and is not yet suitable for public or enterprise-scale deployment.
-        * Not licensed or certified for **commercial, professional, or regulatory use**.
-        * Subject to change, deprecation, or discontinuation at any time without prior notice.
-        """
-    )
-    st.markdown("---")
-    st.markdown(
-        "By continuing to use the Innovation Navigator, you acknowledge and accept these terms and conditions. If you have any questions, concerns, or suggestions, please contact the development team at [Insert Contact Information]."
-    )
-    st.markdown("---")
-
-    # Add a "Get Started" button in the middle of the page
-    st.divider()
-    if st.button("Get Started", type="primary", use_container_width=True):
-        sst.selected_template_name = "Start"  # Set to "start" to open the project creation screen
-        sst.current_view = "detail"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-
-def open_sidebar():
-    sst.sidebar_state = "expanded"
-
-    # Add a logo to the top of the sidebar
-    st.sidebar.image(os.path.join(".", "misc", "LogoFH.png"), use_container_width=True)
-
-    # Button in sidebar to go back to overview
-    if st.sidebar.button(label="Overview", type="primary", use_container_width=True):
-        if sst.current_view != "chart":
-            sst.selected_template_name = None
-            sst.current_view = "chart"
-            sst.sidebar_state = "expanded"
-            sst.update_graph = True
-            st.rerun()
-
-    # New button to project selection
-    if st.sidebar.button(label="Projects", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Start"  # Set to "Start" to open the project creation screen
-        sst.current_view = "detail"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    # button in sidebar to open prompt editor
-    if st.sidebar.button(label="Prompts", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Prompts"
-        sst.current_view = "prompt"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    # button for other stuff
-    if st.sidebar.button(label="About :(", type="secondary", use_container_width=True):
-        sst.selected_template_name = "About"
-        sst.current_view = "about"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    # button to open Data Store Browser
-    if st.sidebar.button(label="Database", type="secondary", use_container_width=True):
-        sst.selected_template_name = None
-        sst.current_view = "datastore_browser"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-        
-
-
-def end_sub_view():
-    st.header("Overview")
-    for template_name in sst.template_config.keys():
-        if template_name.lower() != "start" and template_name.lower() != "end":
-            display_name = get_config_value(template_name)
-            st.subheader(display_name)
-            display_template_view(template_name)
-            add_empty_lines(5)
-
-
-def start_sub_view():
-    data_stores_paths = Path(data_store_path).glob("data_store_*.json")
-    core_names = [path.stem for path in data_stores_paths]
-    project_names = [str(name).split('data_store_')[1] for name in core_names]
-    st.subheader("Add new Innovation Project", help="Create a new project to start working on it. You can also import existing projects.")
-    new_project_name = st.text_input(label="Name of new Innovation Project").strip()
-    if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
-        if new_project_name not in project_names:
-            # Save the current data store just to be sure
-            update_data_store()
-            sst.project_name = new_project_name
-            # Create new empty data store
-            sst.data_store = {}
-            update_data_store()
-            load_data_store()
-            st.success("Project created")
-            sst.sidebar_state = "expanded"
-            sst.update_graph = True
-            sst.current_view = "chart"  # Transition to the overview screen
-            time.sleep(1.0)
-            st.rerun()
-        else:
-            st.warning("A project with this name is already there")
-    st.divider()
-    st.subheader("Switch/Delete Project", help="Switch to another project or delete the current one.")
-    selected_project_name = st.selectbox("Switch to another project:", options=project_names,
-                                         index=project_names.index(sst.project_name))
-    if selected_project_name != sst.project_name:
-        sst.project_name = selected_project_name
-        load_data_store()
-        sst.sidebar_state = "expanded"
-        st.rerun()
-    if selected_project_name != "default":
-        add_empty_lines(2)
-        with st.expander("Delete Project"):
-            if st.button("Delete"):
-                os.remove(get_full_data_store_path())
-                sst.project_name = "default"
-                load_data_store()
-                st.success("Deleted")
-                time.sleep(1.0)
-                st.rerun()
-    st.divider()
-    st.subheader("Export all projects", help="Export all projects to a zip file.")
-    if st.button("Export"):
-        zip_directory_path = shutil.make_archive("stores", "zip", "./stores")
-        now = datetime.now()
-        date_time_str = now.strftime("%Y-%m-%d-%H-%M")
-        with open(zip_directory_path, "rb") as file:
-            st.download_button(
-                label="Download",
-                data=file,
-                file_name=f"projects_{date_time_str}.zip",
-                mime="application/zip",
-                type="primary"
-            )
-    st.divider()
-    st.subheader("Import projects", help="Import projects from a zip file. Needs to be in the correct format.")
-    uploaded_file = st.file_uploader(label="Upload zip project folder",
-                                     type=".zip",
-                                     accept_multiple_files=False)
-    if uploaded_file is not None:
-        if st.button("Import"):
-            save_path = "uploaded_project.zip"
-            with open(save_path, "wb") as file:
-                file.write(uploaded_file.getbuffer())
-            shutil.unpack_archive(save_path, "./stores", "zip")
-            time.sleep(0.2)
-            os.remove(save_path)
-            os.remove("stores.zip")
-            st.success("Projects imported")
-            time.sleep(2.0)
-            st.rerun()
-
-
-view_assignment_dict = {"general": general_creation_view}
-if __name__ == '__main__':
-    init_session_state()
-    init_page()
-    connection_states, completed_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, blocked_templates)
-    open_sidebar()
-    if sst.current_view == "chart":
-        chart_view()
-    elif sst.current_view == "detail":
-        detail_view()
-    elif sst.current_view == "prompt":
-        prompt_editor_view("./canned_prompts")
-    elif sst.current_view == "about":
-        about_view()
-    elif sst.current_view == "datastore_browser":
-        import streamlit_datastore_browser
-        streamlit_datastore_browser.main()
+    if generate_now_clicked:
+        with st.spinner("Generating..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not is_image:
+                handle_response(element_selected, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_selected, prompt, selected_resources)
