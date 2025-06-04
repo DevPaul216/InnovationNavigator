@@ -816,11 +816,13 @@ def general_creation_view(assigned_elements):
             format_func=element_selection_format_func
         )
     with top_cols[1]:
-        creation_mode = st.segmented_control(
+        # Use st.radio instead of segmented_control for robust single selection
+        creation_mode = st.radio(
             label="Select Mode:",
             options=["Manual", "Generate", "Import"],
-            default=creation_mode,
-            help="Select the mode to create artifacts."
+            index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
+            help="Select the mode to create artifacts.",
+            key="creation_mode_radio"
         )
         sst['creation_mode'] = creation_mode
     generate_now_clicked = False
