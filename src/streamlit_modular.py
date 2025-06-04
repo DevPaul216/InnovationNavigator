@@ -1050,19 +1050,11 @@ def add_image_to_image_store(element_selected, element_store, image):
     directory_path = './stores/image_store'
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-    image_obj = Image.open(image)
+    image = Image.open(image)
     filename = element_selected + "_" + sst.project_name + '.jpg'
     full_path = os.path.join(directory_path, filename)
-    image_obj.save(full_path)
+    image.save(full_path)
     element_store[element_selected] = [full_path]
-    # Also add to generated_artifacts so the 'Add' toggle appears
-    if element_selected not in sst.generated_artifacts:
-        sst.generated_artifacts[element_selected] = {}
-    # Use a unique key (timestamp or length)
-    key = str(len(sst.generated_artifacts[element_selected]))
-    sst.generated_artifacts[element_selected][key] = full_path
-    # Optionally clear confirmed_artifacts for this element
-    sst.confirmed_artifacts[element_selected] = {}
 
 
 def image_input_subview(element_selected, element_store):
