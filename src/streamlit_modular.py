@@ -833,7 +833,14 @@ def general_creation_view(assigned_elements):
     if creation_mode == "Manual":
         if is_single:
             with st.container(border=True):
-                # Use the same artifact assignment view as in Generate/Import
+                # Manual entry at the top
+                if not is_image:
+                    artifact_input_subview(element_selected, element_store)
+                else:
+                    image_input_subview(element_selected, element_store)
+                # Unified artifact selection view below
+                st.divider()
+                st.markdown("**Assigned & Available Artifacts**")
                 display_generated_artifacts_view(element_selected)
         else:
             elements_group = element_config["elements"]
@@ -850,6 +857,15 @@ def general_creation_view(assigned_elements):
                             if position < len(elements_group):
                                 element_name = elements_group[position]
                                 with st.container(border=True, height=height_single):
+                                    element_config = sst.elements_config[element_name]
+                                    display_name = element_config.get("display_name", element_name)
+                                    description = element_config.get("description", "")
+                                    st.markdown(f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> <span style='color:#888;font-size:0.98em'>{description}</span>", unsafe_allow_html=True)
+                                    # Manual entry at the top for each group element
+                                    artifact_input_subview(element_name, element_store)
+                                    st.divider()
+                                    # Unified artifact selection view below
+                                    st.markdown("**Assigned & Available Artifacts**")
                                     display_generated_artifacts_view(element_name)
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
