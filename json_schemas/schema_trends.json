@@ -31,7 +31,6 @@
     "required": [
       "MegaTrends",
       "MacroTrends",
-      "MesoTrends",
       "MicroTrends"
     ],
     "additionalProperties": false

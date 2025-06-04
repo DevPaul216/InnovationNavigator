@@ -39,18 +39,18 @@ def align_data_store():
             if element in sst.elements_config:
                 element_config = sst.elements_config[element]
                 if "type" not in element_config or element_config["type"] != "group":
-                    if element not in element_store:
-                        element_store[element] = {}
+                    if element not in element_store or not isinstance(element_store[element], list):
+                        element_store[element] = []
                 else:
                     group_elements = element_config["elements"]
                     for group_element in group_elements:
-                        if group_element not in element_store:
-                            element_store[group_element] = {}
+                        if group_element not in element_store or not isinstance(element_store[group_element], list):
+                            element_store[group_element] = []
             else:
                 print(
                     f"Element config of {element} referenced from template {template_name} not found in the element config!")
         sst.data_store[template_name] = element_store
-        update_data_store()
+    update_data_store()
 
 
 def init_session_state():
@@ -423,13 +423,13 @@ def resource_selection_view(element_name):
 
 
 def add_to_generated_artifacts(element_name, values):
-    # Only use dict for sst.generated_artifacts (for toggling), never assign to the data store here
+    artifacts_dict = {}
     if not isinstance(values, list):
         values = [values]
-    artifacts_dict = {i: value for i, value in enumerate(values)}
+    for i, value in enumerate(values):
+        artifacts_dict[i] = value
     sst.generated_artifacts[element_name] = artifacts_dict
     sst.confirmed_artifacts[element_name] = {}
-    # Do NOT assign to sst.data_store here!
 
 
 def handle_response(element_name, prompt, schema, selected_resources, temperature, top_p):
@@ -640,30 +640,26 @@ def add_resources(selected_resources, home_url, number_entries_used, query, uplo
 
 def display_artifacts_view(element_selected, element_store):
     st.markdown("**Assigned Artifacts**")
-    # Ensure the artifact list is always a list
     artifacts_to_show = element_store[element_selected]
-    if isinstance(artifacts_to_show, dict):
-        artifacts_to_show = list(artifacts_to_show.values())
-        element_store[element_selected] = artifacts_to_show
     if len(artifacts_to_show) == 0:
         st.write("Nothing here yet.")
     deleted_artifacts = []
     for i, artifact in enumerate(artifacts_to_show):
-        # Show all assigned artifacts, not just those added manually
-        with st.container():
-            columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
-            with columns[1]:
-                st.markdown(artifact)
-            with columns[3]:
-                if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
-                    deleted_artifacts.append(artifact)
+        if i != 0:
+            # st.divider()
+            with st.container():
+                columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
+                with columns[1]:
+                    st.markdown(artifact)
+                with columns[3]:
+                    if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
+                        deleted_artifacts.append(artifact)
+
     remaining_artifacts = [artifact for artifact in artifacts_to_show if artifact not in deleted_artifacts]
     element_store[element_selected] = remaining_artifacts
     # If something was marked for deletion refresh
     if len(deleted_artifacts) != 0:
-        update_data_store()
         st.rerun()
-
 
 def display_artifact_view_image(element_selected, element_store):
     st.subheader("Available Artifacts")
@@ -1138,14 +1134,12 @@ def artifact_input_subview(element_selected, element_store):
     input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}",
                               label_visibility="collapsed")
     if st.button("Confirm", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
-        # Ensure the artifact list is always a list
-        if isinstance(element_store[element_selected], dict):
-            element_store[element_selected] = list(element_store[element_selected].values())
-        if not isinstance(element_store[element_selected], list):
-            element_store[element_selected] = []
-        element_store[element_selected].append(input_text)
-        update_data_store()
-        st.rerun()
+        check = check_can_add(element_store, element_selected, [input_text])
+        if check is None:
+            element_store[element_selected].append(input_text)
+            st.rerun()
+        else:
+            st.warning(check)
 
 
 def add_image_to_image_store(element_selected, element_store, image):
