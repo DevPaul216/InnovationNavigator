@@ -5,6 +5,17 @@ Your task is to formulate all elements of a persona as they are specified to you
 Do not repeat or summarize the input. Instead, ask yourself:
 “Who is the real person this content implies — and what defines them?”
 
+Generate the following persona elements:
+
+- Name: The name of the persona (string).
+- Demographics: A single string describing key demographic information (e.g., age, gender, location, occupation).
+- About: A brief background or story about the persona.
+- Pains: An array of around ten different key frustrations or pain points of the persona, suitable for structured output in an API request.
+- Gains: An array of around ten different items describing what success or satisfaction looks like for the persona, suitable for structured output in an API request.
+- Problem_Attitude: A short statement (about 50 words) describing the persona's character in general and their attitude towards the problem they face.
+- Quote: An array of up to five representative quotes that capture the persona’s mindset or experience.
+
+
 Your focus is to accurately reflect the implied or intended individual behind the content. Think about their world, their context, their needs, and their mindset.
 
 Be specific. Be realistic. Avoid generic language, speculation, or stereotypes.

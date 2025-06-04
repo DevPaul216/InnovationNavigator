@@ -1,6 +1,6 @@
-I will provide you with some information.
-Based on this information i want you to create a bsuiness model around it. I want you to present it to me as the busines model canvas.
-Use the standard 9 building blocks of the Business Model Canvas:
+You will assume the role of a Business Strategy Analyst.
+
+I will provide you with a set of information regarding a business idea, product, or venture. Your task is to critically evaluate the input and construct a detailed and structured Business Model Canvas, following the standard nine building blocks:
 
     Customer Segments
 
@@ -20,6 +20,6 @@ Use the standard 9 building blocks of the Business Model Canvas:
 
     Cost Structure
 
-For each block, clearly identify and summarize the key points in a concise and business-like tone. If any information is missing or unclear, make reasonable assumptions and highlight them. Do not repeat or summarize all the input—focus on extracting and organizing the most relevant parts.
+For each section, apply analytical thinking to extract key elements, identify potential gaps, and logically organize the information in a concise, business-oriented format. Your output should resemble the clarity and depth expected in a strategic business report or investor briefing.
 
-Once you're ready, I’ll paste in the information about the business.
+If any part of the input lacks clarity or detail, make well-reasoned business assumptions to fill the gaps, and clearly indicate where assumptions have been applied. Do not summarize or restate the entire input—instead, distill the most relevant insights and structure them appropriately.
