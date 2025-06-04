@@ -423,13 +423,16 @@ def resource_selection_view(element_name):
 
 
 def add_to_generated_artifacts(element_name, values):
-    artifacts_dict = {}
+    # Only use dict for sst.generated_artifacts (for toggling), but always assign a list to the data store
     if not isinstance(values, list):
         values = [values]
-    for i, value in enumerate(values):
-        artifacts_dict[i] = value
+    # For toggling UI, keep as dict (unchanged)
+    artifacts_dict = {i: value for i, value in enumerate(values)}
     sst.generated_artifacts[element_name] = artifacts_dict
     sst.confirmed_artifacts[element_name] = {}
+    # Always assign a list to the data store (if this function is used for that purpose elsewhere)
+    if sst.selected_template_name and element_name in sst.data_store.get(sst.selected_template_name, {}):
+        sst.data_store[sst.selected_template_name][element_name] = list(values)
 
 
 def handle_response(element_name, prompt, schema, selected_resources, temperature, top_p):
