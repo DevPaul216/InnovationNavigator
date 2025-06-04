@@ -984,37 +984,49 @@ def template_edit_subview():
     if assigned_elements is not None and len(assigned_elements) > 0:
         # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
-        if st.button("Remove all artifacts from this template", type="secondary"):
-            # Find all elements that are shared across templates (including group elements)
-            elements_to_clear = set(assigned_elements)
-            # Recursively add group elements
-            def add_group_elements(el):
-                el_config = sst.elements_config.get(el, {})
-                if el_config.get("type") == "group":
-                    for sub_el in el_config.get("elements", []):
-                        elements_to_clear.add(sub_el)
-                        add_group_elements(sub_el)
-            for el in list(elements_to_clear):
-                add_group_elements(el)
-            # Remove images from disk for image-type elements
-            for el in elements_to_clear:
-                el_config = sst.elements_config.get(el, {})
-                if el_config.get("type") == "image":
+        # Add confirmation for removing all artifacts
+        if 'remove_all_confirm' not in sst:
+            sst['remove_all_confirm'] = False
+        if not sst['remove_all_confirm']:
+            if st.button("Remove all artifacts from this template", type="secondary"):
+                sst['remove_all_confirm'] = True
+                st.rerun()
+        else:
+            st.warning("Are you sure you want to remove all artifacts from this template? This cannot be undone.")
+            cols = st.columns([1,1])
+            with cols[0]:
+                if st.button("Yes, remove all", type="primary"):
+                    # Find all elements that are shared across templates (including group elements)
+                    elements_to_clear = set(assigned_elements)
+                    # Recursively add group elements
+                    def add_group_elements(el):
+                        el_config = sst.elements_config.get(el, {})
+                        if el_config.get("type") == "group":
+                            for sub_el in el_config.get("elements", []):
+                                elements_to_clear.add(sub_el)
+                                add_group_elements(sub_el)
+                    for el in list(elements_to_clear):
+                        add_group_elements(el)
+                    # Remove images from disk for image-type elements
+                    for el in elements_to_clear:
+                        el_config = sst.elements_config.get(el, {})
+                        if el_config.get("type") == "image":
+                            for template, element_store in sst.data_store.items():
+                                if el in element_store:
+                                    # Optionally: remove image file from disk here
+                                    pass
+                    # Clear the element in all templates (for all element stores, for all elements to clear)
                     for template, element_store in sst.data_store.items():
-                        img_paths = element_store.get(el, [])
-                        for img_path in img_paths:
-                            if isinstance(img_path, str) and os.path.exists(img_path):
-                                try:
-                                    os.remove(img_path)
-                                except Exception as e:
-                                    print(f"Could not remove image {img_path}: {e}")
-            # Clear the element in all templates (for all element stores, for all elements to clear)
-            for template, element_store in sst.data_store.items():
-                for el in elements_to_clear:
-                    if el in element_store:
-                        element_store[el] = []
-            update_data_store()
-            st.rerun()
+                        for el in elements_to_clear:
+                            if el in element_store:
+                                element_store[el] = []
+                    update_data_store()
+                    sst['remove_all_confirm'] = False
+                    st.rerun()
+            with cols[1]:
+                if st.button("Cancel"):
+                    sst['remove_all_confirm'] = False
+                    st.rerun()
         st.divider()
         function = view_assignment_dict["general"]
         if sst.selected_template_name in view_assignment_dict:
