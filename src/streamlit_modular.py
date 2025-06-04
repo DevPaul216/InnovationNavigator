@@ -1056,12 +1056,18 @@ def template_edit_subview():
         # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
         # Move the button here, below the template view but above the divider
-        if st.button("Remove all artifacts from this template", type="secondary"):
-            element_store = sst.data_store.get(sst.selected_template_name, {})
-            for key in element_store:
-                element_store[key] = []
-            update_data_store()
-            st.rerun()
+        button_cols = st.columns(6, gap="small")
+        with button_cols[0]:
+            if st.button("Remove all artifacts from this template", type="secondary"):
+                element_store = sst.data_store.get(sst.selected_template_name, {})
+                for key in element_store:
+                    element_store[key] = []
+                update_data_store()
+                st.rerun()
+        # Add 5 more blank buttons
+        for i in range(1, 6):
+            with button_cols[i]:
+                st.button("", key=f"blank_button_{i}", disabled=True)
         st.divider()
         function = view_assignment_dict["general"]
         if sst.selected_template_name in view_assignment_dict:
