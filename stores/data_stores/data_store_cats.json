@@ -7,36 +7,71 @@
     "Continue": {},
     "Start": {},
     "Problem": {
-        "InnovationIssue": {},
-        "TargetGroup": {}
+        "InnovationIssue": [
+            "cats get antsy and bored when home alone or when their owner is working"
+        ],
+        "TargetGroup": [
+            "Young people living alone with a single cat. Austria, 25-35."
+        ]
     },
     "Resources": {
-        "Physical Resources": {},
-        "Human Resources": {},
-        "Financial Resources": {},
-        "Intellectual Property": {},
-        "KnowHow and Information": {},
-        "ResourcesCombined": {}
+        "Physical Resources": [
+            "Tools and hardware in hackerspaces",
+            "Computers for design and production",
+            "Digital fabrication equipment (3D printers, CNC machines)",
+            "Hand tools for traditional manufacturing",
+            "Makerspaces and workshops for community use"
+        ],
+        "Human Resources": [
+            "Community members in makerspaces",
+            "Volunteers and members involved in workshops",
+            "Educators and mentors associated with maker culture"
+        ],
+        "Financial Resources": [
+            "Funding platforms (e.g., Kickstarter, Patreon)",
+            "Grants for maker projects or initiatives"
+        ],
+        "Intellectual Property": [
+            "Open source hardware designs",
+            "Proprietary software used for design (e.g., Autodesk, FreeCAD)"
+        ],
+        "KnowHow and Information": [
+            "Skills and expertise in electronics, robotics, metalworking, woodworking",
+            "Access to online project repositories and educational platforms (e.g., Instructables, GitHub)",
+            "Knowledge sharing through community events and forums"
+        ],
+        "ResourcesCombined": [
+            "The organization has access to a variety of tangible resources, including tools and equipment from makerspaces, human resources like volunteers and mentors passionate about maker culture, financial backing through grants and crowdfunding platforms, a wealth of knowledge and expertise in various crafts, as well as intellectual property like open-source hardware designs that can aid in product development."
+        ]
     },
     "Strategic Foundation": {
-        "Organization Name": {},
-        "Mission": {},
-        "Vision": {},
-        "Values": {}
+        "Organization Name": [],
+        "Mission": [],
+        "Vision": [],
+        "Values": []
     },
     "Design Challenge": {
-        "HowMightWe": {},
-        "StrategyCombined": {},
-        "ResourcesCombined": {}
+        "HowMightWe": [
+            "How might we create engaging toys or activities that keep cats entertained while their owners are away or busy?",
+            "How might we leverage community knowledge to design innovative solutions that address boredom in cats left alone?",
+            "How might we utilize existing makerspaces to prototypically test and iterate on products aimed at enhancing cat playtime and well-being?",
+            "How might we develop a system that allows owners to remotely interact with their cats during long periods of absence?"
+        ],
+        "StrategyCombined": [
+            "The organization aims to foster innovation within the maker community by leveraging collaborative efforts and utilizing available resources to address everyday challenges, such as enhancing the lives of pets and their owners. They focus on creating solutions that promote interaction and engagement for pets, particularly for young cat owners living alone."
+        ],
+        "ResourcesCombined": [
+            "The organization has access to a variety of tangible resources, including tools and equipment from makerspaces, human resources like volunteers and mentors passionate about maker culture, financial backing through grants and crowdfunding platforms, a wealth of knowledge and expertise in various crafts, as well as intellectual property like open-source hardware designs that can aid in product development."
+        ]
     },
     "Customer Persona": {
-        "Name": {},
-        "Demographics": {},
-        "Quote": {},
-        "Problem_Attitude": {},
-        "About": {},
-        "Pains": {},
-        "Gains": {},
+        "Name": [],
+        "Demographics": [],
+        "Quote": [],
+        "Problem_Attitude": [],
+        "About": [],
+        "Pains": [],
+        "Gains": [],
         "Portrait": {}
     },
     "Empathy Map": {
