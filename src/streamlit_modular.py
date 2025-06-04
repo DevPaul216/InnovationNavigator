@@ -830,25 +830,28 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
-    #st.subheader("Generate Information Artifacts")
     # --- Main controls row ---
+    st.markdown("### Generation Controls")
     top_cols = st.columns([1, 1, 1, 2], gap="medium")
+    
     # Set default mode to 'Generate' when switching templates
     if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
         sst['creation_mode'] = 'Generate'
         sst['last_template'] = sst.selected_template_name
+    
     creation_mode = sst.get('creation_mode', 'Generate')
+    
     with top_cols[0]:
         element_selected = st.selectbox(
-            label="Select Element to generate:",
+            label="Element to generate:",
             help="Select the element to generate artifacts for.",
             options=assigned_elements,
             format_func=element_selection_format_func
         )
+    
     with top_cols[1]:
-        # Use st.radio for robust single selection, avoid session state key conflicts
         new_creation_mode = st.radio(
-            label="Select Mode:",
+            label="Creation Mode:",
             options=["Manual", "Generate", "Import"],
             index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
             help="Select the mode to create artifacts."
@@ -857,12 +860,14 @@ def general_creation_view(assigned_elements):
             sst['creation_mode'] = new_creation_mode
             st.rerun()
         creation_mode = new_creation_mode
+    
     generate_now_clicked = False
     with top_cols[2]:
         if creation_mode == "Generate":
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+    
     with top_cols[3]:
         auto_assign_max = st.toggle(
             "Auto-assign max allowed artifacts after generation",
@@ -877,6 +882,9 @@ def general_creation_view(assigned_elements):
     is_single = not (element_config.get("type") == "group")
     selected_template_config = sst.template_config[sst.selected_template_name]
     vertical_gap = 1
+
+    # Add a visual separator
+    st.divider()
 
     def auto_assign_artifacts(elements, is_image_type=False):
         rerun_needed = False
@@ -943,28 +951,39 @@ def general_creation_view(assigned_elements):
     if creation_mode == "Manual":
         if is_single:
             with st.container(border=True):
+                st.markdown("### Manual Input")
                 if not is_image:
                     artifact_input_subview(element_selected, element_store)
                 else:
                     image_input_subview(element_selected, element_store)
+                st.divider()
+                st.markdown("### Current Artifacts")
                 display_generated_artifacts_view(element_selected)
         else:
             elements_group = element_config["elements"]
             display_group_elements(elements_group, manual=True)
+    
     elif creation_mode in ("Generate", "Import"):
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
-            if generate_now_clicked and auto_assign_max:
-                if is_single:
-                    auto_assign_artifacts([element_selected], is_image)
-                else:
-                    elements_group = element_config["elements"]
-                    auto_assign_artifacts(elements_group)
+            with st.container(border=True):
+                st.markdown("### Generation Settings")
+                generate_artifacts(element_selected, is_image, generate_now_clicked)
+                if generate_now_clicked and auto_assign_max:
+                    if is_single:
+                        auto_assign_artifacts([element_selected], is_image)
+                    else:
+                        elements_group = element_config["elements"]
+                        auto_assign_artifacts(elements_group)
+        
         if creation_mode == "Import":
-            import_artifacts(element_selected, generate_now_clicked)
+            with st.container(border=True):
+                st.markdown("### Import Settings")
+                import_artifacts(element_selected, generate_now_clicked)
+        
         st.divider()
+        
         if is_single:
-            st.subheader("Generated Artifacts")
+            st.markdown("### Generated Artifacts")
             display_generated_artifacts_view(element_selected)
             if auto_assign_max:
                 auto_assign_artifacts([element_selected], is_image)
@@ -973,8 +992,10 @@ def general_creation_view(assigned_elements):
             display_group_elements(elements_group)
             if auto_assign_max:
                 auto_assign_artifacts(elements_group)
+    
     if is_single and is_image:
         st.divider()
+        st.markdown("### Current Image")
         display_artifact_view_image(element_selected, element_store)
 
 
@@ -1161,6 +1182,7 @@ def detail_view():
                 sst.selected_template_name = None
                 sst.current_view = "chart"
                 sst.sidebar_state = "expanded"
+                sst.update_graph = True
                 st.rerun()
     with nav_cols[2]:
         if next_template and show_nav:
@@ -1198,7 +1220,7 @@ def about_view():
     st.markdown("---")
     st.markdown("## **1. Experimental Nature**")
     st.markdown(
-        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an “as-is” and “as-available” basis and may include:"
+        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an "as-is" and "as-available" basis and may include:"
     )
     st.markdown(
         """
