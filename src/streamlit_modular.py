@@ -192,7 +192,10 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
             # Special formatting for key templates
-            special_templates = ["align", "discover", "define", "develop", "deliver", "continue"]
+            special_templates = [
+                "align", "discover", "define", "develop", "deliver", "continue",
+                "empathize", "define+", "ideate", "prototype", "test"
+            ]
             if template_name.lower() in special_templates:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
@@ -793,7 +796,10 @@ def chart_view():
             pan_on_drag=False,
         )
     # Prevent selection of special templates
-    special_templates = ["align", "discover", "define", "develop", "deliver", "continue","Empathize", "Define+", "Ideate", "Prototype", "Test"]
+    special_templates = [
+        "align", "discover", "define", "develop", "deliver", "continue",
+        "empathize", "define+", "ideate", "prototype", "test"
+    ]
     if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
