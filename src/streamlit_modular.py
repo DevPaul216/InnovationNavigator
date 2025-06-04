@@ -453,11 +453,16 @@ def handle_response(element_name, prompt, schema, selected_resources, temperatur
 
 
 def handle_response_image(element_name, prompt, selected_resources):
-    generated_images = []
-    for _ in range(0, 3):
-        generated_image = make_request_image(prompt, additional_information_dict=selected_resources)
-        generated_images.append(generated_image)
-    add_to_generated_artifacts(element_name, generated_images)
+    # Old code for generating 3 images:
+    # generated_images = []
+    # for _ in range(0, 3):
+    #     generated_image = make_request_image(prompt, additional_information_dict=selected_resources)
+    #     generated_images.append(generated_image)
+    # add_to_generated_artifacts(element_name, generated_images)
+
+    # New code: only generate one image
+    generated_image = make_request_image(prompt, additional_information_dict=selected_resources)
+    add_to_generated_artifacts(element_name, [generated_image])
 
 
 def generate_artifacts(element_name, is_image=False, generate_now_clicked=False):
@@ -933,11 +938,33 @@ def template_edit_subview():
         # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
         st.divider()
-        # Move the button here, below the template view but above the divider
         if st.button("Remove all artifacts from this template", type="secondary"):
-            element_store = sst.data_store.get(sst.selected_template_name, {})
-            for key in element_store:
-                element_store[key] = []
+            # Find all elements that are shared across templates
+            elements_to_clear = set(assigned_elements)
+            # Also clear group elements and shared elements
+            for template, config in sst.template_config.items():
+                if template == sst.selected_template_name:
+                    continue
+                for el in config.get("elements", []):
+                    if el in elements_to_clear:
+                        elements_to_clear.add(el)
+            # Remove images from disk for image-type elements
+            for el in elements_to_clear:
+                el_config = sst.elements_config.get(el, {})
+                if el_config.get("type") == "image":
+                    # Remove image file(s) if present
+                    for template, element_store in sst.data_store.items():
+                        img_paths = element_store.get(el, [])
+                        for img_path in img_paths:
+                            if isinstance(img_path, str) and os.path.exists(img_path):
+                                try:
+                                    os.remove(img_path)
+                                except Exception as e:
+                                    print(f"Could not remove image {img_path}: {e}")
+                # Clear the element in all templates
+                for template, element_store in sst.data_store.items():
+                    if el in element_store:
+                        element_store[el] = []
             update_data_store()
             st.rerun()
         st.divider()
