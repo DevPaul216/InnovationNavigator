@@ -764,11 +764,48 @@ def legend_subview():
         )
 
 
+def get_progress_stats():
+    total_elements = 0
+    filled_elements = 0
+    templates_with_2_3_filled = 0
+    total_templates = 0
+    for template_name, template_config in sst.template_config.items():
+        if template_name not in sst.data_store:
+            continue
+        element_store = sst.data_store[template_name]
+        elements = template_config["elements"]
+        if not elements:
+            continue
+        total_templates += 1
+        num_elements = len(elements)
+        num_filled = 0
+        for element in elements:
+            if element in element_store:
+                values = element_store[element]
+                if isinstance(values, list) and len(values) > 0:
+                    num_filled += 1
+                elif isinstance(values, str) and values.strip():
+                    num_filled += 1
+        total_elements += num_elements
+        filled_elements += num_filled
+        if num_elements > 0 and num_filled / num_elements >= 2/3:
+            templates_with_2_3_filled += 1
+    frac_elements_filled = filled_elements / total_elements if total_elements > 0 else 0
+    frac_templates_2_3 = templates_with_2_3_filled / total_templates if total_templates > 0 else 0
+    progress = (frac_elements_filled + frac_templates_2_3) / 2
+    return progress, frac_elements_filled, frac_templates_2_3
+
+
 def chart_view():
     add_empty_lines(1)
-    st.subheader("Project: " + sst.project_name)
+    # Progress bar next to project title
+    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
+    cols = st.columns([3, 7])
+    with cols[0]:
+        st.subheader(f"Project: {sst.project_name}")
+    with cols[1]:
+        st.progress(progress, text=f"Progress: {int(progress*100)}%")
     add_empty_lines(1)
-
     legend_subview()
 
     with st.container(border=True):
