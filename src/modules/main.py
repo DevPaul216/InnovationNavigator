@@ -4,7 +4,13 @@ import os
 
 from .state import init_session_state, update_data_store
 from .ui_components import init_page
-from .views import chart_view, init_graph, init_flow_graph
+from .views import chart_view, init_graph, init_flow_graph, detail_view, about_view, general_creation_view
+from .shared import VIEW_ASSIGNMENT_DICT
+
+def init_view_assignments():
+    """Initialize the view assignment dictionary with the appropriate functions."""
+    VIEW_ASSIGNMENT_DICT["general"] = general_creation_view
+    # Add other view assignments as needed
 
 def open_sidebar():
     sst.sidebar_state = "expanded"
@@ -56,6 +62,7 @@ def open_sidebar():
 def main():
     init_session_state()
     init_page()
+    init_view_assignments()  # Initialize view assignments
     connection_states, completed_templates, blocked_templates = init_graph()
     init_flow_graph(connection_states, completed_templates, blocked_templates)
     open_sidebar()
@@ -63,17 +70,17 @@ def main():
     if sst.current_view == "chart":
         chart_view()
     elif sst.current_view == "detail":
-        from .views import detail_view
         detail_view()
     elif sst.current_view == "prompt":
         from streamlit_prompteditor import prompt_editor_view
         prompt_editor_view("./canned_prompts")
     elif sst.current_view == "about":
-        from .views import about_view
         about_view()
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
+    else:
+        st.error("Invalid view selected")
 
 if __name__ == '__main__':
     main() 

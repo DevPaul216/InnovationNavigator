@@ -9,29 +9,21 @@ from streamlit_flow.state import StreamlitFlowState
 from .ui_components import add_empty_lines, get_config_value
 from .state import update_data_store, load_data_store, get_full_data_store_path
 from .artifact_handling import display_generated_artifacts_view
-
-# Define color scheme
-COLOR_BLOCKED = "rgb(250, 240, 220)"
-COLOR_COMPLETED = "rgb(104, 223, 200)"
-COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
-
-# Define data store path
-data_store_path = os.path.join("stores", "data_stores")
-
-# Define view assignment dictionary
-view_assignment_dict = {"general": None}  # This will be set by the main module
+from .shared import (
+    COLOR_BLOCKED,
+    COLOR_COMPLETED,
+    COLOR_IN_PROGRESS,
+    DATA_STORE_PATH,
+    VIEW_ASSIGNMENT_DICT,
+    SPECIAL_TEMPLATES
+)
 
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            # Special formatting for key templates
-            special_templates = [
-                "align", "discover", "define", "develop", "deliver", "continue",
-                "empathize", "define+", "ideate", "prototype", "test"
-            ]
-            if template_name.lower() in special_templates:
+            if template_name.lower() in SPECIAL_TEMPLATES:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
@@ -167,11 +159,7 @@ def chart_view():
             pan_on_drag=False,
         )
     
-    special_templates = [
-        "align", "discover", "define", "develop", "deliver", "continue",
-        "empathize", "define+", "ideate", "prototype", "test"
-    ]
-    if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
+    if updated_state.selected_id is not None and updated_state.selected_id.lower() not in SPECIAL_TEMPLATES:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
         sst.sidebar_state = "expanded"
@@ -333,7 +321,7 @@ def start_sub_view():
     from datetime import datetime
     import time
     
-    data_stores_paths = Path(data_store_path).glob("data_store_*.json")
+    data_stores_paths = Path(DATA_STORE_PATH).glob("data_store_*.json")
     core_names = [path.stem for path in data_stores_paths]
     project_names = [str(name).split('data_store_')[1] for name in core_names]
     st.subheader("Add new Innovation Project", help="Create a new project to start working on it. You can also import existing projects.")
@@ -464,10 +452,13 @@ def template_edit_subview():
                     sst['remove_all_confirm'] = False
                     st.rerun()
         st.divider()
-        function = view_assignment_dict["general"]
-        if sst.selected_template_name in view_assignment_dict:
-            function = view_assignment_dict[sst.selected_template_name]
-        function(assigned_elements)
+        function = VIEW_ASSIGNMENT_DICT["general"]
+        if sst.selected_template_name in VIEW_ASSIGNMENT_DICT:
+            function = VIEW_ASSIGNMENT_DICT[sst.selected_template_name]
+        if function is not None:
+            function(assigned_elements)
+        else:
+            st.warning("No view function available for this template. Check configuration!")
     else:
         st.warning("No functions available. Check configuration!")
 
