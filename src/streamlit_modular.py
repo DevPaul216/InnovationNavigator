@@ -768,9 +768,8 @@ def legend_subview():
 
 
 def get_progress_stats():
-    per_template_fractions = []
-    templates_with_2_3_filled = 0
-    total_templates = 0
+    total_required_elements = 0
+    total_filled_required_elements = 0
     for template_name, template_config in sst.template_config.items():
         if template_name not in sst.data_store:
             continue
@@ -778,24 +777,17 @@ def get_progress_stats():
         elements = template_config["elements"]
         if not elements:
             continue
-        total_templates += 1
-        num_elements = len(elements)
-        num_filled = 0
         for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            if not element_config.get("required", True):
+                continue
+            total_required_elements += 1
             if element in element_store:
                 values = element_store[element]
-                if isinstance(values, list) and len(values) > 0:
-                    num_filled += 1
-                elif isinstance(values, str) and values.strip():
-                    num_filled += 1
-        frac_filled = num_filled / num_elements if num_elements > 0 else 0
-        per_template_fractions.append(frac_filled)
-        if frac_filled >= 2/3:
-            templates_with_2_3_filled += 1
-    avg_template_filled = sum(per_template_fractions) / len(per_template_fractions) if per_template_fractions else 0
-    frac_templates_2_3 = templates_with_2_3_filled / total_templates if total_templates > 0 else 0
-    progress = (avg_template_filled + frac_templates_2_3) / 2
-    return progress, avg_template_filled, frac_templates_2_3
+                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                    total_filled_required_elements += 1
+    progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
+    return progress, total_filled_required_elements, total_required_elements
 
 
 def chart_view():
