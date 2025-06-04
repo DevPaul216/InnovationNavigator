@@ -851,7 +851,7 @@ def general_creation_view(assigned_elements):
     generate_now_clicked = False
     with columns[2]:
         if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True, help="Generate artifacts based on the selected element and mode")
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
 
@@ -1056,25 +1056,16 @@ def template_edit_subview():
     selected_template = sst.template_config[sst.selected_template_name]
     assigned_elements = selected_template["elements"]
     if assigned_elements is not None and len(assigned_elements) > 0:
+        # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
         st.divider()
-        # Button row: Remove all artifacts + Select Mode next to it
-        button_cols = st.columns([2, 1])
-        with button_cols[0]:
-            if st.button("Remove all artifacts from this template", type="secondary"):
-                element_store = sst.data_store.get(sst.selected_template_name, {})
-                for key in element_store:
-                    element_store[key] = []
-                update_data_store()
-                st.rerun()
-        with button_cols[1]:
-            st.session_state.setdefault("template_mode_selector", "Generate")
-            st.selectbox(
-                label="Select Mode",
-                options=["Manual", "Generate", "Import"],
-                key="template_mode_selector",
-                help="Select the mode for this template."
-            )
+        # Move the button here, below the template view but above the divider
+        if st.button("Remove all artifacts from this template", type="secondary"):
+            element_store = sst.data_store.get(sst.selected_template_name, {})
+            for key in element_store:
+                element_store[key] = []
+            update_data_store()
+            st.rerun()
         st.divider()
         function = view_assignment_dict["general"]
         if sst.selected_template_name in view_assignment_dict:
