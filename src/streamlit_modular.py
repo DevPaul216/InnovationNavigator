@@ -1220,7 +1220,7 @@ def about_view():
     st.markdown("---")
     st.markdown("## **1. Experimental Nature**")
     st.markdown(
-        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an "as-is" and "as-available" basis and may include:"
+        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an 'as-is' and 'as-available' basis and may include:"
     )
     st.markdown(
         """
