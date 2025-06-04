@@ -682,7 +682,7 @@ def get_elements_to_show(element_names, element_store, max_characters):
             element_artifacts = element_store[element_name]
             artifact_text = ""
             for artifact in element_artifacts:
-                artifact_text += "- " + artifact + "  \n"
+                artifact_text += "- " + str(artifact) + "  \n"
             if len(artifact_text) > max_characters:
                 max_characters = len(artifact_text)
             artifact_texts[element_name] = artifact_text
@@ -994,7 +994,6 @@ def template_edit_subview():
     if assigned_elements is not None and len(assigned_elements) > 0:
         # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
-        st.divider()
         if st.button("Remove all artifacts from this template", type="secondary"):
             # Find all elements that are shared across templates (including group elements)
             elements_to_clear = set(assigned_elements)
