@@ -1380,7 +1380,7 @@ def main():
         {"id": "project", "label": "Project", "icon": "diagram-3"},
         {"id": "about", "label": "About", "icon": "info-circle"},
     ],
-    default_selected="home",
+    default="home",
     show_menu=False,
     sticky=True,
     )
