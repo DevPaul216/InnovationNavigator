@@ -648,7 +648,9 @@ def display_artifacts_view(element_selected, element_store):
     element_store[element_selected] = remaining_artifacts
     # If something was marked for deletion refresh
     if len(deleted_artifacts) != 0:
+        update_data_store()
         st.rerun()
+
 
 def display_artifact_view_image(element_selected, element_store):
     st.subheader("Available Artifacts")
@@ -662,6 +664,7 @@ def display_artifact_view_image(element_selected, element_store):
         with columns[2]:
             if st.button(":x:", key=f"button_{element_selected}_image"):
                 element_store[element_selected] = []
+                update_data_store()
                 st.rerun()
 
 
@@ -1057,6 +1060,7 @@ def confirm_single_subview(element_selected, element_store):
                     element_store[element_selected].append(confirmed_artifact)
                 else:
                     add_image_to_image_store(element_selected, element_store, confirmed_artifact)
+            update_data_store()
             st.rerun()
         else:
             st.warning(check)
@@ -1095,6 +1099,7 @@ def artifact_input_subview(element_selected, element_store):
         check = check_can_add(element_store, element_selected, [input_text])
         if check is None:
             element_store[element_selected].append(input_text)
+            update_data_store()
             st.rerun()
         else:
             st.warning(check)
