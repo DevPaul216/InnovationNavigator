@@ -9,7 +9,7 @@
       },
       "Demographics": {
         "type": "string",
-        "description": "A single string describing key demographic information (e.g., age, gender, location, occupation)."
+        "description": "A single value describing key demographic information (e.g., age, gender, location, occupation)."
       },
       "About": {
         "type": "string",
@@ -32,8 +32,8 @@
         }
       },
       "Problem_Attitude": {
-        "type": "String",
-        "description": "A short statement describing the personas character in genral and thier attitude towards the problem they face. This should be a single paragrpah of around 50 words that captures the essence of their mindset or approach to challenges."
+        "type": "string",
+        "description": "A short statement describing the persona's character in general and their attitude towards the problem they face. This should be a single paragraph of around 50 words that captures the essence of their mindset or approach to challenges."
       },
       "Quote": {
         "type": "array",
