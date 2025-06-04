@@ -770,22 +770,19 @@ def legend_subview():
 def get_progress_stats():
     total_required_elements = 0
     total_filled_required_elements = 0
-    for template_name, template_config in sst.template_config.items():
-        if template_name not in sst.data_store:
-            continue
-        element_store = sst.data_store[template_name]
-        elements = template_config["elements"]
-        if not elements:
-            continue
+    for template_name, element_store in sst.data_store.items():
+        template_config = sst.template_config.get(template_name, {})
+        elements = template_config.get("elements", [])
         for element in elements:
             element_config = sst.elements_config.get(element, {})
             if not element_config.get("required", True):
                 continue
+            if element not in element_store:
+                continue
             total_required_elements += 1
-            if element in element_store:
-                values = element_store[element]
-                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
-                    total_filled_required_elements += 1
+            values = element_store[element]
+            if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                total_filled_required_elements += 1
     progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
     return progress, total_filled_required_elements, total_required_elements
 
