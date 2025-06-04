@@ -21,6 +21,7 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
+from streamlit_navigation_bar import st_navbar
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -1372,7 +1373,27 @@ def start_sub_view():
 
 
 view_assignment_dict = {"general": general_creation_view}
-if __name__ == '__main__':
+def main():
+    # Navigation bar at the top
+    page = st_navbar([
+        {"id": "home", "label": "Home", "icon": "house"},
+        {"id": "project", "label": "Project", "icon": "diagram-3"},
+        {"id": "about", "label": "About", "icon": "info-circle"},
+    ],
+    default_selected="home",
+    show_menu=False,
+    sticky=True,
+    )
+
+    if page == "home":
+        about_view()
+    elif page == "project":
+        chart_view()
+    elif page == "about":
+        about_view()
+    # Optionally, add more routing as needed
+
+if __name__ == "__main__":
     init_session_state()
     init_page()
     connection_states, completed_templates, blocked_templates = init_graph()
@@ -1389,3 +1410,4 @@ if __name__ == '__main__':
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
+    main()
