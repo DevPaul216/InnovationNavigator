@@ -513,13 +513,10 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         st.error("There is no prompt assigned")
         return
 
-    prompt_name = element_config['prompt_name']
-    prompt = load_prompt(prompt_name)
-    if prompt is None:
-        st.error("There is no prompt assigned")
-        return
-    with st.expander(label="🌐 Add external information source"):
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+    # --- Show resource selection view IMMEDIATELY (not in expander) ---
+    st.markdown("**Add external information source:**")
+    home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+
     schema = None   
      
     with st.expander(label="📝 View prompt"):  # added name of the prompt used to label
