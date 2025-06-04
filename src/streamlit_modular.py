@@ -799,209 +799,153 @@ def element_selection_format_func(item):
     return get_config_value(item, for_template=False)
 
 
-def general_creation_settings_bar(assigned_elements):
-    st.markdown("### Settings")
-    # Mode selector
+def general_creation_view(assigned_elements):
+    st.subheader("Generate Information Artifacts")
+    # --- Main controls row ---
+    top_cols = st.columns([1, 1, 1, 2], gap="medium")
+    # Set default mode to 'Generate' when switching templates
     if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
         sst['creation_mode'] = 'Generate'
         sst['last_template'] = sst.selected_template_name
     creation_mode = sst.get('creation_mode', 'Generate')
-    new_creation_mode = st.radio(
-        label="Select Mode:",
-        options=["Manual", "Generate", "Import"],
-        index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
-        help="Select the mode to create artifacts."
-    )
-    if new_creation_mode != creation_mode:
-        sst['creation_mode'] = new_creation_mode
-        st.rerun()
-    creation_mode = new_creation_mode
-    # Element selector
-    element_selected = st.selectbox(
-        label="Select Element to generate:",
-        help="Select the element to generate artifacts for.",
-        options=assigned_elements,
-        format_func=element_selection_format_func
-    )
-    # Template selection (information sources)
-    element_config = sst.elements_config[element_selected]
-    required_items = element_config['used_templates']
-    all_templates = list(sst.template_config.keys())
-    selected_keys = st.multiselect(
-        label="Suggested templates used as information sources",
-        placeholder="Choose templates to use",
-        options=all_templates,
-        default=required_items,
-        key="settingsbar_multiselect_templates"
-    )
-    # Choose individual elements from selected templates
-    st.markdown("**Choose individual elements from selected templates**")
-    selected_elements = {}
-    columns = st.columns(2)
-    position = 0
-    for selected_key in selected_keys:
-        element_store = sst.data_store[selected_key]
-        with columns[position]:
-            element_names = [element for element in element_store.keys() if element != element_selected]
-            selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                       options=element_names,
-                                       default=element_names, key=f"settingsbar_multiselect_{selected_key}")
-            selected_elements[selected_key] = selection
-            position += 1
-        if position >= 2:
-            position = 0
-    # Adjust generation parameters
-    st.markdown("**Adjust Generation Parameters**")
-    st.session_state.setdefault("temperature", 1.0)
-    st.session_state.setdefault("top_p", 1.0)
-    cols = st.columns(3)
-    if cols[0].button("Creative", key="creative_button_settingsbar"):
-        st.session_state.update(temperature=1.6, top_p=1.0)
-    if cols[1].button("Logic", key="logic_button_settingsbar"):
-        st.session_state.update(temperature=0.2, top_p=1.0)
-    if cols[2].button("Simplify", key="simple_button_settingsbar"):
-        st.session_state.update(temperature=1.0, top_p=0.1)
-    temperature = st.slider(
-        "Temperature",
-        min_value=0.0,
-        max_value=1.8,
-        step=0.1,
-        key="temperature"
-    )
-    top_p = st.slider(
-        "Top-P",
-        min_value=0.0,
-        max_value=1.0,
-        step=0.1,
-        key="top_p"
-    )
-    temperature = st.session_state.temperature
-    top_p = st.session_state.top_p
-    # Auto-assign toggle
-    auto_assign_max = st.toggle(
-        "Auto-assign max allowed artifacts after generation",
-        key="auto_assign_max_toggle",
-        value=False,
-        help="Automatically assigns the maximum allowed number of generated artifacts after generation."
-    )
-    # Generate/Import button
+    with top_cols[0]:
+        element_selected = st.selectbox(
+            label="Select Element to generate:",
+            help="Select the element to generate artifacts for.",
+            options=assigned_elements,
+            format_func=element_selection_format_func
+        )
+    with top_cols[1]:
+        # Use st.radio for robust single selection, avoid session state key conflicts
+        new_creation_mode = st.radio(
+            label="Select Mode:",
+            options=["Manual", "Generate", "Import"],
+            index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
+            help="Select the mode to create artifacts."
+        )
+        if new_creation_mode != creation_mode:
+            sst['creation_mode'] = new_creation_mode
+            st.rerun()
+        creation_mode = new_creation_mode
     generate_now_clicked = False
-    if creation_mode == "Generate":
-        generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
-    elif creation_mode == "Import":
-        generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    # Return all relevant state for use in the main view
-    return element_selected, creation_mode, selected_keys, selected_elements, temperature, top_p, auto_assign_max, generate_now_clicked
+    with top_cols[2]:
+        if creation_mode == "Generate":
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+        elif creation_mode == "Import":
+            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+    with top_cols[3]:
+        auto_assign_max = st.toggle(
+            "Auto-assign max allowed artifacts after generation",
+            key="auto_assign_max_toggle",
+            value=False,
+            help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+        )
 
+    element_store = sst.data_store[sst.selected_template_name]
+    element_config = sst.elements_config[element_selected]
+    is_image = element_config.get("type") == "image"
+    is_single = not (element_config.get("type") == "group")
+    selected_template_config = sst.template_config[sst.selected_template_name]
+    vertical_gap = 1
 
-def general_creation_view(assigned_elements):
-    # --- Two-column layout: left for settings, right for template/artifact view ---
-    settings_col, main_col = st.columns([1, 2], gap="large")
-    with settings_col:
-        element_selected, creation_mode, selected_keys, selected_elements, temperature, top_p, auto_assign_max, generate_now_clicked = general_creation_settings_bar(assigned_elements)
-    with main_col:
-        element_store = sst.data_store[sst.selected_template_name]
-        element_config = sst.elements_config[element_selected]
-        is_image = element_config.get("type") == "image"
-        is_single = not (element_config.get("type") == "group")
-        selected_template_config = sst.template_config[sst.selected_template_name]
-        vertical_gap = 1
-        # ...existing code for artifact/group display and logic...
-        def auto_assign_artifacts(elements, is_image_type=False):
-            rerun_needed = False
-            for element in elements:
-                generated = sst.generated_artifacts.get(element, {})
-                assigned = element_store[element]
-                config = sst.elements_config[element]
-                max_entries = config.get("max", len(generated))
-                new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
-                to_add = new_artifacts[:max_entries - len(assigned)]
-                if config.get("type") == "image":
-                    rerun_needed = _assign_image_artifacts(element, element_store, to_add) or rerun_needed
-                else:
-                    if to_add:
-                        assigned.extend(to_add)
-                        rerun_needed = True
-            if rerun_needed:
-                update_data_store()
-                st.rerun()
-        def _assign_image_artifacts(element, element_store, to_add):
-            rerun = False
-            for artifact in to_add:
-                if not isinstance(artifact, str):
-                    add_image_to_image_store(element, element_store, artifact)
-                    rerun = True
-                else:
-                    element_store[element].append(artifact)
-                    rerun = True
-            return rerun
-        def display_group_elements(elements_group, manual=False):
-            position = 0
-            for row_config in selected_template_config['display']:
-                sub_rows = row_config['format']
-                height = row_config['height'] * 2
-                number_cols = len(sub_rows)
-                cols = st.columns(number_cols, vertical_alignment='center')
-                for col, sub_row in zip(cols, sub_rows):
-                    with col:
-                        height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                        for _ in range(sub_row):
-                            if position < len(elements_group):
-                                _display_group_element(elements_group[position], height_single, manual)
-                                position += 1
-        def _display_group_element(element_name, height_single, manual):
-            config = sst.elements_config[element_name]
-            display_name = config.get("display_name", element_name)
-            description = config.get("description", "")
-            with st.container(border=True, height=height_single):
-                st.markdown(
-                    f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
-                    f"<span style='color:#888;font-size:0.98em'>{description}</span>",
-                    unsafe_allow_html=True)
-                if manual:
-                    artifact_input_subview(element_name, element_store)
-                    st.divider()
-                    st.markdown("**Assigned & Available Artifacts**")
-                display_generated_artifacts_view(element_name)
-                if not manual:
-                    st.divider()
-        # ...existing code for displaying artifacts and handling modes...
-        if creation_mode == "Manual":
-            if is_single:
-                with st.container(border=True):
-                    if not is_image:
-                        artifact_input_subview(element_selected, element_store)
-                    else:
-                        image_input_subview(element_selected, element_store)
-                    display_generated_artifacts_view(element_selected)
+    def auto_assign_artifacts(elements, is_image_type=False):
+        rerun_needed = False
+        for element in elements:
+            generated = sst.generated_artifacts.get(element, {})
+            assigned = element_store[element]
+            config = sst.elements_config[element]
+            max_entries = config.get("max", len(generated))
+            new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+            to_add = new_artifacts[:max_entries - len(assigned)]
+            if config.get("type") == "image":
+                rerun_needed = _assign_image_artifacts(element, element_store, to_add) or rerun_needed
             else:
-                elements_group = element_config["elements"]
-                display_group_elements(elements_group, manual=True)
-        elif creation_mode in ("Generate", "Import"):
-            if creation_mode == "Generate":
-                generate_artifacts(element_selected, is_image, generate_now_clicked)
-                if generate_now_clicked and auto_assign_max:
-                    if is_single:
-                        auto_assign_artifacts([element_selected], is_image)
-                    else:
-                        elements_group = element_config["elements"]
-                        auto_assign_artifacts(elements_group)
-            if creation_mode == "Import":
-                import_artifacts(element_selected, generate_now_clicked)
-            st.divider()
-            if is_single:
-                st.subheader("Generated Artifacts")
+                if to_add:
+                    assigned.extend(to_add)
+                    rerun_needed = True
+        if rerun_needed:
+            update_data_store()
+            st.rerun()
+
+    def _assign_image_artifacts(element, element_store, to_add):
+        rerun = False
+        for artifact in to_add:
+            if not isinstance(artifact, str):
+                add_image_to_image_store(element, element_store, artifact)
+                rerun = True
+            else:
+                element_store[element].append(artifact)
+                rerun = True
+        return rerun
+
+    def display_group_elements(elements_group, manual=False):
+        position = 0
+        for row_config in selected_template_config['display']:
+            sub_rows = row_config['format']
+            height = row_config['height'] * 2
+            number_cols = len(sub_rows)
+            cols = st.columns(number_cols, vertical_alignment='center')
+            for col, sub_row in zip(cols, sub_rows):
+                with col:
+                    height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                    for _ in range(sub_row):
+                        if position < len(elements_group):
+                            _display_group_element(elements_group[position], height_single, manual)
+                            position += 1
+
+    def _display_group_element(element_name, height_single, manual):
+        config = sst.elements_config[element_name]
+        display_name = config.get("display_name", element_name)
+        description = config.get("description", "")
+        with st.container(border=True, height=height_single):
+            st.markdown(
+                f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
+                f"<span style='color:#888;font-size:0.98em'>{description}</span>",
+                unsafe_allow_html=True)
+            if manual:
+                artifact_input_subview(element_name, element_store)
+                st.divider()
+                st.markdown("**Assigned & Available Artifacts**")
+            display_generated_artifacts_view(element_name)
+            if not manual:
+                st.divider()
+
+    if creation_mode == "Manual":
+        if is_single:
+            with st.container(border=True):
+                if not is_image:
+                    artifact_input_subview(element_selected, element_store)
+                else:
+                    image_input_subview(element_selected, element_store)
                 display_generated_artifacts_view(element_selected)
-                if auto_assign_max:
+        else:
+            elements_group = element_config["elements"]
+            display_group_elements(elements_group, manual=True)
+    elif creation_mode in ("Generate", "Import"):
+        if creation_mode == "Generate":
+            generate_artifacts(element_selected, is_image, generate_now_clicked)
+            if generate_now_clicked and auto_assign_max:
+                if is_single:
                     auto_assign_artifacts([element_selected], is_image)
-            else:
-                elements_group = element_config["elements"]
-                display_group_elements(elements_group)
-                if auto_assign_max:
+                else:
+                    elements_group = element_config["elements"]
                     auto_assign_artifacts(elements_group)
-        if is_single and is_image:
-            st.divider()
-            display_artifact_view_image(element_selected, element_store)
+        if creation_mode == "Import":
+            import_artifacts(element_selected, generate_now_clicked)
+        st.divider()
+        if is_single:
+            st.subheader("Generated Artifacts")
+            display_generated_artifacts_view(element_selected)
+            if auto_assign_max:
+                auto_assign_artifacts([element_selected], is_image)
+        else:
+            elements_group = element_config["elements"]
+            display_group_elements(elements_group)
+            if auto_assign_max:
+                auto_assign_artifacts(elements_group)
+    if is_single and is_image:
+        st.divider()
+        display_artifact_view_image(element_selected, element_store)
 
 
 def template_edit_subview():
