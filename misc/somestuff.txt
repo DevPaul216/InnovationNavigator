@@ -1,0 +1,91 @@
+  "Align": {
+    "display_name": "Align",
+    "connects": ["Discover"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Discover": {
+    "display_name": "Discover",
+    "connects": ["Define"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Define": {
+    "display_name": "Define",
+    "connects": ["Develop"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Develop": {
+    "display_name": "Develop",
+    "connects": ["Deliver"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Deliver": {
+    "display_name": "Deliver",
+    "connects": ["Continue"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+
+  "Continue": {
+    "display_name": "Continue",
+    "connects": [],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+
+
+    "Empathize": {
+    "display_name": "Empathize",
+    "connects": ["Define+"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Define+": {
+    "display_name": "Define+",
+    "connects": ["Ideate"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Ideate": {
+    "display_name": "Ideate",
+    "connects": ["Prototype"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Prototype": {
+    "display_name": "Prototype",
+    "connects": ["Test"],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  },
+  "Test": {
+    "display_name": "Test",
+    "connects": [],
+    "description": "",
+    "required": false,
+    "elements": [],
+    "display": []
+  }
