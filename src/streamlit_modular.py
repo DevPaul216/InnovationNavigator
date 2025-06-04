@@ -21,6 +21,7 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
+from streamlit_navigation_bar import st_navbar
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -28,10 +29,6 @@ COLOR_BLOCKED = "rgb(250, 240, 220)"
 COLOR_COMPLETED = "rgb(104, 223, 200)"
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
 
-import streamlit as st
-from streamlit_navigation_bar import st_navbar
-
-st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
 
 
 def align_data_store():
@@ -768,7 +765,27 @@ def legend_subview():
         )
 
 
+def show_top_navbar():
+    nav = st_navbar(
+        [
+            {"id": "overview", "label": "Overview", "icon": "house"},
+        ],
+        default_selected="overview",
+        show_labels=True,
+        fixed=False,
+        key="main_navbar",
+    )
+    if nav == "overview":
+        if sst.current_view != "chart":
+            sst.selected_template_name = None
+            sst.current_view = "chart"
+            sst.sidebar_state = "expanded"
+            sst.update_graph = True
+            st.rerun()
+
+
 def chart_view():
+    show_top_navbar()
     add_empty_lines(1)
     st.subheader("Project: " + sst.project_name)
     add_empty_lines(1)
@@ -1149,6 +1166,7 @@ def detail_view():
 
 
 def about_view():
+    show_top_navbar()
     st.title("Welcome")
     st.markdown(
         "<h2 style='font-size:18px;'>Welcome to the Innovation Navigator — an experimental tool that helps innovators tackle real-world challenges by designing impactful products and business models. <br> Based on the Double Diamond framework, this tool guides you through a structured innovation journey using step-by-step templates tailored to each stage. <br> To begin, click the Start box on the far left to create a new project, or choose an existing one. Work through each template in sequence — complete one step to unlock the next, and keep moving forward on your innovation path!",
