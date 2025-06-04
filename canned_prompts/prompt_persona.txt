@@ -7,7 +7,7 @@ Do not repeat or summarize the input. Instead, ask yourself:
 
 Generate the following persona elements:
 
-- Name: The name of the persona (string).
+- Name: The name of the persona. 
 - Demographics: A single string describing key demographic information (e.g., age, gender, location, occupation).
 - About: A brief background or story about the persona.
 - Pains: An array of around ten different key frustrations or pain points of the persona, suitable for structured output in an API request.

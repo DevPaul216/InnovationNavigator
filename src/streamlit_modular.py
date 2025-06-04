@@ -839,8 +839,8 @@ def general_creation_view(assigned_elements):
                 else:
                     image_input_subview(element_selected, element_store)
                 # Unified artifact selection view below
-                st.divider()
-                st.markdown("**Assigned & Available Artifacts**")
+                #st.divider()
+                #st.markdown("**Assigned & Available Artifacts**")
                 display_generated_artifacts_view(element_selected)
         else:
             elements_group = element_config["elements"]
