@@ -460,7 +460,7 @@ def handle_response_image(element_name, prompt, selected_resources):
     add_to_generated_artifacts(element_name, generated_images)
 
 
-def generate_artifacts(element_name, is_image=False, generate_now_clicked=False):
+def generate_artifacts(element_name, is_image=False, generate_now_clicked=False, home_url=None, query=None, number_entries_used=None, uploaded_files=None):
     element_config = sst.elements_config[element_name]
     required_items = element_config['used_templates']
     selected_resources = {}
@@ -820,15 +820,15 @@ def general_creation_view(assigned_elements):
                                         format_func=element_selection_format_func)
     with columns[1]:
         creation_mode = st.segmented_control(label="Select Mode:", options=["Manual", "Generate", "Import"], default="Generate", help="Select the mode to create artifacts PLACEHOLDER")
-    # Move Generate Now! button to the right of select mode
-    generate_now_clicked = False
+    # Move Add Additional Resources selector here (between mode and button)
     with columns[2]:
+        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
+        generate_now_clicked = False
         if creation_mode == "Generate":
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True, help="Generate artifacts based on the selected element and mode")
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-
-        # --- Add slide-toggle for auto-assign max artifacts ---
+    # --- Add slide-toggle for auto-assign max artifacts ---
     auto_assign_max = st.toggle(
         "Auto-assign max allowed artifacts after generation",
         key="auto_assign_max_toggle",
@@ -844,8 +844,6 @@ def general_creation_view(assigned_elements):
             is_image = True
         else:
             is_single = False
-    # The display layout for grouped elements below uses the order from the template config's 'elements' list,
-    # and arranges them according to the 'display' property in the template config (column-by-column)
     selected_template_config = sst.template_config[sst.selected_template_name]
     vertical_gap = 1
     if creation_mode == "Manual":
@@ -885,7 +883,7 @@ def general_creation_view(assigned_elements):
                                 position += 1
     elif creation_mode == "Generate" or creation_mode == "Import":
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked)
+            generate_artifacts(element_selected, is_image, generate_now_clicked, home_url, query, number_entries_used, uploaded_files)
             # --- Auto-assign logic after generation (single and grouped elements) ---
             if generate_now_clicked and auto_assign_max:
                 rerun_needed = False  # Ensure rerun_needed is always defined
@@ -1020,7 +1018,7 @@ def general_creation_view(assigned_elements):
     if is_single:
         st.divider()
         if not is_image:
-            pass  # Removed redundant display_artifacts_view
+            pass
         else:
             display_artifact_view_image(element_selected, element_store)
 
