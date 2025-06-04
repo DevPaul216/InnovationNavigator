@@ -810,7 +810,7 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
-    st.subheader("")
+    st.subheader("Generate Information Artifacts")
     columns = st.columns([1, 1, 1, 2], vertical_alignment="center")
     with columns[0]:
         # The order of elements in the selectbox is determined by the order of 'assigned_elements',
