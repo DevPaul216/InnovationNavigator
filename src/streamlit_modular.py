@@ -1053,9 +1053,8 @@ def template_edit_subview():
     selected_template = sst.template_config[sst.selected_template_name]
     assigned_elements = selected_template["elements"]
     if assigned_elements is not None and len(assigned_elements) > 0:
-        # st.subheader("Overview")
         display_template_view(sst.selected_template_name)
-        st.divider()  # Divider between template and buttons
+        st.divider()  # Divider between template and button row
         button_cols = st.columns(7, gap="small")
         with button_cols[0]:
             if st.button("Remove all artifacts from this template", type="secondary"):
@@ -1068,7 +1067,7 @@ def template_edit_subview():
         for i in range(1, 6):
             with button_cols[i]:
                 st.button("", key=f"blank_button_{i}", disabled=True)
-        # Move the mode selector next to the buttons
+        # Move the mode selector next to the remove all artifacts buttons
         with button_cols[6]:
             st.session_state.setdefault("template_mode_selector", "Generate")
             st.selectbox(
