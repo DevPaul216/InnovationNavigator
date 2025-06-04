@@ -21,6 +21,7 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
+import streamlit_navigation_bar as snb
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -1237,155 +1238,40 @@ def about_view():
         st.rerun()
 
 
-def open_sidebar():
-    sst.sidebar_state = "expanded"
-
-    # Add a logo to the top of the sidebar
-    st.sidebar.image(os.path.join(".", "misc", "LogoFH.png"), use_container_width=True)
-
-    # Button in sidebar to go back to overview
-    if st.sidebar.button(label="Overview", type="primary", use_container_width=True):
-        if sst.current_view != "chart":
-            sst.selected_template_name = None
-            sst.current_view = "chart"
-            sst.sidebar_state = "expanded"
-            sst.update_graph = True
-            st.rerun()
-
-    # New button to project selection
-    if st.sidebar.button(label="Projects", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Start"  # Set to "Start" to open the project creation screen
-        sst.current_view = "detail"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    # button in sidebar to open prompt editor
-    if st.sidebar.button(label="Prompts", type="secondary", use_container_width=True):
-        sst.selected_template_name = "Prompts"
-        sst.current_view = "prompt"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    # button for other stuff
-    if st.sidebar.button(label="About", type="secondary", use_container_width=True):
-        sst.selected_template_name = "About"
-        sst.current_view = "about"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-
-    # button to open Data Store Browser
-    if st.sidebar.button(label="Database", type="secondary", use_container_width=True):
-        sst.selected_template_name = None
-        sst.current_view = "datastore_browser"
-        sst.sidebar_state = "expanded"
-        sst.update_graph = True
-        st.rerun()
-        
-
-
-def end_sub_view():
-    st.header("Overview")
-    for template_name in sst.template_config.keys():
-        if template_name.lower() != "start" and template_name.lower() != "end":
-            display_name = get_config_value(template_name)
-            st.subheader(display_name)
-            display_template_view(template_name)
-            add_empty_lines(5)
-
-
-def start_sub_view():
-    data_stores_paths = Path(data_store_path).glob("data_store_*.json")
-    core_names = [path.stem for path in data_stores_paths]
-    project_names = [str(name).split('data_store_')[1] for name in core_names]
-    st.subheader("Add new Innovation Project", help="Create a new project to start working on it. You can also import existing projects.")
-    new_project_name = st.text_input(label="Name of new Innovation Project").strip()
-    if st.button("Create and open new Innovation Project", disabled=new_project_name == ""):
-        if new_project_name not in project_names:
-            # Save the current data store just to be sure
-            update_data_store()
-            sst.project_name = new_project_name
-            # Create new empty data store
-            sst.data_store = {}
-            update_data_store()
-            load_data_store()
-            st.success("Project created")
-            sst.sidebar_state = "expanded"
-            sst.update_graph = True
-            sst.current_view = "chart"  # Transition to the overview screen
-            time.sleep(1.0)
-            st.rerun()
-        else:
-            st.warning("A project with this name is already there")
-    st.divider()
-    st.subheader("Switch/Delete Project", help="Switch to another project or delete the current one.")
-    selected_project_name = st.selectbox("Switch to another project:", options=project_names,
-                                         index=project_names.index(sst.project_name))
-    if selected_project_name != sst.project_name:
-        sst.project_name = selected_project_name
-        load_data_store()
-        sst.sidebar_state = "expanded"
-        st.rerun()
-    if selected_project_name != "default":
-        add_empty_lines(2)
-        with st.expander("Delete Project"):
-            if st.button("Delete"):
-                os.remove(get_full_data_store_path())
-                sst.project_name = "default"
-                load_data_store()
-                st.success("Deleted")
-                time.sleep(1.0)
-                st.rerun()
-    st.divider()
-    st.subheader("Export all projects", help="Export all projects to a zip file.")
-    if st.button("Export"):
-        zip_directory_path = shutil.make_archive("stores", "zip", "./stores")
-        now = datetime.now()
-        date_time_str = now.strftime("%Y-%m-%d-%H-%M")
-        with open(zip_directory_path, "rb") as file:
-            st.download_button(
-                label="Download",
-                data=file,
-                file_name=f"projects_{date_time_str}.zip",
-                mime="application/zip",
-                type="primary"
-            )
-    st.divider()
-    st.subheader("Import projects", help="Import projects from a zip file. Needs to be in the correct format.")
-    uploaded_file = st.file_uploader(label="Upload zip project folder",
-                                     type=".zip",
-                                     accept_multiple_files=False)
-    if uploaded_file is not None:
-        if st.button("Import"):
-            save_path = "uploaded_project.zip"
-            with open(save_path, "wb") as file:
-                file.write(uploaded_file.getbuffer())
-            shutil.unpack_archive(save_path, "./stores", "zip")
-            time.sleep(0.2)
-            os.remove(save_path)
-            os.remove("stores.zip")
-            st.success("Projects imported")
-            time.sleep(2.0)
-            st.rerun()
-
-
-view_assignment_dict = {"general": general_creation_view}
-if __name__ == '__main__':
+def main():
     init_session_state()
     init_page()
-    connection_states, completed_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, blocked_templates)
-    open_sidebar()
-    if sst.current_view == "chart":
-        chart_view()
-    elif sst.current_view == "detail":
-        detail_view()
-    elif sst.current_view == "prompt":
-        prompt_editor_view("./canned_prompts")
-    elif sst.current_view == "about":
+    # --- Top navigation bar integration ---
+    nav_items = [
+        {"id": "about", "label": "About"},
+        {"id": "chart", "label": "Project Chart"},
+    ]
+    # Add all templates as navigation items
+    for template_name in sst.template_config.keys():
+        nav_items.append({"id": f"template_{template_name}", "label": get_config_value(template_name)})
+    nav_selection = snb.navigation_bar(
+        nav_items,
+        default_selected_id="about" if sst.current_view == "about" else (
+            "chart" if sst.current_view == "chart" else f"template_{sst.selected_template_name}"
+        ),
+        orientation="horizontal",
+        key="main_nav_bar"
+    )
+    # --- Navigation logic ---
+    if nav_selection == "about":
+        sst.current_view = "about"
         about_view()
-    elif sst.current_view == "datastore_browser":
-        import streamlit_datastore_browser
-        streamlit_datastore_browser.main()
+        return
+    elif nav_selection == "chart":
+        sst.current_view = "chart"
+        chart_view()
+        return
+    elif nav_selection.startswith("template_"):
+        template_name = nav_selection.replace("template_", "")
+        sst.selected_template_name = template_name
+        sst.current_view = "detail"
+        detail_view()
+        return
+
+if __name__ == "__main__":
+    main()
