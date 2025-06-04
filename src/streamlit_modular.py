@@ -1134,12 +1134,14 @@ def artifact_input_subview(element_selected, element_store):
     input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}",
                               label_visibility="collapsed")
     if st.button("Confirm", disabled=str(input_text).strip() == "", key=f"button_{element_selected}"):
-        check = check_can_add(element_store, element_selected, [input_text])
-        if check is None:
-            element_store[element_selected].append(input_text)
-            st.rerun()
-        else:
-            st.warning(check)
+        # Ensure the artifact list is always a list
+        if isinstance(element_store[element_selected], dict):
+            element_store[element_selected] = list(element_store[element_selected].values())
+        if not isinstance(element_store[element_selected], list):
+            element_store[element_selected] = []
+        element_store[element_selected].append(input_text)
+        update_data_store()
+        st.rerun()
 
 
 def add_image_to_image_store(element_selected, element_store, image):
