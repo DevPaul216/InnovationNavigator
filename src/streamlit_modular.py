@@ -851,7 +851,7 @@ def general_creation_view(assigned_elements):
     generate_now_clicked = False
     with columns[2]:
         if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True, help="Generate artifacts based on the selected element and mode")
+            generate_now_clicked = st.button("Generate now!",label="Start LLM-Generation:" type="primary", use_container_width=True, help="Generate artifacts based on the selected element and mode")
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
 
