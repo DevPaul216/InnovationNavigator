@@ -189,27 +189,18 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
-        special_templates = [
-            "align", "discover", "define", "develop", "deliver", "continue",
-            "empathize", "define+", "ideate", "prototype", "test"
-        ]
-        # Separate phase nodes (the 5 new ones)
-        phase_nodes = ["empathize", "define+", "ideate", "prototype", "test"]
-        phase_y = 300  # y position for phase nodes (below main graph)
-        phase_x_start = 0
-        phase_x_gap = 400  # horizontal gap between phase nodes
-        main_x = 0
-        main_y = 0
-        main_x_gap = 220
-        # Place main nodes (excluding the 5 phase nodes)
-        main_nodes = [k for k in sst.template_config.keys() if k.lower() not in phase_nodes]
-        for i, template_name in enumerate(main_nodes):
+        for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
+            # Special formatting for key templates
+            special_templates = [
+                "align", "discover", "define", "develop", "deliver", "continue",
+                "empathize", "define+", "ideate", "prototype", "test"
+            ]
             if template_name.lower() in special_templates:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
-                    pos=(main_x + i * main_x_gap, main_y),
+                    pos=(0, 0),
                     data={'content': f"{template_display_name}"},
                     node_type="default",
                     source_position="right",
@@ -220,11 +211,11 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     selectable=False
                 )
             elif template_name == "Start":
-                node = StreamlitFlowNode(id=str(template_name), pos=(main_x + i * main_x_gap, main_y),
+                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
             elif template_name == "End":
-                node = StreamlitFlowNode(id=str(template_name), pos=(main_x + i * main_x_gap, main_y),
+                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
@@ -234,31 +225,14 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
-                node = StreamlitFlowNode(id=template_name, pos=(main_x + i * main_x_gap, main_y), data={'content': f"{template_display_name}"},
+                node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
                                          style={**style, "width": "90px", "padding": "1px"})
             nodes.append(node)
-        # Place the 5 phase nodes below the main graph, spaced horizontally
-        for j, template_name in enumerate(phase_nodes):
-            template_display_name = get_config_value(template_name)
-            style = {"backgroundColor": "white", "width": "350px", "padding": "1px", "border": "2px solid #bbb"}
-            node = StreamlitFlowNode(
-                id=str(template_name),
-                pos=(phase_x_start + j * phase_x_gap, phase_y),
-                data={'content': f"{template_display_name}"},
-                node_type="default",
-                source_position="right",
-                target_position="left",
-                style=style,
-                draggable=False,
-                focusable=False,
-                selectable=False
-            )
-            nodes.append(node)
-        # Edges
         edges = []
         for source, value in sst.template_config.items():
+            # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
                 connection_state = connection_states[edge_id]
