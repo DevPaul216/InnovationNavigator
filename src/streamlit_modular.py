@@ -1063,10 +1063,6 @@ def template_edit_subview():
                     element_store[key] = []
                 update_data_store()
                 st.rerun()
-        # Add 5 more blank buttons
-        for i in range(1, 6):
-            with button_cols[i]:
-                st.button("", key=f"blank_button_{i}", disabled=True)
         # Move the mode selector next to the remove all artifacts buttons
         with button_cols[6]:
             st.session_state.setdefault("template_mode_selector", "Generate")
