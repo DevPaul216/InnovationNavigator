@@ -836,13 +836,7 @@ def general_creation_view(assigned_elements):
             new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
             to_add = new_artifacts[:max_entries - len(assigned)]
             if config.get("type") == "image":
-                for artifact in to_add:
-                    if not isinstance(artifact, str):
-                        add_image_to_image_store(element, element_store, artifact)
-                        rerun_needed = True
-                    else:
-                        assigned.append(artifact)
-                        rerun_needed = True
+                rerun_needed = _assign_image_artifacts(element, element_store, to_add) or rerun_needed
             else:
                 if to_add:
                     assigned.extend(to_add)
@@ -850,6 +844,17 @@ def general_creation_view(assigned_elements):
         if rerun_needed:
             update_data_store()
             st.rerun()
+
+    def _assign_image_artifacts(element, element_store, to_add):
+        rerun = False
+        for artifact in to_add:
+            if not isinstance(artifact, str):
+                add_image_to_image_store(element, element_store, artifact)
+                rerun = True
+            else:
+                element_store[element].append(artifact)
+                rerun = True
+        return rerun
 
     def display_group_elements(elements_group, manual=False):
         position = 0
@@ -863,23 +868,25 @@ def general_creation_view(assigned_elements):
                     height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
                     for _ in range(sub_row):
                         if position < len(elements_group):
-                            element_name = elements_group[position]
-                            with st.container(border=True, height=height_single):
-                                config = sst.elements_config[element_name]
-                                display_name = config.get("display_name", element_name)
-                                description = config.get("description", "")
-                                st.markdown(
-                                    f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
-                                    f"<span style='color:#888;font-size:0.98em'>{description}</span>",
-                                    unsafe_allow_html=True)
-                                if manual:
-                                    artifact_input_subview(element_name, element_store)
-                                    st.divider()
-                                    st.markdown("**Assigned & Available Artifacts**")
-                                display_generated_artifacts_view(element_name)
-                                if not manual:
-                                    st.divider()
+                            _display_group_element(elements_group[position], height_single, manual)
                             position += 1
+
+    def _display_group_element(element_name, height_single, manual):
+        config = sst.elements_config[element_name]
+        display_name = config.get("display_name", element_name)
+        description = config.get("description", "")
+        with st.container(border=True, height=height_single):
+            st.markdown(
+                f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
+                f"<span style='color:#888;font-size:0.98em'>{description}</span>",
+                unsafe_allow_html=True)
+            if manual:
+                artifact_input_subview(element_name, element_store)
+                st.divider()
+                st.markdown("**Assigned & Available Artifacts**")
+            display_generated_artifacts_view(element_name)
+            if not manual:
+                st.divider()
 
     if creation_mode == "Manual":
         if is_single:
