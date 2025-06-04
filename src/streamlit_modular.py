@@ -21,7 +21,6 @@ from experimental.streamlit_artifact_generation import scrape_texts
 from streamlit_prompteditor import prompt_editor_view
 from utils import load_prompt, make_request_structured, load_schema, make_request_image
 from website_parser import get_url_text_and_images
-from streamlit_navigation_bar import st_navbar
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
@@ -1240,17 +1239,51 @@ def about_view():
 
 def open_sidebar():
     sst.sidebar_state = "expanded"
+
     # Add a logo to the top of the sidebar
     st.sidebar.image(os.path.join(".", "misc", "LogoFH.png"), use_container_width=True)
-    # Sidebar is now informational only. Remove navigation buttons.
-    st.sidebar.markdown("""
-    <div style='margin-top: 2em; color: #888;'>
-        <b>Innovation Navigator</b><br>
-        v1.0<br>
-        <br>
-        Use the navigation bar below to switch pages.
-    </div>
-    """, unsafe_allow_html=True)
+
+    # Button in sidebar to go back to overview
+    if st.sidebar.button(label="Overview", type="primary", use_container_width=True):
+        if sst.current_view != "chart":
+            sst.selected_template_name = None
+            sst.current_view = "chart"
+            sst.sidebar_state = "expanded"
+            sst.update_graph = True
+            st.rerun()
+
+    # New button to project selection
+    if st.sidebar.button(label="Projects", type="secondary", use_container_width=True):
+        sst.selected_template_name = "Start"  # Set to "Start" to open the project creation screen
+        sst.current_view = "detail"
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
+        st.rerun()
+
+    # button in sidebar to open prompt editor
+    if st.sidebar.button(label="Prompts", type="secondary", use_container_width=True):
+        sst.selected_template_name = "Prompts"
+        sst.current_view = "prompt"
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
+        st.rerun()
+
+    # button for other stuff
+    if st.sidebar.button(label="About", type="secondary", use_container_width=True):
+        sst.selected_template_name = "About"
+        sst.current_view = "about"
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
+        st.rerun()
+
+    # button to open Data Store Browser
+    if st.sidebar.button(label="Database", type="secondary", use_container_width=True):
+        sst.selected_template_name = None
+        sst.current_view = "datastore_browser"
+        sst.sidebar_state = "expanded"
+        sst.update_graph = True
+        st.rerun()
+        
 
 
 def end_sub_view():
@@ -1339,26 +1372,20 @@ def start_sub_view():
 
 
 view_assignment_dict = {"general": general_creation_view}
-def main():
-    # Navigation bar at the top (streamlit-navigation-bar v3.0.1 syntax)
-    page = st_navbar([
-        "Home",
-        "Project",
-        "About"
-    ], selected="Home")
-
-    if page == "Home":
-        about_view()
-    elif page == "Project":
-        chart_view()
-    elif page == "About":
-        about_view()
-    # Optionally, add more routing as needed
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     init_session_state()
     init_page()
     connection_states, completed_templates, blocked_templates = init_graph()
     init_flow_graph(connection_states, completed_templates, blocked_templates)
     open_sidebar()
-    main()
+    if sst.current_view == "chart":
+        chart_view()
+    elif sst.current_view == "detail":
+        detail_view()
+    elif sst.current_view == "prompt":
+        prompt_editor_view("./canned_prompts")
+    elif sst.current_view == "about":
+        about_view()
+    elif sst.current_view == "datastore_browser":
+        import streamlit_datastore_browser
+        streamlit_datastore_browser.main()
