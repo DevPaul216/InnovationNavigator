@@ -830,6 +830,7 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
+    #st.subheader("Generate Information Artifacts")
     # --- Main controls row ---
     top_cols = st.columns([1, 1], gap="medium")
     # Set default mode to 'Generate' when switching templates
@@ -844,38 +845,33 @@ def general_creation_view(assigned_elements):
             options=assigned_elements,
             format_func=element_selection_format_func
         )
-    # --- Action controls row (below element selection, above resources/params) ---
-    action_cols = st.columns([1, 1, 2], gap="small")
-    generate_now_clicked = False
-    with action_cols[0]:
-        if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
-        elif creation_mode == "Import":
-            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    with action_cols[1]:
-        auto_assign_max = False
-        if creation_mode != "Manual":
-            auto_assign_max = st.toggle(
-                "Auto-assign max allowed artifacts after generation",
-                key="auto_assign_max_toggle",
-                value=False,
-                help="Automatically assigns the maximum allowed number of generated artifacts after generation."
-            )
-    # --- Resource selection and Generation parameters side by side ---
-    resource_param_cols = st.columns([1, 1], gap="large")
-    with resource_param_cols[0]:
-        element_config = sst.elements_config[element_selected]
-        required_items = element_config.get('used_templates', [])
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
-    with resource_param_cols[1]:
+        # Move action buttons and auto-assign toggle here, below the selectbox
+        action_cols = st.columns([1, 1, 2], gap="small")
+        generate_now_clicked = False
+        with action_cols[0]:
+            if creation_mode == "Generate":
+                generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+            elif creation_mode == "Import":
+                generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+        with action_cols[1]:
+            auto_assign_max = False
+            if creation_mode != "Manual":
+                auto_assign_max = st.toggle(
+                    "Auto-assign max allowed artifacts after generation",
+                    key="auto_assign_max_toggle",
+                    value=False,
+                    help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+                )
+    with top_cols[1]:
+        # Parameters always on the right
         st.session_state.setdefault("temperature", 1.0)
         st.session_state.setdefault("top_p", 1.0)
-        cols = st.columns(3)
-        if cols[0].button("Creative", key="creative_button"):
+        param_cols = st.columns(3)
+        if param_cols[0].button("Creative", key="creative_button"):
             st.session_state.update(temperature=1.6, top_p=1.0)
-        if cols[1].button("Logic", key="logic_button"):
+        if param_cols[1].button("Logic", key="logic_button"):
             st.session_state.update(temperature=0.2, top_p=1.0)
-        if cols[2].button("Simplify", key="simple_button"):
+        if param_cols[2].button("Simplify", key="simple_button"):
             st.session_state.update(temperature=1.0, top_p=0.1)
         temperature = st.slider(
             "Temperature",
@@ -895,7 +891,6 @@ def general_creation_view(assigned_elements):
         top_p = st.session_state.top_p
 
     # --- Combine Template selection and individual elements selection ---
-    selected_resources = {}
     with st.expander("Template & Element selection (information sources)"):
         all_templates = list(sst.template_config.keys())
         selected_keys = st.multiselect(
@@ -910,7 +905,7 @@ def general_creation_view(assigned_elements):
         for selected_key in selected_keys:
             element_store = sst.data_store[selected_key]
             with columns[position]:
-                element_names = [element for element in element_store.keys() if element != element_selected]
+                element_names = [element for element in element_store.keys() if element != element_name]
                 selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
                                            options=element_names,
                                            default=element_names, key=f"multiselect_{selected_key}")
@@ -932,7 +927,6 @@ def general_creation_view(assigned_elements):
                     selected_resources[name_display] = resource_text
 
     # --- Combine Prompt and Schema into one expander ---
-    is_image = element_config.get("type", "") == "image"
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
     schema = None
@@ -958,6 +952,837 @@ def general_creation_view(assigned_elements):
         with st.spinner("Generating..."):
             add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
             if not is_image:
-                handle_response(element_selected, prompt, schema, selected_resources, temperature, top_p)
+                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
             else:
-                handle_response_image(element_selected, prompt, selected_resources)
+                handle_response_image(element_name, prompt, selected_resources)
+
+
+def import_artifacts(element_name, generate_now_clicked=False):
+    element_config = sst.elements_config[element_name]
+    if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
+        st.write("Not available for this element")
+        return
+    prompt_name = element_config['prompt_name_import']
+    schema_name = element_config['schema_name_import']
+    prompt = load_prompt(prompt_name)
+    schema = load_schema(schema_name)
+
+    # Add disclaimer
+    st.warning(
+        "Please note: The uploaded document must be a PDF containing selectable text. Image-based PDFs or scanned documents are currently not supported.")
+
+    uploaded_files = st.file_uploader("Upload document for importing", type="pdf", accept_multiple_files=False)
+    with st.expander(label="Used prompt"):  # added name of the prompt used to label
+        st.markdown("**System prompt:** " + prompt_name + ".txt")
+        st.markdown(prompt)
+
+    with st.expander(label="View import schema"):
+        st.json(schema)
+
+    add_empty_lines(1)
+    if st.button("Import now!", type="primary"):
+        with st.spinner("Processing..."):
+            selected_resources = {}
+            add_resources(selected_resources, None, None, None, uploaded_files)
+            handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
+
+
+def add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files):
+    if home_url is not None:
+        home_url_text, _ = get_url_text_and_images(home_url)
+        selected_resources["Website_Text"] = home_url_text[:10000]
+    if query is not None:
+        texts_scrape = scrape_texts(query, number_entries_used)
+        selected_resources.update(texts_scrape)
+    # ↓ Fix: Ensure uploaded_files is a list
+    if uploaded_files is not None:
+        if not isinstance(uploaded_files, list):
+            uploaded_files = [uploaded_files]
+        if len(uploaded_files) > 0:
+            text = ""
+            for uploaded_file in uploaded_files:
+                text += f"# {uploaded_file.name}\n"
+                reader = PyPDF2.PdfReader(uploaded_file)
+                for page in reader.pages:
+                    text += page.extract_text() or ""
+                text += "\n"
+            selected_resources["document_text"] = text
+
+
+def display_artifacts_view(element_selected, element_store):
+    st.markdown("**Assigned Artifacts**")
+    artifacts_to_show = element_store[element_selected]
+    if len(artifacts_to_show) == 0:
+        st.write("Nothing here yet.")
+    deleted_artifacts = []
+    for i, artifact in enumerate(artifacts_to_show):
+        if i != 0:
+            # st.divider()
+            with st.container():
+                columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
+                with columns[1]:
+                    st.markdown(artifact)
+                with columns[3]:
+                    if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
+                        deleted_artifacts.append(artifact)
+
+    remaining_artifacts = [artifact for artifact in artifacts_to_show if artifact not in deleted_artifacts]
+    element_store[element_selected] = remaining_artifacts
+    # If something was marked for deletion refresh
+    if len(deleted_artifacts) != 0:
+        update_data_store()
+        st.rerun()
+
+
+def display_artifact_view_image(element_selected, element_store):
+    st.subheader("Available Artifacts")
+    if element_selected not in element_store or len(element_store[element_selected]) == 0:
+        st.write("Nothing here to show")
+    else:
+        columns = st.columns([1, 3, 1, 1], vertical_alignment="center")
+        with columns[1]:
+            image = element_store[element_selected]
+            st.image(image)
+        with columns[2]:
+            if st.button(":x:", key=f"button_{element_selected}_image"):
+                element_store[element_selected] = []
+                update_data_store()
+                st.rerun()
+
+
+def get_elements_to_show(element_names, element_store, max_characters):
+    artifact_texts = {}
+    artifact_images = {}
+    for element_name in element_names:
+        element_config = sst.elements_config[element_name]
+        if 'type' in element_config and element_config['type'] == 'image':
+            image_file = None
+            if len(element_store[element_name]) > 0:
+                image_file = element_store[element_name]
+            artifact_images[element_name] = image_file
+        else:
+            element_artifacts = element_store[element_name]
+            artifact_text = ""
+            for artifact in element_artifacts:
+                artifact_text += "- " + str(artifact) + "  \n"
+            if len(artifact_text) > max_characters:
+                max_characters = len(artifact_text)
+            artifact_texts[element_name] = artifact_text
+    return artifact_texts, artifact_images
+
+
+def display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
+                             vertical_gap):
+    position = 0
+    # Each iteration add a row to the display
+    for row_config in selected_template_config['display']:
+        sub_rows = row_config['format']
+        height = row_config['height']
+        number_cols = len(sub_rows)
+        cols = st.columns(number_cols, vertical_alignment='center')
+        for col, sub_row in zip(cols, sub_rows):
+            with col:
+                height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                for number_subrows in range(0, sub_row):
+                    if position < len(element_names):
+                        element_name = element_names[position]
+                        # if element_name in artifact_images:
+                        #    height_single = None
+                        with st.container(border=True, height=height_single):
+                            # with stylable_container(key="sc_" + str(position), css_styles=container_css):
+                            container = st.container(border=False)
+                            sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
+                            with sub_columns[1]:
+                                # Combine name and description in a single line
+                                element_config = sst.elements_config[element_name]
+                                display_name = element_name
+                                if "display_name" in element_config:
+                                    display_name = element_config["display_name"]
+                                description = element_config.get("description", "")
+                                st.markdown(f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> <span style='color:#888;font-size:0.98em'>{description}</span>", unsafe_allow_html=True)
+                                if element_name in artifact_texts:
+                                    artifact_text = artifact_texts[element_name]
+                                    if len(artifact_text) > 0:
+                                        text_to_show = artifact_text
+                                    else:
+                                        text_to_show = "Nothing here yet."
+                                        if 'required' not in element_config or element_config['required']:
+                                            text_to_show = text_to_show + "\n \n Required :heavy_exclamation_mark:"
+                                    st.markdown(text_to_show)
+                            if element_name in artifact_images:
+                                if artifact_images[element_name] is not None:
+                                    container.image(artifact_images[element_name])
+                                else:
+                                    text_to_show = ":heavy_exclamation_mark: No image available :heavy_exclamation_mark:"
+                                    st.markdown(text_to_show)
+                            position += 1
+
+
+def display_template_view(selected_template_name):
+    element_store = sst.data_store[selected_template_name]
+    selected_template_config = sst.template_config[selected_template_name]
+    max_characters = 0
+    element_names = list(element_store.keys())
+    artifact_texts, artifact_images = get_elements_to_show(element_names, element_store, max_characters)
+    vertical_gap = 2
+    display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
+                             vertical_gap)
+
+
+def legend_subview():
+    # Add a legend for the graph colors
+    legend_cols = st.columns([1, 1, 1, 1,1,1,1,1], gap="small")  # Adjusted gap to reduce horizontal space
+    with legend_cols[0]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[1]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed/Optional",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[2]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
+            unsafe_allow_html=True,
+        )
+
+
+def get_progress_stats():
+    total_required_elements = 0
+    total_filled_required_elements = 0
+    for template_name, element_store in sst.data_store.items():
+        template_config = sst.template_config.get(template_name, {})
+        elements = template_config.get("elements", [])
+        for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            if not element_config.get("required", True):
+                continue
+            if element not in element_store:
+                continue
+            total_required_elements += 1
+            values = element_store[element]
+            if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                total_filled_required_elements += 1
+    progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
+    return progress, total_filled_required_elements, total_required_elements
+
+
+def chart_view():
+    add_empty_lines(3)
+    # Progress bar next to project title
+    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
+    cols = st.columns([3, 7])
+    with cols[0]:
+        st.subheader(f"Project: {sst.project_name}")
+    with cols[1]:
+        st.progress(progress, text=f"Progress: {int(progress*100)}%")
+    add_empty_lines(1)
+    legend_subview()
+
+    with st.container(border=True):
+        updated_state = streamlit_flow(
+            key="ret_val_flow",
+            state=sst.flow_state,
+            height=800,
+            layout=LayeredLayout(direction="right"),
+            fit_view=True,
+            get_node_on_click=True,
+            get_edge_on_click=False,
+            show_controls=True,
+            allow_zoom=True,
+            pan_on_drag=False,
+        )
+    # Prevent selection of special templates
+    special_templates = [
+        "align", "discover", "define", "develop", "deliver", "continue",
+        "empathize", "define+", "ideate", "prototype", "test"
+    ]
+    if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
+        sst.selected_template_name = updated_state.selected_id
+        sst.current_view = "detail"
+        sst.sidebar_state = "expanded"
+        st.rerun()
+
+
+def element_selection_format_func(item):
+    return get_config_value(item, for_template=False)
+
+
+def general_creation_view(assigned_elements):
+    #st.subheader("Generate Information Artifacts")
+    # --- Main controls row ---
+    top_cols = st.columns([1, 1], gap="medium")
+    # Set default mode to 'Generate' when switching templates
+    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
+        sst['creation_mode'] = 'Generate'
+        sst['last_template'] = sst.selected_template_name
+    creation_mode = sst.get('creation_mode', 'Generate')
+    with top_cols[0]:
+        element_selected = st.selectbox(
+            label="Select Element to generate:",
+            help="Select the element to generate artifacts for.",
+            options=assigned_elements,
+            format_func=element_selection_format_func
+        )
+        # Move action buttons and auto-assign toggle here, below the selectbox
+        action_cols = st.columns([1, 1, 2], gap="small")
+        generate_now_clicked = False
+        with action_cols[0]:
+            if creation_mode == "Generate":
+                generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+            elif creation_mode == "Import":
+                generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+        with action_cols[1]:
+            auto_assign_max = False
+            if creation_mode != "Manual":
+                auto_assign_max = st.toggle(
+                    "Auto-assign max allowed artifacts after generation",
+                    key="auto_assign_max_toggle",
+                    value=False,
+                    help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+                )
+    with top_cols[1]:
+        # Parameters always on the right
+        st.session_state.setdefault("temperature", 1.0)
+        st.session_state.setdefault("top_p", 1.0)
+        param_cols = st.columns(3)
+        if param_cols[0].button("Creative", key="creative_button"):
+            st.session_state.update(temperature=1.6, top_p=1.0)
+        if param_cols[1].button("Logic", key="logic_button"):
+            st.session_state.update(temperature=0.2, top_p=1.0)
+        if param_cols[2].button("Simplify", key="simple_button"):
+            st.session_state.update(temperature=1.0, top_p=0.1)
+        temperature = st.slider(
+            "Temperature",
+            min_value=0.0,
+            max_value=1.8,
+            step=0.1,
+            key="temperature"
+        )
+        top_p = st.slider(
+            "Top-P",
+            min_value=0.0,
+            max_value=1.0,
+            step=0.1,
+            key="top_p"
+        )
+        temperature = st.session_state.temperature
+        top_p = st.session_state.top_p
+
+    # --- Combine Template selection and individual elements selection ---
+    with st.expander("Template & Element selection (information sources)"):
+        all_templates = list(sst.template_config.keys())
+        selected_keys = st.multiselect(
+            label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+            placeholder="Choose templates to use",
+            options=all_templates,
+            default=required_items
+        )
+        selected_elements = {}
+        columns = st.columns(2)
+        position = 0
+        for selected_key in selected_keys:
+            element_store = sst.data_store[selected_key]
+            with columns[position]:
+                element_names = [element for element in element_store.keys() if element != element_name]
+                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                           options=element_names,
+                                           default=element_names, key=f"multiselect_{selected_key}")
+                selected_elements[selected_key] = selection
+                position += 1
+            if position >= 2:
+                position = 0
+        for selected_key, selected_elements_list in selected_elements.items():
+            element_store = sst.data_store[selected_key]
+            for name in selected_elements_list:
+                resource_text = ""
+                element_value = element_store[name]
+                for value in element_value:
+                    resource_text += f"- {value}\n"
+                if resource_text.strip() != "":
+                    name_display = sst.elements_config[name].get("display_name", name)
+                    description = sst.elements_config[name].get("description", "No description available.")
+                    resource_text = f"_{description}_\n{resource_text}"
+                    selected_resources[name_display] = resource_text
+
+    # --- Combine Prompt and Schema into one expander ---
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    schema = None
+    if not is_image:
+        schema_name = element_config['schema_name']
+        schema = load_schema(schema_name)
+    with st.expander("Prompt & Response Schema"):
+        st.markdown("**Prompt:** " + prompt_name + ".txt")
+        if prompt:
+            st.markdown(prompt)
+        else:
+            st.error("There is no prompt assigned")
+        if not is_image and schema is not None:
+            st.divider()
+            st.markdown("**Schema:** " + schema_name + ".json")
+            st.json(schema)
+        st.divider()
+        st.markdown("**Contextual Information:**")
+        user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+        st.markdown(user_prompt)
+
+    if generate_now_clicked:
+        with st.spinner("Generating..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not is_image:
+                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_name, prompt, selected_resources)
+
+
+def import_artifacts(element_name, generate_now_clicked=False):
+    element_config = sst.elements_config[element_name]
+    if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
+        st.write("Not available for this element")
+        return
+    prompt_name = element_config['prompt_name_import']
+    schema_name = element_config['schema_name_import']
+    prompt = load_prompt(prompt_name)
+    schema = load_schema(schema_name)
+
+    # Add disclaimer
+    st.warning(
+        "Please note: The uploaded document must be a PDF containing selectable text. Image-based PDFs or scanned documents are currently not supported.")
+
+    uploaded_files = st.file_uploader("Upload document for importing", type="pdf", accept_multiple_files=False)
+    with st.expander(label="Used prompt"):  # added name of the prompt used to label
+        st.markdown("**System prompt:** " + prompt_name + ".txt")
+        st.markdown(prompt)
+
+    with st.expander(label="View import schema"):
+        st.json(schema)
+
+    add_empty_lines(1)
+    if st.button("Import now!", type="primary"):
+        with st.spinner("Processing..."):
+            selected_resources = {}
+            add_resources(selected_resources, None, None, None, uploaded_files)
+            handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
+
+
+def add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files):
+    if home_url is not None:
+        home_url_text, _ = get_url_text_and_images(home_url)
+        selected_resources["Website_Text"] = home_url_text[:10000]
+    if query is not None:
+        texts_scrape = scrape_texts(query, number_entries_used)
+        selected_resources.update(texts_scrape)
+    # ↓ Fix: Ensure uploaded_files is a list
+    if uploaded_files is not None:
+        if not isinstance(uploaded_files, list):
+            uploaded_files = [uploaded_files]
+        if len(uploaded_files) > 0:
+            text = ""
+            for uploaded_file in uploaded_files:
+                text += f"# {uploaded_file.name}\n"
+                reader = PyPDF2.PdfReader(uploaded_file)
+                for page in reader.pages:
+                    text += page.extract_text() or ""
+                text += "\n"
+            selected_resources["document_text"] = text
+
+
+def display_artifacts_view(element_selected, element_store):
+    st.markdown("**Assigned Artifacts**")
+    artifacts_to_show = element_store[element_selected]
+    if len(artifacts_to_show) == 0:
+        st.write("Nothing here yet.")
+    deleted_artifacts = []
+    for i, artifact in enumerate(artifacts_to_show):
+        if i != 0:
+            # st.divider()
+            with st.container():
+                columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
+                with columns[1]:
+                    st.markdown(artifact)
+                with columns[3]:
+                    if st.button(":x:", key=f"button_{element_selected}_{artifact}"):
+                        deleted_artifacts.append(artifact)
+
+    remaining_artifacts = [artifact for artifact in artifacts_to_show if artifact not in deleted_artifacts]
+    element_store[element_selected] = remaining_artifacts
+    # If something was marked for deletion refresh
+    if len(deleted_artifacts) != 0:
+        update_data_store()
+        st.rerun()
+
+
+def display_artifact_view_image(element_selected, element_store):
+    st.subheader("Available Artifacts")
+    if element_selected not in element_store or len(element_store[element_selected]) == 0:
+        st.write("Nothing here to show")
+    else:
+        columns = st.columns([1, 3, 1, 1], vertical_alignment="center")
+        with columns[1]:
+            image = element_store[element_selected]
+            st.image(image)
+        with columns[2]:
+            if st.button(":x:", key=f"button_{element_selected}_image"):
+                element_store[element_selected] = []
+                update_data_store()
+                st.rerun()
+
+
+def get_elements_to_show(element_names, element_store, max_characters):
+    artifact_texts = {}
+    artifact_images = {}
+    for element_name in element_names:
+        element_config = sst.elements_config[element_name]
+        if 'type' in element_config and element_config['type'] == 'image':
+            image_file = None
+            if len(element_store[element_name]) > 0:
+                image_file = element_store[element_name]
+            artifact_images[element_name] = image_file
+        else:
+            element_artifacts = element_store[element_name]
+            artifact_text = ""
+            for artifact in element_artifacts:
+                artifact_text += "- " + str(artifact) + "  \n"
+            if len(artifact_text) > max_characters:
+                max_characters = len(artifact_text)
+            artifact_texts[element_name] = artifact_text
+    return artifact_texts, artifact_images
+
+
+def display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
+                             vertical_gap):
+    position = 0
+    # Each iteration add a row to the display
+    for row_config in selected_template_config['display']:
+        sub_rows = row_config['format']
+        height = row_config['height']
+        number_cols = len(sub_rows)
+        cols = st.columns(number_cols, vertical_alignment='center')
+        for col, sub_row in zip(cols, sub_rows):
+            with col:
+                height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                for number_subrows in range(0, sub_row):
+                    if position < len(element_names):
+                        element_name = element_names[position]
+                        # if element_name in artifact_images:
+                        #    height_single = None
+                        with st.container(border=True, height=height_single):
+                            # with stylable_container(key="sc_" + str(position), css_styles=container_css):
+                            container = st.container(border=False)
+                            sub_columns = container.columns([1, 15, 1], vertical_alignment='center')
+                            with sub_columns[1]:
+                                # Combine name and description in a single line
+                                element_config = sst.elements_config[element_name]
+                                display_name = element_name
+                                if "display_name" in element_config:
+                                    display_name = element_config["display_name"]
+                                description = element_config.get("description", "")
+                                st.markdown(f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> <span style='color:#888;font-size:0.98em'>{description}</span>", unsafe_allow_html=True)
+                                if element_name in artifact_texts:
+                                    artifact_text = artifact_texts[element_name]
+                                    if len(artifact_text) > 0:
+                                        text_to_show = artifact_text
+                                    else:
+                                        text_to_show = "Nothing here yet."
+                                        if 'required' not in element_config or element_config['required']:
+                                            text_to_show = text_to_show + "\n \n Required :heavy_exclamation_mark:"
+                                    st.markdown(text_to_show)
+                            if element_name in artifact_images:
+                                if artifact_images[element_name] is not None:
+                                    container.image(artifact_images[element_name])
+                                else:
+                                    text_to_show = ":heavy_exclamation_mark: No image available :heavy_exclamation_mark:"
+                                    st.markdown(text_to_show)
+                            position += 1
+
+
+def display_template_view(selected_template_name):
+    element_store = sst.data_store[selected_template_name]
+    selected_template_config = sst.template_config[selected_template_name]
+    max_characters = 0
+    element_names = list(element_store.keys())
+    artifact_texts, artifact_images = get_elements_to_show(element_names, element_store, max_characters)
+    vertical_gap = 2
+    display_elements_subview(artifact_texts, artifact_images, element_names, selected_template_config,
+                             vertical_gap)
+
+
+def legend_subview():
+    # Add a legend for the graph colors
+    legend_cols = st.columns([1, 1, 1, 1,1,1,1,1], gap="small")  # Adjusted gap to reduce horizontal space
+    with legend_cols[0]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[1]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed/Optional",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[2]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
+            unsafe_allow_html=True,
+        )
+
+
+def get_progress_stats():
+    total_required_elements = 0
+    total_filled_required_elements = 0
+    for template_name, element_store in sst.data_store.items():
+        template_config = sst.template_config.get(template_name, {})
+        elements = template_config.get("elements", [])
+        for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            if not element_config.get("required", True):
+                continue
+            if element not in element_store:
+                continue
+            total_required_elements += 1
+            values = element_store[element]
+            if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                total_filled_required_elements += 1
+    progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
+    return progress, total_filled_required_elements, total_required_elements
+
+
+def chart_view():
+    add_empty_lines(3)
+    # Progress bar next to project title
+    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
+    cols = st.columns([3, 7])
+    with cols[0]:
+        st.subheader(f"Project: {sst.project_name}")
+    with cols[1]:
+        st.progress(progress, text=f"Progress: {int(progress*100)}%")
+    add_empty_lines(1)
+    legend_subview()
+
+    with st.container(border=True):
+        updated_state = streamlit_flow(
+            key="ret_val_flow",
+            state=sst.flow_state,
+            height=800,
+            layout=LayeredLayout(direction="right"),
+            fit_view=True,
+            get_node_on_click=True,
+            get_edge_on_click=False,
+            show_controls=True,
+            allow_zoom=True,
+            pan_on_drag=False,
+        )
+    # Prevent selection of special templates
+    special_templates = [
+        "align", "discover", "define", "develop", "deliver", "continue",
+        "empathize", "define+", "ideate", "prototype", "test"
+    ]
+    if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
+        sst.selected_template_name = updated_state.selected_id
+        sst.current_view = "detail"
+        sst.sidebar_state = "expanded"
+        st.rerun()
+
+
+def element_selection_format_func(item):
+    return get_config_value(item, for_template=False)
+
+
+def general_creation_view(assigned_elements):
+    #st.subheader("Generate Information Artifacts")
+    # --- Main controls row ---
+    top_cols = st.columns([1, 1], gap="medium")
+    # Set default mode to 'Generate' when switching templates
+    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
+        sst['creation_mode'] = 'Generate'
+        sst['last_template'] = sst.selected_template_name
+    creation_mode = sst.get('creation_mode', 'Generate')
+    with top_cols[0]:
+        element_selected = st.selectbox(
+            label="Select Element to generate:",
+            help="Select the element to generate artifacts for.",
+            options=assigned_elements,
+            format_func=element_selection_format_func
+        )
+        # Move action buttons and auto-assign toggle here, below the selectbox
+        action_cols = st.columns([1, 1, 2], gap="small")
+        generate_now_clicked = False
+        with action_cols[0]:
+            if creation_mode == "Generate":
+                generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+            elif creation_mode == "Import":
+                generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+        with action_cols[1]:
+            auto_assign_max = False
+            if creation_mode != "Manual":
+                auto_assign_max = st.toggle(
+                    "Auto-assign max allowed artifacts after generation",
+                    key="auto_assign_max_toggle",
+                    value=False,
+                    help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+                )
+    with top_cols[1]:
+        # Parameters always on the right
+        st.session_state.setdefault("temperature", 1.0)
+        st.session_state.setdefault("top_p", 1.0)
+        param_cols = st.columns(3)
+        if param_cols[0].button("Creative", key="creative_button"):
+            st.session_state.update(temperature=1.6, top_p=1.0)
+        if param_cols[1].button("Logic", key="logic_button"):
+            st.session_state.update(temperature=0.2, top_p=1.0)
+        if param_cols[2].button("Simplify", key="simple_button"):
+            st.session_state.update(temperature=1.0, top_p=0.1)
+        temperature = st.slider(
+            "Temperature",
+            min_value=0.0,
+            max_value=1.8,
+            step=0.1,
+            key="temperature"
+        )
+        top_p = st.slider(
+            "Top-P",
+            min_value=0.0,
+            max_value=1.0,
+            step=0.1,
+            key="top_p"
+        )
+        temperature = st.session_state.temperature
+        top_p = st.session_state.top_p
+
+    # --- Combine Template selection and individual elements selection ---
+    with st.expander("Template & Element selection (information sources)"):
+        all_templates = list(sst.template_config.keys())
+        selected_keys = st.multiselect(
+            label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+            placeholder="Choose templates to use",
+            options=all_templates,
+            default=required_items
+        )
+        selected_elements = {}
+        columns = st.columns(2)
+        position = 0
+        for selected_key in selected_keys:
+            element_store = sst.data_store[selected_key]
+            with columns[position]:
+                element_names = [element for element in element_store.keys() if element != element_name]
+                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                           options=element_names,
+                                           default=element_names, key=f"multiselect_{selected_key}")
+                selected_elements[selected_key] = selection
+                position += 1
+            if position >= 2:
+                position = 0
+        for selected_key, selected_elements_list in selected_elements.items():
+            element_store = sst.data_store[selected_key]
+            for name in selected_elements_list:
+                resource_text = ""
+                element_value = element_store[name]
+                for value in element_value:
+                    resource_text += f"- {value}\n"
+                if resource_text.strip() != "":
+                    name_display = sst.elements_config[name].get("display_name", name)
+                    description = sst.elements_config[name].get("description", "No description available.")
+                    resource_text = f"_{description}_\n{resource_text}"
+                    selected_resources[name_display] = resource_text
+
+    # --- Combine Prompt and Schema into one expander ---
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    schema = None
+    if not is_image:
+        schema_name = element_config['schema_name']
+        schema = load_schema(schema_name)
+    with st.expander("Prompt & Response Schema"):
+        st.markdown("**Prompt:** " + prompt_name + ".txt")
+        if prompt:
+            st.markdown(prompt)
+        else:
+            st.error("There is no prompt assigned")
+        if not is_image and schema is not None:
+            st.divider()
+            st.markdown("**Schema:** " + schema_name + ".json")
+            st.json(schema)
+        st.divider()
+        st.markdown("**Contextual Information:**")
+        user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+        st.markdown(user_prompt)
+
+    if generate_now_clicked:
+        with st.spinner("Generating..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not is_image:
+                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_name, prompt, selected_resources)
+
+
+def import_artifacts(element_name, generate_now_clicked=False):
+    element_config = sst.elements_config[element_name]
+    if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
+        st.write("Not available for this element")
+        return
+    prompt_name = element_config['prompt_name_import']
+    schema_name = element_config['schema_name_import']
+    prompt = load_prompt(prompt_name)
+    schema = load_schema(schema_name)
+
+    # Add disclaimer
+    st.warning(
+        "Please note: The uploaded document must be a PDF containing selectable text. Image-based PDFs or scanned documents are currently not supported.")
+
+    uploaded_files = st.file_uploader("Upload document for importing", type="pdf", accept_multiple_files=False)
+    with st.expander(label="Used prompt"):  # added name of the prompt used to label
+        st.markdown("**System prompt:** " + prompt_name + ".txt")
+        st.markdown(prompt)
+
+    with st.expander(label="View import schema"):
+        st.json(schema)
+
+    add_empty_lines(1)
+    if st.button("Import now!", type="primary"):
+        with st.spinner("Processing..."):
+            selected_resources = {}
+            add_resources(selected_resources, None, None, None, uploaded_files)
+            handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
+
+
+def add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files):
+    if home_url is not None:
+        home_url_text, _ = get_url_text_and_images(home_url)
+        selected_resources["Website_Text"] = home_url_text[:10000]
+    if query is not None:
+        texts_scrape = scrape_texts(query, number_entries_used)
+        selected_resources.update(texts_scrape)
+    # ↓ Fix: Ensure uploaded_files is a list
+    if uploaded_files is not None:
+        if not isinstance(uploaded_files, list):
+            uploaded_files = [uploaded_files]
+        if len(uploaded_files) > 0:
+            text = ""
+            for uploaded_file in uploaded_files:
+                text += f"# {uploaded_file.name}\n"
+                reader = PyPDF2.PdfReader(uploaded_file)
+                for page in reader.pages:
+                    text += page.extract_text() or ""
+                text += "\n"
+            selected_resources["document_text"] = text
+
+
+def display_artifacts_view(element_selected, element_store):
+    st.markdown("**Assigned Artifacts**")
+    artifacts_to_show = element_store[element_selected]
+    if len(artifacts_to_show) == 0:
+        st.write("Nothing here yet.")
+    deleted_artifacts = []
+    for i, artifact in enumerate(artifacts_to_show):
+        if i != 0:
+            # st.divider()
+            with st.container():
+                columns = st.columns([1, 3, 1, 2], vertical_alignment="center")
+                with columns[1]:
+                    st.markdown(artifact)
+                with columns[3]:
+                   
