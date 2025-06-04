@@ -1374,22 +1374,18 @@ def start_sub_view():
 
 view_assignment_dict = {"general": general_creation_view}
 def main():
-    # Navigation bar at the top
+    # Navigation bar at the top (streamlit-navigation-bar v3.0.1 syntax)
     page = st_navbar([
-        {"id": "home", "label": "Home", "icon": "house"},
-        {"id": "project", "label": "Project", "icon": "diagram-3"},
-        {"id": "about", "label": "About", "icon": "info-circle"},
-    ],
-    default="home",
-    show_menu=False,
-    sticky=True,
-    )
+        "Home",
+        "Project",
+        "About"
+    ], selected="Home")
 
-    if page == "home":
+    if page == "Home":
         about_view()
-    elif page == "project":
+    elif page == "Project":
         chart_view()
-    elif page == "about":
+    elif page == "About":
         about_view()
     # Optionally, add more routing as needed
 
