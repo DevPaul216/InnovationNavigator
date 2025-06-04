@@ -837,15 +837,21 @@ def general_creation_view(assigned_elements):
         sst['creation_mode'] = 'Generate'
         sst['last_template'] = sst.selected_template_name
     creation_mode = sst.get('creation_mode', 'Generate')
+    # --- Replace selectbox with buttons for each element ---
     with top_cols[0]:
-        element_selected = st.selectbox(
-            label="Select Element to generate:",
-            help="Select the element to generate artifacts for.",
-            options=assigned_elements,
-            format_func=element_selection_format_func
-        )
+        if 'element_selected' not in sst or sst['element_selected'] not in assigned_elements:
+            sst['element_selected'] = assigned_elements[0]
+        for element in assigned_elements:
+            element_config = sst.elements_config[element]
+            display_name = element_config.get("display_name", element)
+            description = element_config.get("description", "")
+            button_label = f"{display_name}"
+            if st.button(button_label, key=f"element_btn_{element}"):
+                sst['element_selected'] = element
+        st.markdown(f"**Selected:** {sst['element_selected']}")
+    element_selected = sst['element_selected']
+    # ...existing code for creation_mode radio, generate/import buttons, etc...
     with top_cols[1]:
-        # Use st.radio for robust single selection, avoid session state key conflicts
         new_creation_mode = st.radio(
             label="Select Mode:",
             options=["Manual", "Generate", "Import"],
