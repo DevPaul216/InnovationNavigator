@@ -7,6 +7,7 @@
   "Innovation_Group": {
     "display_name": "Innovation Goals",
     "description": "A group of elements defining the innovation project",
+    "required": true,
     "type": "group",
     "used_templates": [],
     "elements": ["InnovationIssue", "TargetGroup"],

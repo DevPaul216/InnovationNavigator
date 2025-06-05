@@ -249,32 +249,21 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
         sst.update_graph = False
 
 
-def expand_required_elements(elements):
-    expanded = []
-    for element in elements:
-        element_config = sst.elements_config.get(element, {})
-        if element_config.get("type") == "group":
-            sub_elements = element_config.get("elements", [])
-            expanded.extend(expand_required_elements(sub_elements))
-        elif element_config.get("required", True):
-            expanded.append(element)
-    return expanded
-
-
 def init_graph():
     connection_states = {}
     completed_templates = []
     for template_name, template_config in sst.template_config.items():
         is_fulfilled = True
-        is_required = template_config.get("required", True)
+        is_required = "required" not in template_config or template_config["required"]
         if is_required:
             elements = template_config["elements"]
-            required_elements = expand_required_elements(elements)
-            element_store = sst.data_store[template_name]
-            for element in required_elements:
-                values = element_store.get(element, [])
-                if values is None or len(values) == 0:
-                    is_fulfilled = False
+            for element_name in elements:
+                element_config = sst.elements_config[element_name]
+                if element_config["required"]:
+                    element_store = sst.data_store[template_name]
+                    for element_values in element_store.values():
+                        if element_values is None or len(element_values) == 0:
+                            is_fulfilled = False
         if is_fulfilled:
             completed_templates.append(template_name)
         for target in template_config["connects"]:
