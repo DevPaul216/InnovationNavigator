@@ -865,8 +865,8 @@ def get_progress_stats():
 def chart_view():
     add_empty_lines(3)
     # Progress bar next to project title
-    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
-    cols = st.columns([3, 7])
+    progress = get_progress_stats()
+    cols = st.columns([3, 7, 1])
     with cols[0]:
         st.subheader(f"Project: {sst.project_name}")
         st.markdown("FYI-color indicationas and progress bars are not really functioning...maybe i will fix it later")
