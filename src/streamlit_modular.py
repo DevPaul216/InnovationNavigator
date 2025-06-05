@@ -25,9 +25,9 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-COLOR_BLOCKED = "rgb(250, 240, 220)"
-COLOR_COMPLETED = "rgb(104, 223, 200)"
-COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
+COLOR_NOT_STARTED = "rgb(211, 211, 211)"     # Light gray
+COLOR_IN_PROGRESS = "rgb(255, 165, 0)"       # Orange  
+COLOR_COMPLETED = "rgb(104, 223, 200)"       # Green
 
 
 
@@ -188,6 +188,129 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
+def get_template_completion_percentage(template_name):
+    """Calculate completion percentage for a template based on filled elements"""
+    if template_name not in sst.template_config:
+        return 0.0
+    
+    template_config = sst.template_config[template_name]
+    elements = template_config.get("elements", [])
+    
+    if not elements:
+        return 100.0  # Templates with no elements are considered complete
+    
+    def expand_elements(element_list):
+        """Expand group elements to their constituent elements"""
+        expanded = []
+        for element in element_list:
+            element_config = sst.elements_config.get(element, {})
+            if element_config.get("type") == "group":
+                sub_elements = element_config.get("elements", [])
+                expanded.extend(expand_elements(sub_elements))
+            else:
+                expanded.append(element)
+        return expanded
+    
+    expanded_elements = expand_elements(elements)
+    total_elements = len(expanded_elements)
+    filled_elements = 0
+    
+    element_store = sst.data_store.get(template_name, {})
+    
+    for element in expanded_elements:
+        if element in element_store:
+            values = element_store[element]
+            if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                filled_elements += 1
+    
+    return (filled_elements / total_elements) * 100.0 if total_elements > 0 else 100.0
+
+
+def categorize_template_by_completion(template_name):
+    """Categorize template based on completion percentage"""
+    completion = get_template_completion_percentage(template_name)
+    
+    if completion == 0:
+        return "not_started"
+    elif completion == 100:
+        return "completed"
+    else:
+        return "in_progress"
+
+
+def init_flow_graph(template_completion_states):
+    if sst.update_graph:
+        nodes = []
+        for i, template_name in enumerate(sst.template_config.keys()):
+            template_display_name = get_config_value(template_name)
+            # Special formatting for key templates
+            special_templates = [
+                "align", "discover", "define", "develop", "deliver", "continue",
+                "empathize", "define+", "ideate", "prototype", "test"
+            ]
+            if template_name.lower() in special_templates:
+                style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
+                node = StreamlitFlowNode(
+                    id=str(template_name),
+                    pos=(0, 0),
+                    data={'content': f"{template_display_name}"},
+                    node_type="default",
+                    source_position="right",
+                    target_position="left",
+                    style=style,
+                    draggable=False,
+                    focusable=False,
+                    selectable=False
+                )
+            elif template_name == "Start":
+                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
+                                         data={'content': f"{template_display_name}"},
+                                         node_type="input", source_position='right')
+            elif template_name == "End":
+                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
+                                         data={'content': f"{template_display_name}"},
+                                         node_type="output", target_position='left')
+            else:
+                completion_state = template_completion_states[template_name]
+                if completion_state == "not_started":
+                    style = {'background-color': COLOR_NOT_STARTED, "color": 'black'}
+                elif completion_state == "completed":
+                    style = {'background-color': COLOR_COMPLETED, "color": 'black'}
+                else:  # in_progress
+                    style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
+                
+                node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
+                                         draggable=True, focusable=False, node_type="default", source_position="right",
+                                         target_position="left",
+                                         style={**style, "width": "90px", "padding": "1px"})
+            nodes.append(node)
+        
+        edges = []
+        for source, value in sst.template_config.items():
+            # Skip edges connected to the "Prompts" template
+            for target in value["connects"]:
+                edge_id = f'{source}-{target}'
+                # Edge animation based on source completion
+                source_completion = template_completion_states.get(source, "not_started")
+                animated = source_completion == "completed"
+                edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'},
+                                         animated=animated,
+                                         style={"backgroundColor": "green"})
+                edges.append(edge)
+        sst.flow_state = StreamlitFlowState(nodes, edges)
+        sst.update_graph = False
+
+
+def init_graph():
+    template_completion_states = {}
+    
+    for template_name in sst.template_config.keys():
+        completion_state = categorize_template_by_completion(template_name)
+        template_completion_states[template_name] = completion_state
+    
+    return template_completion_states
+
+
 def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
@@ -232,6 +355,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                                          target_position="left",
                                          style={**style, "width": "90px", "padding": "1px"})
             nodes.append(node)
+        
         edges = []
         for source, value in sst.template_config.items():
             # Skip edges connected to the "Prompts" template
@@ -818,17 +942,17 @@ def legend_subview():
     legend_cols = st.columns([1, 1, 1, 1,1,1,1,1], gap="small")  # Adjusted gap to reduce horizontal space
     with legend_cols[0]:
         st.markdown(
-            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
+            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block;'></div> Not Started",
             unsafe_allow_html=True,
         )
     with legend_cols[1]:
         st.markdown(
-            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed/Optional",
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
             unsafe_allow_html=True,
         )
     with legend_cols[2]:
         st.markdown(
-            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
             unsafe_allow_html=True,
         )
 
@@ -1423,8 +1547,8 @@ view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()
-    connection_states, completed_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, blocked_templates)
+    template_completion_states = init_graph()
+    init_flow_graph(template_completion_states)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
