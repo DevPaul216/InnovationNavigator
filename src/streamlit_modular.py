@@ -196,10 +196,7 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
             # Special formatting for key templates
-            special_templates = [
-                "align", "discover", "define", "develop", "deliver", "continue",
-                "empathize", "define+", "ideate", "prototype", "test"
-            ]
+            special_templates = []
             if template_name.lower() in special_templates:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
