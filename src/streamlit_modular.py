@@ -334,7 +334,7 @@ def display_generated_artifacts_view(element_name):
             with columns[3]:
                 # Use a unique key for each toggle based on artifact_key and element_name
                 is_assigned = artifact in assigned
-                toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
+                toggled = st.toggle("+", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
                 if toggled and not is_assigned:
                     # For BytesIO images, save to disk and store path
                     if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
