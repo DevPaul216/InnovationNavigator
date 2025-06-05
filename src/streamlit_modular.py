@@ -877,32 +877,55 @@ def legend_subview():
 def get_progress_stats():
     total_required_elements = 0
     total_filled_required_elements = 0
+    
+    # Skip special templates like "Start", "End", and phase headers
+    special_templates = ["Start", "End", "align", "discover", "define", "develop", "deliver", "continue",
+                         "empathize", "define+", "ideate", "prototype", "test"]
+    
     for template_name, element_store in sst.data_store.items():
+        # Skip special templates
+        if template_name in special_templates or template_name.lower() in special_templates:
+            continue
+            
         template_config = sst.template_config.get(template_name, {})
         elements = template_config.get("elements", [])
+        
         for element in elements:
             element_config = sst.elements_config.get(element, {})
-            if not element_config.get("required", True):
+            # Skip non-required elements
+            if element_config.get("required", True) == False:
                 continue
+                
+            # Only count elements that exist in the data store
             if element not in element_store:
                 continue
+                
             total_required_elements += 1
             values = element_store[element]
+            
+            # Check if the element has content
             if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
                 total_filled_required_elements += 1
+    
+    # Calculate progress percentage (prevent division by zero)
     progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
+    
     return progress, total_filled_required_elements, total_required_elements
 
 
 def chart_view():
     add_empty_lines(3)
     # Progress bar next to project title
-    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
+    progress, filled_elements, total_elements = get_progress_stats()
+    
     cols = st.columns([3, 7])
     with cols[0]:
         st.subheader(f"Project: {sst.project_name}")
     with cols[1]:
-        st.progress(progress, text=f"Progress: {int(progress*100)}%")
+        # Add more context to the progress display
+        progress_text = f"Progress: {int(progress*100)}% ({filled_elements}/{total_elements} elements completed)"
+        st.progress(progress, text=progress_text)
+        
     add_empty_lines(1)
     legend_subview()
 
