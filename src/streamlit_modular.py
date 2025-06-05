@@ -242,6 +242,8 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                     node_color = COLOR_IN_PROGRESS
                 else:
                     node_color = COLOR_AVAILABLE
+                # Debug output
+                print(f"Template: {template_name}, filled: {filled_elements}, total: {total_elements}, ratio: {completion_ratio}, color: {node_color}")
                 style = {'background-color': node_color, "color": 'black', "border": "1px solid #ccc"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                      draggable=True, focusable=False, node_type="default", source_position="right",
@@ -581,7 +583,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     if not is_image:
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
-    
+
     with st.expander("Prompt & Response Details"):
         # Create tabs for better organization
         prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
