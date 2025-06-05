@@ -939,8 +939,8 @@ def general_creation_view(assigned_elements):
                 st.divider()
                 st.markdown("**Assigned & Available Artifacts**")
             display_generated_artifacts_view(element_name)
-            if not manual:
-                #st.divider()
+            #if not manual:
+            #    st.divider()
 
     if creation_mode == "Manual":
         if is_single:
