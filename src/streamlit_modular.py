@@ -795,6 +795,7 @@ def chart_view():
     cols = st.columns([3, 7])
     with cols[0]:
         st.subheader(f"Project: {sst.project_name}")
+        st.markdown("FYI-color indicationas and progress bars are not really functioning...maybe i will fix it later")
     with cols[1]:
         st.progress(progress, text=f"Progress: {int(progress*100)}%")
     add_empty_lines(1)
