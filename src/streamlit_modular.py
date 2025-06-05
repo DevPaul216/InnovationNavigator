@@ -123,6 +123,11 @@ def get_full_data_store_path():
     return os.path.join(data_store_path, store_name)
 
 
+def refresh_graph():
+    connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates = init_graph()
+    init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates)
+
+
 def update_data_store():
     # Synchronize shared elements before saving
     synchronize_shared_elements(sst.data_store, sst.elements_config, sst.template_config)
@@ -143,6 +148,7 @@ def update_data_store():
         json.dump(sst.data_store, file, indent=4)
     # Ensure the graph is updated after data changes
     sst.update_graph = True
+    refresh_graph()
 
 
 def load_data_store():
