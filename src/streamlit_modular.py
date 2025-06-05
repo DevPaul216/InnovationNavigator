@@ -799,7 +799,7 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1, 1, 1], gap="small")
+    legend_cols = st.columns([0.1, 1, 1, 1, 4], gap="small")
 
     with legend_cols[1]:
         st.markdown(
