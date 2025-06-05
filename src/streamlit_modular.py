@@ -284,6 +284,7 @@ def add_artifact(toggle_key, element_name, artifact_id, artifact):
     else:
         artifacts_dict.pop(artifact_id, None)
     sst.confirmed_artifacts[element_name] = artifacts_dict
+    sst.update_graph = True  # Ensure graph updates after artifact change
 
 
 def display_generated_artifacts_view(element_name):
@@ -359,6 +360,7 @@ def display_generated_artifacts_view(element_name):
                     if check is None:
                         assigned.append(artifact_to_add)
                         update_data_store()
+                        sst.update_graph = True  # Ensure graph updates after artifact change
                         st.rerun()
                     else:
                         st.warning(check)
@@ -366,6 +368,7 @@ def display_generated_artifacts_view(element_name):
                     if artifact in assigned:
                         assigned.remove(artifact)
                         update_data_store()
+                        sst.update_graph = True  # Ensure graph updates after artifact change
                         st.rerun()
 
 
