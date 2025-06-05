@@ -221,22 +221,21 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                # Determine color by reading the data_store directly (like get_progress_stats)
+                # Robustly check all required elements for filled status
                 elements = sst.template_config[template_name].get("elements", [])
                 element_store = sst.data_store.get(template_name, {})
                 required_elements = []
                 filled_required_elements = 0
+                total_required = 0
                 for element in elements:
                     element_config = sst.elements_config.get(element, {})
                     is_required = element_config.get("required", True)
                     if not is_required:
                         continue
-                    required_elements.append(element)
-                    if element in element_store:
-                        values = element_store[element]
-                        if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
-                            filled_required_elements += 1
-                total_required = len(required_elements)
+                    total_required += 1
+                    value = element_store.get(element, None)
+                    if value is not None and ((isinstance(value, list) and len(value) > 0) or (isinstance(value, str) and value.strip())):
+                        filled_required_elements += 1
                 if total_required == 0:
                     style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
                 elif filled_required_elements == total_required:
