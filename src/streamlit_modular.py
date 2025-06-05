@@ -473,7 +473,7 @@ def handle_response_image(element_name, prompt, selected_resources):
     add_to_generated_artifacts(element_name, [generated_image])
 
 
-def generate_artifacts(element_name, is_image=False, generate_now_clicked=False, home_url=None, query=None, number_entries_used=None, uploaded_files=None):
+def generate_artifacts(element_name, is_image=False, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
     required_items = element_config['used_templates']
     selected_resources = {}
@@ -832,8 +832,7 @@ def element_selection_format_func(item):
 def general_creation_view(assigned_elements):
     #st.subheader("Generate Information Artifacts")
     # --- Main controls row ---
-    # Add a new column for resources: [element select, mode select, generate/import button, resource selector, auto-assign toggle]
-    top_cols = st.columns([1, 1, 1, 1.2, 1.2], gap="medium")
+    top_cols = st.columns([1, 1, 1, 2], gap="medium")
     # Set default mode to 'Generate' when switching templates
     if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
         sst['creation_mode'] = 'Generate'
@@ -864,10 +863,7 @@ def general_creation_view(assigned_elements):
             generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    # Resource selection moved here
     with top_cols[3]:
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
-    with top_cols[4]:
         auto_assign_max = False
         if creation_mode != "Manual":
             auto_assign_max = st.toggle(
@@ -884,7 +880,6 @@ def general_creation_view(assigned_elements):
     selected_template_config = sst.template_config[sst.selected_template_name]
     vertical_gap = 1
 
-    # Pass resource selection values to generate_artifacts
     def auto_assign_artifacts(elements, is_image_type=False):
         rerun_needed = False
         for element in elements:
@@ -941,12 +936,11 @@ def general_creation_view(assigned_elements):
                 unsafe_allow_html=True)
             if manual:
                 artifact_input_subview(element_name, element_store)
-                #st.divider()
-                #st.markdown("**Assigned & Available Artifacts**")
+                st.divider()
+                st.markdown("**Assigned & Available Artifacts**")
             display_generated_artifacts_view(element_name)
-            #if not manual:
-                #st.divider()
-                #st.markdown("**Assigned & Available Artifacts**")
+            if not manual:
+                st.divider()
 
     if creation_mode == "Manual":
         if is_single:
@@ -961,7 +955,7 @@ def general_creation_view(assigned_elements):
             display_group_elements(elements_group, manual=True)
     elif creation_mode in ("Generate", "Import"):
         if creation_mode == "Generate":
-            generate_artifacts(element_selected, is_image, generate_now_clicked, home_url, query, number_entries_used, uploaded_files)
+            generate_artifacts(element_selected, is_image, generate_now_clicked)
             if generate_now_clicked and auto_assign_max:
                 if is_single:
                     auto_assign_artifacts([element_selected], is_image)
