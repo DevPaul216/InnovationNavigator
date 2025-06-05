@@ -25,11 +25,71 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-# Improved color scheme for better visual distinction and accessibility
-COLOR_BLOCKED = "#F8D7DA"        # Light red/pink for blocked (error/requirements not met)
-COLOR_NOT_STARTED = "#F0F0F0"    # Light gray for not started
-COLOR_COMPLETED = "#B6E2A1"      # Soft green for completed
-COLOR_IN_PROGRESS = "#FFD966"    # Warm yellow for in progress
+# Define color scheme for template completion states
+COLOR_NOT_STARTED = "#E0E0E0"       # Light gray for not started
+COLOR_IN_PROGRESS = "#FFC107"       # Amber for in progress  
+COLOR_COMPLETED = "#28A745"         # Green for completed
+
+
+def get_template_completion_state(template_name):
+    """
+    Determine the completion state of a template based on how filled out it is.
+    Returns: 'completed', 'in_progress', or 'not_started'
+    """
+    if template_name not in sst.template_config or template_name not in sst.data_store:
+        return 'not_started'
+    
+    template_config = sst.template_config[template_name]
+    elements = template_config.get("elements", [])
+    
+    if not elements:
+        return 'not_started'
+    
+    total_elements = len(elements)
+    filled_elements = 0
+    
+    element_store = sst.data_store[template_name]
+    
+    for element_name in elements:
+        if element_name in element_store:
+            element_values = element_store[element_name]
+            # Check if element has any content
+            if element_values and len(element_values) > 0:
+                # Check if it's not just empty strings or None values
+                has_content = any(
+                    value is not None and str(value).strip() != "" 
+                    for value in element_values
+                )
+                if has_content:
+                    filled_elements += 1
+    
+    if filled_elements == 0:
+        return 'not_started'
+    elif filled_elements == total_elements:
+        return 'completed'
+    else:
+        return 'in_progress'
+
+
+def get_template_completion_states():
+    """
+    Get completion states for all templates.
+    Returns dictionaries for completed, in_progress, and not_started templates.
+    """
+    completed_templates = []
+    in_progress_templates = []
+    not_started_templates = []
+    
+    for template_name in sst.template_config.keys():
+        state = get_template_completion_state(template_name)
+        if state == 'completed':
+            completed_templates.append(template_name)
+        elif state == 'in_progress':
+            in_progress_templates.append(template_name)
+        else:
+            not_started_templates.append(template_name)
+    
+    return completed_templates, in_progress_templates, not_started_templates
 
 
 
@@ -191,7 +251,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(connection_states, completed_templates, blocked_templates):
+def init_flow_graph(connection_states, completed_templates, in_progress_templates, not_started_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -224,12 +284,14 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                if template_name in blocked_templates:
-                    style = {'background-color': COLOR_BLOCKED, "color": 'black'}
-                elif template_name in completed_templates:
-                    style = {'background-color': COLOR_COMPLETED, "color": 'black'}
-                else:
+                # Determine color based on completion state
+                if template_name in completed_templates:
+                    style = {'background-color': COLOR_COMPLETED, "color": 'white'}
+                elif template_name in in_progress_templates:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
+                else:  # not_started
+                    style = {'background-color': COLOR_NOT_STARTED, "color": 'black'}
+                
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
@@ -250,32 +312,21 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
 
 
 def init_graph():
+    """
+    Initialize the graph with connection states based on template completion.
+    """
+    # Get template completion states
+    completed_templates, in_progress_templates, not_started_templates = get_template_completion_states()
+    
+    # Create connection states based on completion
     connection_states = {}
-    completed_templates = []
     for template_name, template_config in sst.template_config.items():
-        is_fulfilled = True
-        is_required = "required" not in template_config or template_config["required"]
-        if is_required:
-            elements = template_config["elements"]
-            for element_name in elements:
-                element_config = sst.elements_config[element_name]
-                if element_config["required"]:
-                    element_store = sst.data_store[template_name]
-                    for element_values in element_store.values():
-                        if element_values is None or len(element_values) == 0:
-                            is_fulfilled = False
-        if is_fulfilled:
-            completed_templates.append(template_name)
+        is_completed = template_name in completed_templates
         for target in template_config["connects"]:
             edge_id = f"{template_name}-{target}"
-            connection_states[edge_id] = is_fulfilled
-    blocked_templates = []
-    for template_name, template_config in sst.template_config.items():
-        connections = template_config["connects"]
-        if template_name not in completed_templates or template_name in blocked_templates:
-            blocked_templates.extend(connections)
-    blocked_templates = list(set(blocked_templates))
-    return connection_states, completed_templates, blocked_templates
+            connection_states[edge_id] = is_completed
+    
+    return connection_states, completed_templates, in_progress_templates, not_started_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
@@ -818,25 +869,20 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1, 1], gap="small")
+    legend_cols = st.columns([1, 1, 1], gap="small")
     with legend_cols[0]:
         st.markdown(
-            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Blocked (Requirements not met)",
+            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block;'></div> Not Started",
             unsafe_allow_html=True,
         )
     with legend_cols[1]:
         st.markdown(
-            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block;'></div> Not Started",
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
             unsafe_allow_html=True,
         )
     with legend_cols[2]:
         st.markdown(
             f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
-            unsafe_allow_html=True,
-        )
-    with legend_cols[3]:
-        st.markdown(
-            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
             unsafe_allow_html=True,
         )
 
@@ -1431,8 +1477,8 @@ view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()
-    connection_states, completed_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, blocked_templates)
+    connection_states, completed_templates, in_progress_templates, not_started_templates = init_graph()
+    init_flow_graph(connection_states, completed_templates, in_progress_templates, not_started_templates)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
