@@ -576,38 +576,8 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                 handle_response_image(element_name, prompt, selected_resources)
 
 
-# --- Main controls row ---
-    top_cols = st.columns([1, 1], gap="medium")
-    # Set default mode to 'Generate' when switching templates
-    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
-        sst['creation_mode'] = 'Generate'
-        sst['last_template'] = sst.selected_template_name
-    creation_mode = sst.get('creation_mode', 'Generate')
-
-    # --- Element selection logic ---
-    if len(assigned_elements) == 1:
-        element_selected = assigned_elements[0]
-    else:
-        # Use a segmented control for visual selection
-        element_labels = [get_config_value(el, for_template=False) for el in assigned_elements]
-        idx = 0
-        if 'element_selected' in sst and sst['element_selected'] in assigned_elements:
-            idx = assigned_elements.index(sst['element_selected'])
-        element_selected_label = st.segmented_control(
-            label="Select Element to generate:",
-            options=element_labels,
-            index=idx,
-            key="element_segmented_control"
-        )
-        # Map back to element name
-        element_selected = assigned_elements[element_labels.index(element_selected_label)]
-        sst['element_selected'] = element_selected
-
-    # --- Helper and config variables (must come after element_selected is set) ---
+# --- Helper and config variables (move above UI logic for scope) ---
     element_store = sst.data_store[sst.selected_template_name]
-    element_config = sst.elements_config[element_selected]
-    is_single = not (element_config.get("type") == "group")
-    is_image = element_config.get("type") == "image"
     def auto_assign_artifacts(elements, is_image_type=False):
         rerun_needed = False
         for element in elements:
