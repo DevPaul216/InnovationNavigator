@@ -965,7 +965,6 @@ def general_creation_view(assigned_elements):
     with st.expander("2️⃣ Choose Creation Mode", expanded=True):
         st.markdown('<div class="step-header">How do you want to create this artifact?</div>', unsafe_allow_html=True)
         st.markdown('<div class="step-desc">Manual: Enter yourself. Generate: Let the AI help. Import: Upload from file.</div>', unsafe_allow_html=True)
-        # Set default mode to 'Generate' when switching templates
         if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
             sst['creation_mode'] = 'Generate'
             sst['last_template'] = sst.selected_template_name
@@ -993,7 +992,6 @@ def general_creation_view(assigned_elements):
         with st.expander("3️⃣ Configure Generation Settings", expanded=True):
             st.markdown('<div class="step-header">Configure AI Generation</div>', unsafe_allow_html=True)
             st.markdown('<div class="step-desc">Select resources and tune AI parameters for best results.</div>', unsafe_allow_html=True)
-            # Resource selection and AI params
             st.markdown("**Resources**")
             home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
             st.markdown("**AI Parameters**")
@@ -1014,64 +1012,64 @@ def general_creation_view(assigned_elements):
                     step=0.1,
                     key="top_p"
                 )
-            # Template/element selection, prompt/schema as collapsible details
-            with st.expander("Template & Element selection (information sources)"):
-                all_templates = list(sst.template_config.keys())
-                required_items = element_config['used_templates']
-                selected_keys = st.multiselect(
-                    label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
-                    placeholder="Choose templates to use",
-                    options=all_templates,
-                    default=required_items
-                )
-                selected_elements = {}
-                columns = st.columns(2)
-                position = 0
-                for selected_key in selected_keys:
-                    element_store2 = sst.data_store[selected_key]
-                    with columns[position]:
-                        element_names = [element for element in element_store2.keys() if element != element_selected]
-                        selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                                   options=element_names,
-                                                   default=element_names, key=f"multiselect_{selected_key}")
-                        selected_elements[selected_key] = selection
-                        position += 1
-                    if position >= 2:
-                        position = 0
-            with st.expander("Prompt & Response Schema"):
-                prompt_name = element_config['prompt_name']
-                prompt = load_prompt(prompt_name)
-                schema = None
-                if not is_image:
-                    schema_name = element_config['schema_name']
-                    schema = load_schema(schema_name)
-                st.markdown("**Prompt:** " + prompt_name + ".txt")
-                if prompt:
-                    st.markdown(prompt)
-                else:
-                    st.error("There is no prompt assigned")
-                if not is_image and schema is not None:
-                    st.divider()
-                    st.markdown("**Schema:** " + schema_name + ".json")
-                    st.json(schema)
+            # --- Template & Element selection (information sources) ---
+            st.markdown("#### Template & Element selection (information sources)")
+            all_templates = list(sst.template_config.keys())
+            required_items = element_config['used_templates']
+            selected_keys = st.multiselect(
+                label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+                placeholder="Choose templates to use",
+                options=all_templates,
+                default=required_items
+            )
+            selected_elements = {}
+            columns = st.columns(2)
+            position = 0
+            for selected_key in selected_keys:
+                element_store2 = sst.data_store[selected_key]
+                with columns[position]:
+                    element_names = [element for element in element_store2.keys() if element != element_selected]
+                    selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                               options=element_names,
+                                               default=element_names, key=f"multiselect_{selected_key}")
+                    selected_elements[selected_key] = selection
+                    position += 1
+                if position >= 2:
+                    position = 0
+            # --- Prompt & Response Schema ---
+            st.markdown("#### Prompt & Response Schema")
+            prompt_name = element_config['prompt_name']
+            prompt = load_prompt(prompt_name)
+            schema = None
+            if not is_image:
+                schema_name = element_config['schema_name']
+                schema = load_schema(schema_name)
+            st.markdown("**Prompt:** " + prompt_name + ".txt")
+            if prompt:
+                st.markdown(prompt)
+            else:
+                st.error("There is no prompt assigned")
+            if not is_image and schema is not None:
                 st.divider()
-                st.markdown("**Contextual Information:**")
-                # Show a preview of the context that will be sent
-                selected_resources = {}
-                for selected_key, selected_elements_list in selected_elements.items():
-                    element_store2 = sst.data_store[selected_key]
-                    for name in selected_elements_list:
-                        resource_text = ""
-                        element_value = element_store2[name]
-                        for value in element_value:
-                            resource_text += f"- {value}\n"
-                        if resource_text.strip() != "":
-                            name_display = sst.elements_config[name].get("display_name", name)
-                            description = sst.elements_config[name].get("description", "No description available.")
-                            resource_text = f"_{description}_\n{resource_text}"
-                            selected_resources[name_display] = resource_text
-                user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
-                st.markdown(user_prompt)
+                st.markdown("**Schema:** " + schema_name + ".json")
+                st.json(schema)
+            st.divider()
+            st.markdown("**Contextual Information:**")
+            selected_resources = {}
+            for selected_key, selected_elements_list in selected_elements.items():
+                element_store2 = sst.data_store[selected_key]
+                for name in selected_elements_list:
+                    resource_text = ""
+                    element_value = element_store2[name]
+                    for value in element_value:
+                        resource_text += f"- {value}\n"
+                    if resource_text.strip() != "":
+                        name_display = sst.elements_config[name].get("display_name", name)
+                        description = sst.elements_config[name].get("description", "No description available.")
+                        resource_text = f"_{description}_\n{resource_text}"
+                        selected_resources[name_display] = resource_text
+            user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+            st.markdown(user_prompt)
 
     elif creation_mode == "Import":
         with st.expander("3️⃣ Import Settings", expanded=True):
@@ -1134,7 +1132,6 @@ def general_creation_view(assigned_elements):
                 generate_artifacts(element_selected, is_image, True)
                 if auto_assign_max:
                     if is_single:
-                        # Assign generated artifacts
                         generated = sst.generated_artifacts.get(element_selected, {})
                         assigned = element_store[element_selected]
                         config = sst.elements_config[element_selected]
@@ -1157,7 +1154,6 @@ def general_creation_view(assigned_elements):
                 import_artifacts(element_selected, False)
         elif creation_mode == "Manual":
             st.info("Artifacts are added as you confirm them above.")
-        # Show generated/assigned artifacts
         if is_single:
             st.markdown("### Generated Artifacts")
             display_generated_artifacts_view(element_selected)
@@ -1576,37 +1572,6 @@ def start_sub_view():
                 st.success("Deleted")
                 time.sleep(1.0)
                 st.rerun()
-    st.divider()
-    st.subheader("Export all projects", help="Export all projects to a zip file.")
-    if st.button("Export"):
-        zip_directory_path = shutil.make_archive("stores", "zip", "./stores")
-        now = datetime.now()
-        date_time_str = now.strftime("%Y-%m-%d-%H-%M")
-        with open(zip_directory_path, "rb") as file:
-            st.download_button(
-                label="Download",
-                data=file,
-                file_name=f"projects_{date_time_str}.zip",
-                mime="application/zip",
-                type="primary"
-            )
-    st.divider()
-    st.subheader("Import projects", help="Import projects from a zip file. Needs to be in the correct format.")
-    uploaded_file = st.file_uploader(label="Upload zip project folder",
-                                     type=".zip",
-                                     accept_multiple_files=False)
-    if uploaded_file is not None:
-        if st.button("Import"):
-            save_path = "uploaded_project.zip"
-            with open(save_path, "wb") as file:
-                file.write(uploaded_file.getbuffer())
-            shutil.unpack_archive(save_path, "./stores", "zip")
-            time.sleep(0.2)
-            os.remove(save_path)
-            os.remove("stores.zip")
-            st.success("Projects imported")
-            time.sleep(2.0)
-            st.rerun()
 
 
 view_assignment_dict = {"general": general_creation_view}
