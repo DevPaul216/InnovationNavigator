@@ -936,11 +936,11 @@ def general_creation_view(assigned_elements):
                 unsafe_allow_html=True)
             if manual:
                 artifact_input_subview(element_name, element_store)
-                st.divider()
+                #st.divider()
                 st.markdown("**Assigned & Available Artifacts**")
             display_generated_artifacts_view(element_name)
-            #if not manual:
-            #    st.divider()
+            if not manual:
+                st.divider()
 
     if creation_mode == "Manual":
         if is_single:
