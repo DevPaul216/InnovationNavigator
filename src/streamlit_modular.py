@@ -191,7 +191,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(connection_states, completed_templates, blocked_templates):
+def init_flow_graph(completed_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -224,9 +224,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                if template_name in blocked_templates:
-                    style = {'background-color': COLOR_BLOCKED, "color": 'black'}
-                elif template_name in completed_templates:
+                if template_name in completed_templates:
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
@@ -240,10 +238,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
-                connection_state = connection_states[edge_id]
-                edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'},
-                                         animated=connection_state,
-                                         style={"backgroundColor": "green"})
+                edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'})
                 edges.append(edge)
         sst.flow_state = StreamlitFlowState(nodes, edges)
         sst.update_graph = False
@@ -1422,7 +1417,7 @@ if __name__ == '__main__':
     init_session_state()
     init_page()
     completed_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, blocked_templates)
+    init_flow_graph(completed_templates)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
