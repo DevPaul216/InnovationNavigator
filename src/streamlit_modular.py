@@ -192,8 +192,24 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
 def init_flow_graph(connection_states, completed_templates, in_progress_templates, available_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
-        for i, template_name in enumerate(sst.template_config.keys()):            template_display_name = get_config_value(template_name)
-            if template_name == "Start":
+        for i, template_name in enumerate(sst.template_config.keys()):
+            template_display_name = get_config_value(template_name)
+
+            if template_name.lower() in special_templates:
+                style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
+                node = StreamlitFlowNode(
+                    id=str(template_name),
+                    pos=(0, 0),
+                    data={'content': f"{template_display_name}"},
+                    node_type="default",
+                    source_position="right",
+                    target_position="left",
+                    style=style,
+                    draggable=False,
+                    focusable=False,
+                    selectable=False
+                )
+            elif template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
@@ -242,9 +258,13 @@ def init_graph():
     completed_templates = []
     in_progress_templates = []
     available_templates = []
-    blocked_templates = []    # Skip Start and End nodes
+    blocked_templates = []
+
+    # Use the same logic as get_progress_stats for required elements
     for template_name, template_config in sst.template_config.items():
-        if template_name in ["Start", "End"]:
+        # Skip Start/End and phase headers
+        special_templates = ["Start", "End"]
+        if template_name in special_templates or template_name.lower() in special_templates:
             continue
 
         elements = template_config.get("elements", [])
@@ -848,10 +868,14 @@ def legend_subview():
 def get_progress_stats():
     total_required_elements = 0
     total_filled_required_elements = 0
-      # First, get all template configs to count ALL required elements across all templates
+    
+    # Skip special templates like "Start", "End", and phase headers
+    special_templates = ["Start", "End"]
+    
+    # First, get all template configs to count ALL required elements across all templates
     for template_name, template_config in sst.template_config.items():
-        # Skip Start and End nodes
-        if template_name in ["Start", "End"]:
+        # Skip special templates
+        if template_name in special_templates or template_name.lower() in special_templates:
             continue
             
         elements = template_config.get("elements", [])
@@ -909,11 +933,7 @@ def chart_view():
             allow_zoom=True,
             pan_on_drag=False,
         )
-    # Prevent selection of special templates
-    special_templates = [
-        "align", "discover", "define", "develop", "deliver", "continue",
-        "empathize", "define+", "ideate", "prototype", "test"
-    ]
+
     if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
