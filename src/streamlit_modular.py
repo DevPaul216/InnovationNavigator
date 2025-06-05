@@ -33,10 +33,9 @@ COLOR_NEXT = "rgb(33, 150, 243)"  # Bright blue - stands out for recommended nex
 
 def align_data_store():
     for template_name, template_config in sst.template_config.items():
-        # Only update missing elements, do not overwrite existing data
-        if template_name not in sst.data_store:
-            sst.data_store[template_name] = {}
-        element_store = sst.data_store[template_name]
+        element_store = {}
+        if template_name in sst.data_store:
+            element_store = sst.data_store[template_name]
         elements = template_config["elements"]
         for element in elements:
             if element in sst.elements_config:
@@ -52,8 +51,8 @@ def align_data_store():
             else:
                 print(
                     f"Element config of {element} referenced from template {template_name} not found in the element config!")
-        # Do not overwrite sst.data_store[template_name] here, just update in place
-    # Do not call update_data_store() here to avoid overwriting with empty data
+        sst.data_store[template_name] = element_store
+    update_data_store()
 
 
 def init_session_state():
@@ -221,31 +220,8 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                        data={'content': f"{template_display_name}"},
                                        node_type="output", target_position='left')
             else:
-                # Calculate completion ratio for this template
-                template_config = sst.template_config[template_name]
-                elements = template_config.get("elements", [])
-                element_store = sst.data_store.get(template_name, {})
-                total_elements = len(elements)
-                filled_elements = 0
-                for element in elements:
-                    if element in element_store:
-                        values = element_store[element]
-                        if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
-                            filled_elements += 1
-                if total_elements == 0:
-                    completion_ratio = 0
-                else:
-                    completion_ratio = filled_elements / total_elements
-                # Choose color
-                if completion_ratio == 1.0:
-                    node_color = COLOR_COMPLETED
-                elif completion_ratio > 0:
-                    node_color = COLOR_IN_PROGRESS
-                else:
-                    node_color = COLOR_AVAILABLE
-                # Debug output
-                print(f"Template: {template_name}, filled: {filled_elements}, total: {total_elements}, ratio: {completion_ratio}, color: {node_color}")
-                style = {'background-color': node_color, "color": 'black', "border": "1px solid #ccc"}
+                # Use consistent default styling for all regular nodes
+                style = {'background-color': 'white', "color": 'black', "border": "1px solid #ccc"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                      draggable=True, focusable=False, node_type="default", source_position="right",
                                      target_position="left",
@@ -261,7 +237,7 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                      style={"backgroundColor": "#ccc"})  # Use neutral gray for all edges
                 edges.append(edge)
         sst.flow_state = StreamlitFlowState(nodes, edges)
-        sst.update_graph = True
+        sst.update_graph = False
 
 
 def init_graph():
@@ -287,7 +263,6 @@ def add_artifact(toggle_key, element_name, artifact_id, artifact):
     else:
         artifacts_dict.pop(artifact_id, None)
     sst.confirmed_artifacts[element_name] = artifacts_dict
-    sst.update_graph = True  # Ensure graph updates after artifact change
 
 
 def display_generated_artifacts_view(element_name):
@@ -363,7 +338,6 @@ def display_generated_artifacts_view(element_name):
                     if check is None:
                         assigned.append(artifact_to_add)
                         update_data_store()
-                        sst.update_graph = True  # Ensure graph updates after artifact change
                         st.rerun()
                     else:
                         st.warning(check)
@@ -371,7 +345,6 @@ def display_generated_artifacts_view(element_name):
                     if artifact in assigned:
                         assigned.remove(artifact)
                         update_data_store()
-                        sst.update_graph = True  # Ensure graph updates after artifact change
                         st.rerun()
 
 
@@ -584,7 +557,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     if not is_image:
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
-
+    
     with st.expander("Prompt & Response Details"):
         # Create tabs for better organization
         prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
