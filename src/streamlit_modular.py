@@ -478,11 +478,11 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     required_items = element_config['used_templates']
     selected_resources = {}
 
-    # --- Resource selection and Generation parameters side by side ---
-    top_cols = st.columns([1, 1], gap="large")
+    # --- Resource selection above Generation parameters ---
+    home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+    # --- Generation parameters side by side ---
+    top_cols = st.columns([1], gap="large")
     with top_cols[0]:
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
-    with top_cols[1]:
         st.session_state.setdefault("temperature", 1.0)
         st.session_state.setdefault("top_p", 1.0)
         cols = st.columns(3)
