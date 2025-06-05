@@ -5,10 +5,10 @@ import shutil
 import time
 from datetime import datetime
 from pathlib import Path
+import hashlib
 
 import PyPDF2
 import streamlit as st
-from PIL import Image
 from streamlit import session_state as sst
 from streamlit_flow import streamlit_flow
 from streamlit_flow.elements import StreamlitFlowNode, StreamlitFlowEdge
@@ -393,8 +393,7 @@ def display_generated_artifacts_view(element_name):
                 # Use a unique key for each toggle based on artifact_key and element_name
                 is_assigned = artifact in assigned
                 toggled = st.toggle("+", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
-                if toggled and not is_assigned:
-                    # For BytesIO images, save to disk and store path
+                if toggled and not is_assigned:                # For BytesIO images, save to disk and store path
                     if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
                         import hashlib
                         import os
@@ -411,9 +410,12 @@ def display_generated_artifacts_view(element_name):
                         artifact_to_add = full_path
                     else:
                         artifact_to_add = artifact
+                    
                     check = check_can_add(element_store, element_name, [artifact_to_add])
                     if check is None:
                         assigned.append(artifact_to_add)
+                        # Ensure graph updates when artifacts are added
+                        sst.update_graph = True
                         update_data_store()
                         st.rerun()
                     else:
@@ -421,6 +423,8 @@ def display_generated_artifacts_view(element_name):
                 elif not toggled and is_assigned:
                     if artifact in assigned:
                         assigned.remove(artifact)
+                        # Ensure graph updates when artifacts are removed
+                        sst.update_graph = True
                         update_data_store()
                         st.rerun()
 
