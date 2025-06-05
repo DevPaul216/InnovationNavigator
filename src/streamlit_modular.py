@@ -188,7 +188,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates):
+def init_flow_graph(connection_states, completed_templates, in_progress_templates, available_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -220,16 +220,12 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
-            else:                # Enhanced logic with next recommended template highlighting
+            else:
                 if template_name in completed_templates:
                     style = {'background-color': COLOR_COMPLETED, "color": 'white'}
                 elif template_name in in_progress_templates:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
-                elif template_name in next_templates:
-                    # Highlight the next recommended template
-                    style = {'background-color': COLOR_NEXT, "color": 'white', "border": "2px solid white"}
-                else:
-                    # All other templates are available to start
+                else:  # available
                     style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
@@ -238,7 +234,6 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
             nodes.append(node)
         edges = []
         for source, value in sst.template_config.items():
-            # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
                 connection_state = connection_states.get(edge_id, False)
@@ -254,49 +249,45 @@ def init_graph():
     connection_states = {}
     completed_templates = []
     in_progress_templates = []
-    next_templates = []
-    
-    # Identify completed templates and templates with some content
+    available_templates = []
+
     for template_name, template_config in sst.template_config.items():
-        has_content = False
         # Skip special templates and Start/End
-        if template_name in ["Start", "End"] or template_name.lower() in ["align", "discover", "define", "develop", "deliver", "continue", 
-                           "empathize", "define+", "ideate", "prototype", "test"]:
+        if template_name in ["Start", "End"] or template_name.lower() in [
+            "align", "discover", "define", "develop", "deliver", "continue",
+            "empathize", "define+", "ideate", "prototype", "test"
+        ]:
             continue
-        
-        # Check if template has any content (ignore required markers)
+
         elements = template_config.get("elements", [])
         element_store = sst.data_store.get(template_name, {})
+        total_elements = len(elements)
+        filled_elements = 0
+
         for element_name in elements:
-            if element_name in element_store:
-                values = element_store[element_name]
-                has_element_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
-                if has_element_content:
-                    has_content = True
-        # Mark as completed if it has any content
-        if has_content:
+            values = element_store.get(element_name, [])
+            has_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
+            if has_content:
+                filled_elements += 1
+
+        if total_elements > 0 and filled_elements == total_elements:
             completed_templates.append(template_name)
-            # Set connection states for edges
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = True
-        # If no content, do not add to completed or in_progress
-    # Identify the next recommended templates to complete (based on the flow process)
-    next_templates = []
-    for completed in completed_templates:
-        config = sst.template_config.get(completed, {})
-        for target in config.get("connects", []):
-            # Only consider as "next" if not already completed
-            if target not in completed_templates:
-                # Skip special templates
-                if target not in ["Start", "End"] and target.lower() not in ["align", "discover", "define", "develop", "deliver", "continue", 
-                               "empathize", "define+", "ideate", "prototype", "test"]:
-                    next_templates.append(target)
-    # Remove duplicates while preserving order
-    seen = set()
-    next_templates = [x for x in next_templates if not (x in seen or seen.add(x))]
+        elif filled_elements > 0:
+            in_progress_templates.append(template_name)
+            for target in template_config.get("connects", []):
+                edge_id = f"{template_name}-{target}"
+                connection_states[edge_id] = False
+        else:
+            available_templates.append(template_name)
+            for target in template_config.get("connects", []):
+                edge_id = f"{template_name}-{target}"
+                connection_states[edge_id] = False
+
     blocked_templates = []
-    return connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates
+    return connection_states, completed_templates, in_progress_templates, available_templates, blocked_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
@@ -851,11 +842,6 @@ def legend_subview():
             unsafe_allow_html=True,
         )
     with legend_cols[2]:
-        st.markdown(
-            f"<div style='background-color: {COLOR_NEXT}; width: 20px; height: 20px; display: inline-block; border: 2px solid white;'></div> Next Recommended",
-            unsafe_allow_html=True,
-        )
-    with legend_cols[3]:
         st.markdown(
             f"<div style='background-color: {COLOR_AVAILABLE}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Available",
             unsafe_allow_html=True,
@@ -1538,8 +1524,8 @@ view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()
-    connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates)
+    connection_states, completed_templates, in_progress_templates, available_templates, blocked_templates = init_graph()
+    init_flow_graph(connection_states, completed_templates, in_progress_templates, available_templates, blocked_templates)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
