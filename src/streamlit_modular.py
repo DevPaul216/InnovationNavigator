@@ -6,6 +6,7 @@ import time
 import hashlib
 from datetime import datetime
 from pathlib import Path
+from PIL import Image
 
 import PyPDF2
 import streamlit as st
