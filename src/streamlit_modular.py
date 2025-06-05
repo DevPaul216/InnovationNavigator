@@ -245,14 +245,6 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                     node_color = COLOR_AVAILABLE
                 # Debug output
                 print(f"Template: {template_name}, filled: {filled_elements}, total: {total_elements}, ratio: {completion_ratio}, color: {node_color}")
-                # Debug output for template status
-                print(f"Debugging template status: {template_name}")
-                print(f"Elements: {elements}")
-                print(f"Element store: {element_store}")
-                print(f"Filled elements: {filled_elements}")
-                print(f"Total elements: {total_elements}")
-                print(f"Completion ratio: {completion_ratio}")
-                print(f"Assigned color: {node_color}")
                 style = {'background-color': node_color, "color": 'black', "border": "1px solid #ccc"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                      draggable=True, focusable=False, node_type="default", source_position="right",
