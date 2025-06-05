@@ -5,14 +5,14 @@
 
 
   "Innovation_Group": {
-    "display_name": "Innovation Project",
+    "display_name": "Innovation Goals",
     "description": "A group of elements defining the innovation project",
     "required": true,
     "type": "group",
     "used_templates": [],
     "elements": ["InnovationIssue", "TargetGroup"],
     "prompt_name": "prompt_innovationgroup",
-    "schema_name": "schema innovationgroup",
+    "schema_name": "schema_innovationgroup",
     "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_innovation",
     "resources": ["documents","websearch","website"]
