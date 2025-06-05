@@ -194,7 +194,7 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-
+            special_templates = []
             if template_name.lower() in special_templates:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
@@ -933,7 +933,7 @@ def chart_view():
             allow_zoom=True,
             pan_on_drag=False,
         )
-
+        
     if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
