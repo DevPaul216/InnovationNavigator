@@ -24,9 +24,10 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-COLOR_COMPLETED = "rgb(104, 223, 200)" 
-COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
-COLOR_AVAILABLE = "rgb(221, 221, 255)"
+COLOR_COMPLETED = "rgb(76, 175, 80)"  # Green - more professional looking
+COLOR_IN_PROGRESS = "rgb(255, 152, 0)"  # Orange - warmer tone
+COLOR_AVAILABLE = "rgb(224, 224, 255)"  # Light blue - subtle
+COLOR_NEXT = "rgb(33, 150, 243)"  # Bright blue - stands out for recommended next
 
 
 
@@ -187,7 +188,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(connection_states, completed_templates, in_progress_templates, blocked_templates):
+def init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -220,11 +221,14 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                # Simplified logic - no more blocking based on requirements
+                # Enhanced logic with next recommended template highlighting
                 if template_name in completed_templates:
-                    style = {'background-color': COLOR_COMPLETED, "color": 'black'}
+                    style = {'background-color': COLOR_COMPLETED, "color": 'white'}
                 elif template_name in in_progress_templates:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
+                elif template_name in next_templates:
+                    # Highlight the next recommended template
+                    style = {'background-color': COLOR_NEXT, "color": 'white', "border": "2px solid white"}
                 else:
                     # All other templates are available to start
                     style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
@@ -251,6 +255,7 @@ def init_graph():
     connection_states = {}
     completed_templates = []
     in_progress_templates = []
+    next_templates = []
     
     # Identify completed templates and templates with some content
     for template_name, template_config in sst.template_config.items():
@@ -287,11 +292,23 @@ def init_graph():
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = False
     
-    # All templates that aren't completed or in progress are considered "available" 
+    # Identify the next recommended templates to complete (based on the flow process)
+    # Look for templates that follow completed ones in the flow
+    for completed in completed_templates:
+        config = sst.template_config.get(completed, {})
+        for target in config.get("connects", []):
+            # Only consider as "next" if not already completed or in progress
+            if target not in completed_templates and target not in in_progress_templates:
+                # Skip special templates
+                if target not in ["Start", "End"] and target.lower() not in ["align", "discover", "define", "develop", "deliver", "continue", 
+                               "empathize", "define+", "ideate", "prototype", "test"]:
+                    next_templates.append(target)
+    
+    # All templates that aren't completed, in progress, or next recommended are considered "available" 
     # We're not blocking any templates, as requested
     blocked_templates = []
     
-    return connection_states, completed_templates, in_progress_templates, blocked_templates
+    return connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
@@ -834,7 +851,7 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1], gap="small")  # Reduced to 3 columns
+    legend_cols = st.columns([1, 1, 1, 1], gap="small")  # Back to 4 columns for the new status
     with legend_cols[0]:
         st.markdown(
             f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
@@ -847,7 +864,12 @@ def legend_subview():
         )
     with legend_cols[2]:
         st.markdown(
-            f"<div style='background-color: {COLOR_AVAILABLE}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Available to Start",
+            f"<div style='background-color: {COLOR_NEXT}; width: 20px; height: 20px; display: inline-block; border: 2px solid white;'></div> Next Recommended",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[3]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_AVAILABLE}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Available",
             unsafe_allow_html=True,
         )
 
@@ -1504,8 +1526,8 @@ view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()
-    connection_states, completed_templates, in_progress_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, in_progress_templates, blocked_templates)
+    connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates = init_graph()
+    init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
