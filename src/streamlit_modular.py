@@ -260,12 +260,19 @@ def init_graph():
         if is_required:
             elements = template_config["elements"]
             for element_name in elements:
-                element_config = sst.elements_config[element_name]
-                if element_config["required"]:
-                    element_store = sst.data_store[template_name]
-                    for element_values in element_store.values():
-                        if element_values is None or len(element_values) == 0:
+                if element_name in sst.elements_config:
+                    element_config = sst.elements_config[element_name]
+                    if element_config.get("required", False):
+                        element_store = sst.data_store[template_name]
+                        # Check if this specific required element has data
+                        if element_name in element_store:
+                            element_values = element_store[element_name]
+                            if element_values is None or len(element_values) == 0:
+                                is_fulfilled = False
+                                break
+                        else:
                             is_fulfilled = False
+                            break
         if is_fulfilled:
             completed_templates.append(template_name)
         for target in template_config["connects"]:
