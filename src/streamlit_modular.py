@@ -251,30 +251,38 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
 
 def init_graph():
     connection_states = {}
+    blocked_templates = []
     completed_templates = []
+    # Iterate over all templates and their configurations
     for template_name, template_config in sst.template_config.items():
+        # Assume the template is fulfilled unless proven otherwise
         is_fulfilled = True
+        # Determine if this template is required (default True if "required" key is missing)
         is_required = "required" not in template_config or template_config["required"]
         if is_required:
+            # Get the list of element names for this template
             elements = template_config["elements"]
+            # Check each element in the template
             for element_name in elements:
+                # Get the configuration for this element
                 element_config = sst.elements_config[element_name]
+                # Only check required elements
                 if element_config["required"]:
+                    # Get the data store for this template
                     element_store = sst.data_store[template_name]
+                    # Check all values in the element store (could be multiple elements)
                     for element_values in element_store.values():
+                        # If any required element is empty or None, the template is not fulfilled
                         if element_values is None or len(element_values) == 0:
                             is_fulfilled = False
+        # If all required elements are filled, mark this template as completed
         if is_fulfilled:
             completed_templates.append(template_name)
-        for target in template_config["connects"]:
-            edge_id = f"{template_name}-{target}"
-            connection_states[edge_id] = is_fulfilled
-    blocked_templates = []
+    # Second pass: determine which templates should be blocked based on completion state
     for template_name, template_config in sst.template_config.items():
+        # Get the list of templates this one connects to
         connections = template_config["connects"]
-        if template_name not in completed_templates or template_name in blocked_templates:
-            blocked_templates.extend(connections)
-    blocked_templates = list(set(blocked_templates))
+    # Return the connection states, completed templates, and blocked templates
     return connection_states, completed_templates, blocked_templates
 
 
