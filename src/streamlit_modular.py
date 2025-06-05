@@ -901,14 +901,16 @@ def get_progress_stats():
     
     # Skip special templates like "Start", "End", and phase headers
     special_templates = ["Start", "End", "align", "discover", "define", "develop", "deliver", "continue",
-                         "empathize", "define+", "ideate", "prototype", "test"]    
-    for template_name, element_store in sst.data_store.items():
+                         "empathize", "define+", "ideate", "prototype", "test"]
+    
+    # First, get all template configs to count ALL required elements across all templates
+    for template_name, template_config in sst.template_config.items():
         # Skip special templates
         if template_name in special_templates or template_name.lower() in special_templates:
             continue
             
-        template_config = sst.template_config.get(template_name, {})
         elements = template_config.get("elements", [])
+        element_store = sst.data_store.get(template_name, {})
         
         for element in elements:
             element_config = sst.elements_config.get(element, {})
@@ -916,17 +918,16 @@ def get_progress_stats():
             is_required = element_config.get("required", True)
             if not is_required:
                 continue
-                
-            # Only count elements that exist in the data store
-            if element not in element_store:
-                continue
-                
-            total_required_elements += 1
-            values = element_store[element]
             
-            # Check if the element has content
-            if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
-                total_filled_required_elements += 1
+            # Count this as a required element regardless of whether it's in the data store
+            total_required_elements += 1
+            
+            # Check if the element exists in the data store and has content
+            if element in element_store:
+                values = element_store[element]
+                # Check if the element has content
+                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                    total_filled_required_elements += 1
     
     # Calculate progress percentage (prevent division by zero)
     progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
