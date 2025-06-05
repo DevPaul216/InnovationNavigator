@@ -938,12 +938,15 @@ def general_creation_view(assigned_elements):
         elif creation_mode == "Import":
             generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
     with top_cols[3]:
-        auto_assign_max = st.toggle(
-            "Auto-assign max allowed artifacts after generation",
-            key="auto_assign_max_toggle",
-            value=False,
-            help="Automatically assigns the maximum allowed number of generated artifacts after generation."
-        )
+        if creation_mode in ("Generate", "Import"):
+            auto_assign_max = st.toggle(
+                "Auto-assign max allowed artifacts after generation",
+                key="auto_assign_max_toggle",
+                value=False,
+                help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+            )
+        else:
+            auto_assign_max = False
 
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
