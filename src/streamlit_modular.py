@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import time
+import hashlib
 from datetime import datetime
 from pathlib import Path
 
@@ -272,7 +273,8 @@ def init_graph():
     blocked_templates = []
     for template_name, template_config in sst.template_config.items():
         connections = template_config["connects"]
-        if template_name not in completed_templates or template_name in blocked_templates:
+        # Fix: Only block connections if this template is not completed
+        if template_name not in completed_templates:
             blocked_templates.extend(connections)
     blocked_templates = list(set(blocked_templates))
     return connection_states, completed_templates, blocked_templates
@@ -335,16 +337,12 @@ def display_generated_artifacts_view(element_name):
                     st.image(artifact, use_container_width=True)
                 else:
                     st.markdown(str(artifact))
-            with columns[3]:
-                # Use a unique key for each toggle based on artifact_key and element_name
+            with columns[3]:                # Use a unique key for each toggle based on artifact_key and element_name
                 is_assigned = artifact in assigned
                 toggled = st.toggle("Add", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
                 if toggled and not is_assigned:
                     # For BytesIO images, save to disk and store path
                     if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
-                        import hashlib
-                        import os
-                        from PIL import Image
                         artifact.seek(0)
                         img = Image.open(artifact)
                         hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
