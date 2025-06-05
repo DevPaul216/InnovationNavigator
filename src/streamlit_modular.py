@@ -621,31 +621,53 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
 def import_artifacts(element_name, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
     if "prompt_name_import" not in element_config or "schema_name_import" not in element_config:
-        st.write("Not available for this element")
+        st.info("Import is not available for this element type")
         return
+        
     prompt_name = element_config['prompt_name_import']
     schema_name = element_config['schema_name_import']
     prompt = load_prompt(prompt_name)
     schema = load_schema(schema_name)
 
-    # Add disclaimer
-    st.warning(
-        "Please note: The uploaded document must be a PDF containing selectable text. Image-based PDFs or scanned documents are currently not supported.")
+    # Add disclaimer in a more prominent container
+    with st.container(border=True):
+        cols = st.columns([1, 10])
+        cols[0].markdown("⚠️")
+        cols[1].warning(
+            "The uploaded document must be a PDF containing selectable text. Image-based PDFs or scanned documents are not supported."
+        )
 
-    uploaded_files = st.file_uploader("Upload document for importing", type="pdf", accept_multiple_files=False)
-    with st.expander(label="Used prompt"):  # added name of the prompt used to label
-        st.markdown("**System prompt:** " + prompt_name + ".txt")
-        st.markdown(prompt)
+    # File upload with clear instructions
+    uploaded_files = st.file_uploader(
+        "Upload document for importing (PDF format)", 
+        type="pdf", 
+        accept_multiple_files=False,
+        help="Upload a document to extract structured information"
+    )
+    
+    # Show details in tabs for better organization
+    with st.expander("Import Details"):
+        prompt_tab, schema_tab = st.tabs(["Import Prompt", "Import Schema"])
+        
+        with prompt_tab:
+            st.markdown(f"##### System Prompt: `{prompt_name}.txt`")
+            with st.container(border=False, height=300):
+                st.markdown(prompt)
+                
+        with schema_tab:
+            st.markdown(f"##### Import Schema: `{schema_name}.json`")
+            with st.container(border=False, height=300):
+                st.json(schema)
 
-    with st.expander(label="View import schema"):
-        st.json(schema)
-
-    add_empty_lines(1)
-    if st.button("Import now!", type="primary"):
-        with st.spinner("Processing..."):
-            selected_resources = {}
-            add_resources(selected_resources, None, None, None, uploaded_files)
-            handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
+    # Only run the import if the button was clicked
+    if generate_now_clicked:
+        if not uploaded_files:
+            st.error("Please upload a document before importing")
+        else:
+            with st.spinner("Processing uploaded document..."):
+                selected_resources = {}
+                add_resources(selected_resources, None, None, None, uploaded_files)
+                handle_response(element_name, prompt, schema, selected_resources, temperature=1.0, top_p=1.0)
 
 
 def add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files):
