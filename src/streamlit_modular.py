@@ -480,93 +480,102 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
 
     # --- Resource selection above Generation parameters ---
     home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
-    # --- Generation parameters side by side ---
-    top_cols = st.columns([1], gap="large")
-    with top_cols[0]:
-        st.session_state.setdefault("temperature", 1.0)
-        st.session_state.setdefault("top_p", 1.0)
-        cols = st.columns(3)
+
+    # --- Rearranged UI: Left (main controls), Right (generation params) ---
+    # Use a wider left column and a much narrower right column for the controls
+    main_cols = st.columns([2.5, 0.5], gap="large")
+    with main_cols[0]:
+        # --- Combine Template selection and individual elements selection ---
+        with st.expander("Template & Element selection (information sources)", expanded=True):
+            all_templates = list(sst.template_config.keys())
+            selected_keys = st.multiselect(
+                label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+                placeholder="Choose templates to use",
+                options=all_templates,
+                default=required_items
+            )
+            selected_elements = {}
+            columns = st.columns(2)
+            position = 0
+            for selected_key in selected_keys:
+                element_store = sst.data_store[selected_key]
+                with columns[position]:
+                    element_names = [element for element in element_store.keys() if element != element_name]
+                    selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                               options=element_names,
+                                               default=element_names, key=f"multiselect_{selected_key}")
+                    selected_elements[selected_key] = selection
+                    position += 1
+                if position >= 2:
+                    position = 0
+            for selected_key, selected_elements_list in selected_elements.items():
+                element_store = sst.data_store[selected_key]
+                for name in selected_elements_list:
+                    resource_text = ""
+                    element_value = element_store[name]
+                    for value in element_value:
+                        resource_text += f"- {value}\n"
+                    if resource_text.strip() != "":
+                        name_display = sst.elements_config[name].get("display_name", name)
+                        description = sst.elements_config[name].get("description", "No description available.")
+                        resource_text = f"_{description}_\n{resource_text}"
+                        selected_resources[name_display] = resource_text
+
+        # --- Combine Prompt and Schema into one expander ---
+        with st.expander("Prompt & Response Schema", expanded=True):
+            prompt_name = element_config['prompt_name']
+            prompt = load_prompt(prompt_name)
+            schema = None
+            if not is_image:
+                schema_name = element_config['schema_name']
+                schema = load_schema(schema_name)
+            st.markdown("**Prompt:** " + prompt_name + ".txt")
+            if prompt:
+                st.markdown(prompt)
+            else:
+                st.error("There is no prompt assigned")
+            if not is_image and schema is not None:
+                st.divider()
+                st.markdown("**Schema:** " + schema_name + ".json")
+                st.json(schema)
+            st.divider()
+            st.markdown("**Contextual Information:**")
+            user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+            st.markdown(user_prompt)
+
+    with main_cols[1]:
+        # Right column: generation parameters (styled box, now half the width)
+        st.markdown("<div style='border:2px solid #888; border-radius:8px; padding:12px 8px 4px 8px; background:#fff; min-width:180px; max-width:210px;'>", unsafe_allow_html=True)
+        st.markdown("<div style='display:flex; gap:10px; justify-content:center; margin-bottom:8px;'>", unsafe_allow_html=True)
+        cols = st.columns([1,1,1], gap="small")
         if cols[0].button("Creative", key="creative_button"):
             st.session_state.update(temperature=1.6, top_p=1.0)
         if cols[1].button("Logic", key="logic_button"):
             st.session_state.update(temperature=0.2, top_p=1.0)
         if cols[2].button("Simplify", key="simple_button"):
             st.session_state.update(temperature=1.0, top_p=0.1)
+        st.markdown("</div>", unsafe_allow_html=True)
         temperature = st.slider(
             "Temperature",
             min_value=0.0,
             max_value=1.8,
             step=0.1,
-            key="temperature"
+            key="temperature",
+            label_visibility="visible",
         )
         top_p = st.slider(
             "Top-P",
             min_value=0.0,
             max_value=1.0,
             step=0.1,
-            key="top_p"
+            key="top_p",
+            label_visibility="visible",
         )
-        temperature = st.session_state.temperature
-        top_p = st.session_state.top_p
+        st.session_state.temperature = temperature
+        st.session_state.top_p = top_p
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- Combine Template selection and individual elements selection ---
-    with st.expander("Template & Element selection (information sources)"):
-        all_templates = list(sst.template_config.keys())
-        selected_keys = st.multiselect(
-            label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
-            placeholder="Choose templates to use",
-            options=all_templates,
-            default=required_items
-        )
-        selected_elements = {}
-        columns = st.columns(2)
-        position = 0
-        for selected_key in selected_keys:
-            element_store = sst.data_store[selected_key]
-            with columns[position]:
-                element_names = [element for element in element_store.keys() if element != element_name]
-                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                           options=element_names,
-                                           default=element_names, key=f"multiselect_{selected_key}")
-                selected_elements[selected_key] = selection
-                position += 1
-            if position >= 2:
-                position = 0
-        for selected_key, selected_elements_list in selected_elements.items():
-            element_store = sst.data_store[selected_key]
-            for name in selected_elements_list:
-                resource_text = ""
-                element_value = element_store[name]
-                for value in element_value:
-                    resource_text += f"- {value}\n"
-                if resource_text.strip() != "":
-                    name_display = sst.elements_config[name].get("display_name", name)
-                    description = sst.elements_config[name].get("description", "No description available.")
-                    resource_text = f"_{description}_\n{resource_text}"
-                    selected_resources[name_display] = resource_text
-
-    # --- Combine Prompt and Schema into one expander ---
-    prompt_name = element_config['prompt_name']
-    prompt = load_prompt(prompt_name)
-    schema = None
-    if not is_image:
-        schema_name = element_config['schema_name']
-        schema = load_schema(schema_name)
-    with st.expander("Prompt & Response Schema"):
-        st.markdown("**Prompt:** " + prompt_name + ".txt")
-        if prompt:
-            st.markdown(prompt)
-        else:
-            st.error("There is no prompt assigned")
-        if not is_image and schema is not None:
-            st.divider()
-            st.markdown("**Schema:** " + schema_name + ".json")
-            st.json(schema)
-        st.divider()
-        st.markdown("**Contextual Information:**")
-        user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
-        st.markdown(user_prompt)
-
+    # --- Generate logic remains unchanged ---
     if generate_now_clicked:
         with st.spinner("Generating..."):
             add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
