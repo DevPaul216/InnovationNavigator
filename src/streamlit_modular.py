@@ -253,65 +253,49 @@ def init_graph():
     available_templates = []
     blocked_templates = []
 
-    # Track which templates are available to be started (all their dependencies are completed)
-    unlocked_templates = set()
-    blocked_templates_set = set()
-
-    # Build a reverse dependency map: for each template, which templates point to it
-    reverse_dependencies = {name: [] for name in sst.template_config}
-    for source, config in sst.template_config.items():
-        for target in config.get("connects", []):
-            reverse_dependencies[target].append(source)
-
-    # Helper: check if all dependencies of a template are completed
-    def all_dependencies_completed(template_name):
-        deps = reverse_dependencies.get(template_name, [])
-        return all(dep in completed_templates for dep in deps if dep not in ["Start", "End"])
-
-    # First pass: determine completed/in-progress/empty for each template
+    # Use the same logic as get_progress_stats for required elements
     for template_name, template_config in sst.template_config.items():
-        # Skip Start/End
-        if template_name in ["Start", "End"]:
+        # Skip Start/End and phase headers
+        special_templates = ["Start", "End", "align", "discover", "define", "develop", "deliver", "continue",
+                             "empathize", "define+", "ideate", "prototype", "test"]
+        if template_name in special_templates or template_name.lower() in special_templates:
             continue
 
         elements = template_config.get("elements", [])
         element_store = sst.data_store.get(template_name, {})
-        total_elements = len(elements)
-        filled_elements = 0
-
-        for element_name in elements:
-            values = element_store.get(element_name, [])
-            has_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
-            if has_content:
-                filled_elements += 1
-
-        if total_elements > 0 and filled_elements == total_elements:
-            completed_templates.append(template_name)
-        elif filled_elements > 0:
-            in_progress_templates.append(template_name)
-        # else: don't assign yet, will check dependencies below
-
-    # Second pass: determine available/blocked based on dependencies
-    for template_name, template_config in sst.template_config.items():
-        if template_name in ["Start", "End"]:
-            continue
-        if template_name in completed_templates or template_name in in_progress_templates:
-            continue
-
-        # If all dependencies are completed, it's available
-        if all_dependencies_completed(template_name):
+        required_elements = []
+        filled_required_elements = 0
+        for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            is_required = element_config.get("required", True)
+            if not is_required:
+                continue
+            required_elements.append(element)
+            if element in element_store:
+                values = element_store[element]
+                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                    filled_required_elements += 1
+        total_required = len(required_elements)
+        if total_required == 0:
+            # If no required elements, treat as available (or you could treat as completed)
             available_templates.append(template_name)
-        else:
-            blocked_templates.append(template_name)
-            blocked_templates_set.add(template_name)
-
-    # Set connection_states for edges: animated if source is completed, else not
-    for source, config in sst.template_config.items():
-        for target in config.get("connects", []):
-            edge_id = f"{source}-{target}"
-            if source in completed_templates:
+            for target in template_config.get("connects", []):
+                edge_id = f"{template_name}-{target}"
+                connection_states[edge_id] = False
+        elif filled_required_elements == total_required:
+            completed_templates.append(template_name)
+            for target in template_config.get("connects", []):
+                edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = True
-            else:
+        elif filled_required_elements > 0:
+            in_progress_templates.append(template_name)
+            for target in template_config.get("connects", []):
+                edge_id = f"{template_name}-{target}"
+                connection_states[edge_id] = False
+        else:
+            available_templates.append(template_name)
+            for target in template_config.get("connects", []):
+                edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = False
 
     return connection_states, completed_templates, in_progress_templates, available_templates, blocked_templates
