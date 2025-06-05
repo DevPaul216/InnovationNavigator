@@ -32,6 +32,26 @@ COLOR_COMPLETED = "#B6E2A1"      # Soft green for completed
 COLOR_IN_PROGRESS = "#FFD966"    # Warm yellow for in progress
 
 
+def get_template_fill_state(template_name):
+    element_store = sst.data_store.get(template_name, {})
+    template_config = sst.template_config.get(template_name, {})
+    elements = template_config.get("elements", [])
+    if not elements:
+        return "Not Started", COLOR_NOT_STARTED
+    total = len(elements)
+    filled = 0
+    for element in elements:
+        values = element_store.get(element, [])
+        if isinstance(values, list) and len(values) > 0:
+            filled += 1
+        elif isinstance(values, str) and values.strip():
+            filled += 1
+    if filled == 0:
+        return "Not Started", COLOR_NOT_STARTED
+    elif filled == total:
+        return "Completed", COLOR_COMPLETED
+    else:
+        return "In Progress", COLOR_IN_PROGRESS
 
 
 def align_data_store():
@@ -196,13 +216,23 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            # Special formatting for key templates
-            special_templates = [
-                "align", "discover", "define", "develop", "deliver", "continue",
-                "empathize", "define+", "ideate", "prototype", "test"
-            ]
-            if template_name.lower() in special_templates:
-                style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
+            if template_name.lower() in ["start"]:
+                node = StreamlitFlowNode(
+                    id=str(template_name),
+                    pos=(0, 0),
+                    data={'content': f"{template_display_name}"},
+                    node_type="input", source_position='right'
+                )
+            elif template_name.lower() in ["end"]:
+                node = StreamlitFlowNode(
+                    id=str(template_name),
+                    pos=(0, 0),
+                    data={'content': f"{template_display_name}"},
+                    node_type="output", target_position='left'
+                )
+            else:
+                fill_state, fill_color = get_template_fill_state(template_name)
+                style = {"backgroundColor": fill_color, "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
                     id=str(template_name),
                     pos=(0, 0),
@@ -211,36 +241,17 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     source_position="right",
                     target_position="left",
                     style=style,
-                    draggable=False,
+                    draggable=True,
                     focusable=False,
                     selectable=False
                 )
-            elif template_name == "Start":
-                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
-                                         data={'content': f"{template_display_name}"},
-                                         node_type="input", source_position='right')
-            elif template_name == "End":
-                node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
-                                         data={'content': f"{template_display_name}"},
-                                         node_type="output", target_position='left')
-            else:
-                if template_name in blocked_templates:
-                    style = {'background-color': COLOR_BLOCKED, "color": 'black'}
-                elif template_name in completed_templates:
-                    style = {'background-color': COLOR_COMPLETED, "color": 'black'}
-                else:
-                    style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
-                node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
-                                         draggable=True, focusable=False, node_type="default", source_position="right",
-                                         target_position="left",
-                                         style={**style, "width": "90px", "padding": "1px"})
             nodes.append(node)
         edges = []
         for source, value in sst.template_config.items():
             # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
-                connection_state = connection_states[edge_id]
+                connection_state = connection_states.get(edge_id, False)
                 edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'},
                                          animated=connection_state,
                                          style={"backgroundColor": "green"})
@@ -818,25 +829,20 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1, 1], gap="small")
+    legend_cols = st.columns([1, 1, 1], gap="small")
     with legend_cols[0]:
         st.markdown(
-            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Blocked (Requirements not met)",
+            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block;'></div> Not Started",
             unsafe_allow_html=True,
         )
     with legend_cols[1]:
         st.markdown(
-            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block;'></div> Not Started",
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
             unsafe_allow_html=True,
         )
     with legend_cols[2]:
         st.markdown(
             f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
-            unsafe_allow_html=True,
-        )
-    with legend_cols[3]:
-        st.markdown(
-            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
             unsafe_allow_html=True,
         )
 
