@@ -50,35 +50,35 @@
   "Physical Resources": {
     "display_name": "Physical Resources",
     "description": "Tangible assets like equipment or materials",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Human Resources": {
     "display_name": "Human Resources",
     "description": "People or teams available to contribute",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Financial Resources": {
     "display_name": "Financial Resources",
     "description": "Monetary assets available for the project",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Intellectual Property": {
     "display_name": "Intellectual Property",
     "description": "Patents, trademarks, or copyrights owned",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "KnowHow and Information": {
     "display_name": "KnowHow and Information",
     "description": "Knowledge and data relevant to the problem",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
@@ -86,7 +86,7 @@
   "DesignChallenge_Group": {
     "display_name": "Design Challenge Elements",
     "description": "A group containing How-Might-We Questions, Resources Combined, and Strategy Combined elements.",
-    "required": true,
+    "required": false,
     "type": "group",
     "used_templates": ["Resources", "Strategic Foundation", "Problem"],
     "elements": ["HowMightWe", "StrategyCombined", "ResourcesCombined"],
@@ -104,13 +104,13 @@
   "ResourcesCombined": {
     "display_name": "What we have available",
     "description": "A summary of all available resources",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "StrategyCombined": {
     "display_name": "Who we are...",
     "description": "The strategic foundation of the organization",
-    "required": true,
+    "required": false,
     "max": 1
   },
 
@@ -137,21 +137,21 @@
   "Mission": {
     "display_name": "Mission",
     "description": "The organization's purpose or mission statement",
-    "required": true,
+    "required": false,
     "max": 1,
     "resources": ["documents","websearch","website"]
   },
   "Vision": {
     "display_name": "Vision",
     "description": "The organization's long-term vision",
-    "required": true,
+    "required": false,
     "max": 1,
     "resources": ["documents","websearch","website"]
   },
   "Values": {
     "display_name": "Values",
     "description": "The core values guiding the organization",
-    "required": true,
+    "required": false,
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
@@ -224,7 +224,7 @@
     "display_name": "Portrait",
     "description": "An image representing the persona",
     "type": "image",
-    "required": true,
+    "required": false,
     "resources": ["documents","websearch","website"],
     "max": 1,
     "used_templates": ["Customer Persona"],
@@ -275,7 +275,7 @@
   "PESTEL_Group": {
     "display_name": "PESTEL-Analysis",
     "description": "A group of elements analyzing external factors affecting the innovation environment",
-    "required": true,
+    "required": false,
     "type": "group",
     "used_templates": ["Resources","Strategic Foundation"],
     "elements": ["Political","Economical","Social","Technological","Environmental","Legal"],
@@ -288,42 +288,42 @@
   "Political": {
     "display_name": "Political",
     "description": "Political factors affecting the environment",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Economical": {
     "display_name": "Economical",
     "description": "Economic factors influencing the environment",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Social": {
     "display_name": "Social",
     "description": "Social factors impacting the environment",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Technological": {
     "display_name": "Technological",
     "description": "Technological factors affecting the environment",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Environmental": {
     "display_name": "Environmental",
     "description": "Environmental factors influencing the environment",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
   "Legal": {
     "display_name": "Legal",
     "description": "Legal factors impacting the environment",
-    "required": true,
+    "required": false,
     "max": 5,
     "resources": ["documents","websearch","website"]
   },
@@ -331,7 +331,7 @@
   "Trend_Group": {
     "display_name": "Trends",
     "description": "A group of elements analyzing trends affecting the innovation environment",
-    "required": true,
+    "required": false,
     "type": "group",
     "used_templates": ["Resources","Strategic Foundation", "Design Challenge"],
     "elements": ["MegaTrends","MacroTrends","MicroTrends"],
@@ -345,21 +345,21 @@
   "MegaTrends": {
     "display_name": "Mega Trends",
     "description": "Global, long-term shifts that fundamentally reshape societies, economies, and industries over decades (e.g., climate change, demographic shifts).",
-    "required": true,
+    "required": false,
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
   "MacroTrends": {
     "display_name": "Macro Trends",
     "description": "Broad, multi-year trends that influence entire sectors or regions, often driven by mega trends (e.g., urbanization, digital transformation).",
-    "required": true,
+    "required": false,
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
   "MicroTrends": {
     "display_name": "Micro Trends",
     "description": "Short-term, niche trends or behaviors that impact specific groups, products, or markets (e.g., viral social media challenges, local consumer preferences).",
-    "required": true,
+    "required": false,
     "max": 10,
     "resources": ["documents","websearch","website"]
   },
@@ -440,7 +440,7 @@
   "IdeasSimple": {
     "display_name": "Basic Ideas",
     "description": "Basic ideas generated during brainstorming sessions",
-    "required": true,
+    "required": false,
     "used_templates": ["ProblemsAndJobs","SWOT-Analysis"],
     "prompt_name": "prompt_ideassimple",
     "schema_name": "schema_generic_array",
@@ -452,7 +452,7 @@
   "IdeasABC": {
     "display_name": "ABC Method",
     "description": "Ideas generated using the structured ABC brainstorming method",
-    "required": true,
+    "required": false,
     "used_templates": ["ProblemsAndJobs","SWOT-Analysis"],
     "prompt_name": "prompt_ideasabc",
     "schema_name": "schema_generic_array",
@@ -464,7 +464,7 @@
   "Ideas3": {
     "display_name": "Outside-Of-The Box Ideas",
     "description": "Creative and unconventional ideas generated through lateral thinking",
-    "required": true,
+    "required": false,
     "used_templates": ["ProblemsAndJobs","SWOT-Analysis"],
     "prompt_name": "prompt_ideas3",
     "schema_name": "schema_generic_array",
@@ -553,55 +553,55 @@
   "Idea1": {
     "display_name": "Idea 1",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea2": {
     "display_name": "Idea 2",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea3": {
     "display_name": "Idea 3",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea4": {
     "display_name": "Idea 4",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea5": {
     "display_name": "Idea 5",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea6": {
     "display_name": "Idea 6",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea7": {
     "display_name": "Idea 7",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea8": {
     "display_name": "Idea 8",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea9": {
     "display_name": "Idea 9",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "RatingMatrix_group": {
@@ -624,217 +624,217 @@
   "Idea1_Desirability": {
     "display_name": "Idea 1 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea2_Desirability": {
     "display_name": "Idea 2 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea3_Desirability": {
     "display_name": "Idea 3 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea4_Desirability": {
     "display_name": "Idea 4 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea5_Desirability": {
     "display_name": "Idea 5 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea6_Desirability": {
     "display_name": "Idea 6 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea7_Desirability": {
     "display_name": "Idea 7 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea8_Desirability": {
     "display_name": "Idea 8 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea9_Desirability": {
     "display_name": "Idea 9 Desirability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea1_Feasibility": {
     "display_name": "Idea 1 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea2_Feasibility": {
     "display_name": "Idea 2 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea3_Feasibility": {
     "display_name": "Idea 3 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea4_Feasibility": {
     "display_name": "Idea 4 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea5_Feasibility": {
     "display_name": "Idea 5 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea6_Feasibility": {
     "display_name": "Idea 6 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea7_Feasibility": {
     "display_name": "Idea 7 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea8_Feasibility": {
     "display_name": "Idea 8 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea9_Feasibility": {
     "display_name": "Idea 9 Feasibility",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea1_Viability": {
     "display_name": "Idea 1 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea2_Viability": {
     "display_name": "Idea 2 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea3_Viability": {
     "display_name": "Idea 3 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea4_Viability": {
     "display_name": "Idea 4 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea5_Viability": {
     "display_name": "Idea 5 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea6_Viability": {
     "display_name": "Idea 6 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea7_Viability": {
     "display_name": "Idea 7 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea8_Viability": {
     "display_name": "Idea 8 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea9_Viability": {
     "display_name": "Idea 9 Viability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea1_Sustainability": {
     "display_name": "Idea 1 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea2_Sustainability": {
     "display_name": "Idea 2 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea3_Sustainability": {
     "display_name": "Idea 3 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea4_Sustainability": {
     "display_name": "Idea 4 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea5_Sustainability": {
     "display_name": "Idea 5 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea6_Sustainability": {
     "display_name": "Idea 6 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea7_Sustainability": {
     "display_name": "Idea 7 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea8_Sustainability": {
     "display_name": "Idea 8 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Idea9_Sustainability": {
     "display_name": "Idea 9 Sustainability",
     "description": "",
-    "required": true,
+    "required": false,
     "max": 1
   },
   "Recommendation": {
@@ -1079,7 +1079,7 @@
     "display_name": "Product Image 1",
     "description": "An image representing the product concept",
     "type": "image",
-    "required": true,
+    "required": false,
     "resources": ["documents","websearch","website"],
     "prompt_name": "prompt_productimage1",
     "max": 1,
@@ -1090,7 +1090,7 @@
     "display_name": "Product Image 2",
     "description": "An additional image representing the product concept",
     "type": "image",
-    "required": true,
+    "required": false,
     "prompt_name": "prompt_productimage2",
     "max": 1,
     "used_templates": ["ProductConcept", "Customer Persona"]
@@ -1100,7 +1100,7 @@
     "display_name": "Product Image 3",
     "description": "Another image representing the product concept",
     "type": "image",
-    "required": true,
+    "required": false,
     "prompt_name": "prompt_productimage3",
     "max": 1,
     "used_templates": ["ProductConcept", "Customer Persona"]
@@ -1109,7 +1109,7 @@
   "UserFeedback_Group": {
     "display_name": "User Feedback",
     "description": "A group of elements capturing user feedback on the product concept",
-    "required": true,
+    "required": false,
     "type": "group",
     "used_templates": ["Customer Persona", "ProductConcept", "Value Proposition Canvas"],
     "elements": ["FeedbackText","FeedbackRating", "FeedbackRecommendation"],
@@ -1141,7 +1141,7 @@
   "Learnings": {
     "display_name": "Learnings from Innovation Journey",
     "description": "Insights and lessons learned from the innovation process",
-    "required": true,
+    "required": false,
     "used_templates": ["Test Card","Business Model Canvas"],
     "prompt_name": "prompt_learnings",
     "schema_name": "schema_generic_array",

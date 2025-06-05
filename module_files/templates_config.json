@@ -20,7 +20,7 @@
   "Resources": {
     "display_name": "Organizational Resources",
     "description": "This template maps out the available resources within your organization, including people, finances, equipment, knowledge, and intellectual property. Understanding these assets helps you realistically plan and execute your innovation strategy.",
-    "required": true,
+    "required": false,
     "connects": ["Design Challenge"],
     "elements": ["Resource_Group"],
     "display": [{ "format": [5], "height": 1000 }]
@@ -28,7 +28,7 @@
   "Strategic Foundation": {
     "display_name": "Strategic Foundation",
     "description": "The Strategic Foundation template connects your project with the broader goals, mission, vision, and values of your organization. This alignment ensures that your innovation efforts support and enhance long-term organizational objectives.",
-    "required": true,
+    "required": false,
     "connects": ["Design Challenge"],
     "elements": ["StrategicFoundation_Group"],
     "display": [
@@ -67,7 +67,7 @@
   "PESTEL-Analysis": {
     "display_name": "PESTEL-Analysis",
     "description": "PESTEL Analysis examines external factors (Political, Economic, Social, Technological, Environmental, Legal) influencing your innovation. Understanding these factors helps anticipate potential challenges and opportunities, guiding strategic planning.",
-    "required": true,
+    "required": false,
     "connects": ["SWOT-Analysis"],
     "elements": ["PESTEL_Group"],
     "display": [{ "format": [3, 3], "height": 800 }]
@@ -75,7 +75,7 @@
   "Trends": {
     "display_name": "Trend Radar",
     "description": "Trend Radar helps identify and analyze trends at various levels (Mega, Macro, Meso, Micro) that could impact your innovation project. This awareness ensures your solutions remain relevant and aligned with evolving market dynamics.",
-    "required": true,
+    "required": false,
     "connects": ["SWOT-Analysis"],
     "elements": ["Trend_Group"],
     "display": [{ "format": [3], "height": 1000 }]
@@ -83,7 +83,7 @@
   "SWOT-Analysis": {
     "display_name": "SWOT-Analysis",
     "description": "SWOT Analysis evaluates your project's internal strengths and weaknesses alongside external opportunities and threats. This structured approach supports informed decision-making and strategic positioning of your innovation.",
-    "required": true,
+    "required": false,
     "connects": ["Ideation"],
     "elements": ["SWOT_Group"],
     "display": [
@@ -120,7 +120,7 @@
   "Idea Comparison": {
     "display_name": "Idea Comparison",
     "description": "This template compares multiple ideas against each other, evaluating them based on criteria such as desirability, feasibility, viability, and sustainability (DFVS). This structured comparison helps identify the most promising solutions for further development.",
-    "required": true,
+    "required": false,
     "connects": ["Value Proposition Canvas"],
     "elements": ["IdeaList_group","RatingMatrix_group","Recommendation","ProductConcept"],
     "display": [{ "format": [9,9,9,9,9], "height": 2000 },
@@ -171,7 +171,7 @@
   "UserFeedback": {
     "display_name": "User Feedback",
     "description": "Ask you user for feedback about your current product.",
-    "required": true,
+    "required": false,
     "connects": ["InnovationLearnings"],
     "elements": ["UserFeedback_Group", "Portrait", "ProductImage1","ProductImage2"],
     "display": [{ "format": [1,1,1], "height": 300 },
@@ -183,7 +183,7 @@
   "InnovationLearnings": {
     "display_name": "Learnings",
     "description": "The Learnings template captures important insights, lessons, and feedback gained throughout the innovation process. This documentation supports continuous improvement, helping future innovation projects benefit from past experiences.",
-    "required": true,
+    "required": false,
     "connects": ["End"],
     "elements": ["Learnings", "Impact"],
     "display": [{ "format": [1, 1], "height": 600 }]
@@ -191,7 +191,7 @@
   "End": {
     "display_name": "All Templates",
     "description": "This template summarizes and visualizes all key elements and insights from the completed templates. It provides a consolidated view of your final innovation, clearly illustrating how it addresses the original problem and aligns with strategic goals, aiding effective communication with stakeholders.",
-    "required": true,
+    "required": false,
     "connects": [],
     "elements": ["Solution"],
     "display": [{ "format": [1], "height": 600 }]
