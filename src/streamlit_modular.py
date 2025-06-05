@@ -220,8 +220,7 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
-            else:
-                # Enhanced logic with next recommended template highlighting
+            else:                # Enhanced logic with next recommended template highlighting
                 if template_name in completed_templates:
                     style = {'background-color': COLOR_COMPLETED, "color": 'white'}
                 elif template_name in in_progress_templates:
@@ -260,7 +259,7 @@ def init_graph():
     # Identify completed templates and templates with some content
     for template_name, template_config in sst.template_config.items():
         has_content = False
-        has_all_content = True
+        has_all_required_content = True
         
         # Skip special templates and Start/End
         if template_name in ["Start", "End"] or template_name.lower() in ["align", "discover", "define", "develop", "deliver", "continue", 
@@ -269,17 +268,37 @@ def init_graph():
             
         # Check if template has any content
         elements = template_config.get("elements", [])
+        has_required_elements = False
+        
+        # Get the element store for this template
+        element_store = sst.data_store.get(template_name, {})
+        
         for element_name in elements:
-            element_store = sst.data_store.get(template_name, {})
+            # Get element config to check if it's required
+            element_config = sst.elements_config.get(element_name, {})
+            is_required = element_config.get("required", True)  # Default to True if not specified
+            
             if element_name in element_store:
                 values = element_store[element_name]
-                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                # Consistent check for content - same as in get_progress_stats()
+                has_element_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
+                
+                if has_element_content:
                     has_content = True
-                else:
-                    has_all_content = False
+                
+                # Only check required elements for completion status
+                if is_required:
+                    has_required_elements = True
+                    if not has_element_content:
+                        has_all_required_content = False
+            # If the element is required but not in the store or doesn't have content
+            elif is_required:
+                has_required_elements = True
+                has_all_required_content = False
         
         # Add template to appropriate list
-        if has_all_content and has_content:
+        # Mark as completed if it has all required elements filled (or has no required elements)
+        if has_all_required_content and (has_content or not has_required_elements):
             completed_templates.append(template_name)
             # Set connection states for edges
             for target in template_config.get("connects", []):
@@ -291,9 +310,9 @@ def init_graph():
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = False
-    
-    # Identify the next recommended templates to complete (based on the flow process)
+      # Identify the next recommended templates to complete (based on the flow process)
     # Look for templates that follow completed ones in the flow
+    next_templates = []
     for completed in completed_templates:
         config = sst.template_config.get(completed, {})
         for target in config.get("connects", []):
@@ -303,6 +322,10 @@ def init_graph():
                 if target not in ["Start", "End"] and target.lower() not in ["align", "discover", "define", "develop", "deliver", "continue", 
                                "empathize", "define+", "ideate", "prototype", "test"]:
                     next_templates.append(target)
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    next_templates = [x for x in next_templates if not (x in seen or seen.add(x))]
     
     # All templates that aren't completed, in progress, or next recommended are considered "available" 
     # We're not blocking any templates, as requested
@@ -889,11 +912,11 @@ def get_progress_stats():
             
         template_config = sst.template_config.get(template_name, {})
         elements = template_config.get("elements", [])
-        
-        for element in elements:
+          for element in elements:
             element_config = sst.elements_config.get(element, {})
-            # Skip non-required elements
-            if element_config.get("required", True) == False:
+            # Only count required elements - default to True for consistency with init_graph()
+            is_required = element_config.get("required", True)
+            if not is_required:
                 continue
                 
             # Only count elements that exist in the data store
