@@ -112,42 +112,154 @@ def add_empty_lines(number_lines):
 
 
 def load_json_dictionary(path):
-    with open(path, "r", encoding="utf-8") as f:
-        loaded_dictionary = json.load(f)
-    return loaded_dictionary
+    """Load a JSON dictionary from a file with proper error handling.
+    
+    Args:
+        path (str): Path to the JSON file
+        
+    Returns:
+        dict: The loaded JSON dictionary
+        
+    Raises:
+        FileNotFoundError: If the file doesn't exist
+        json.JSONDecodeError: If the file contains invalid JSON
+        Exception: For other unexpected errors
+    """
+    try:
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Configuration file not found: {path}")
+            
+        with open(path, "r", encoding="utf-8") as f:
+            try:
+                loaded_dictionary = json.load(f)
+            except json.JSONDecodeError as e:
+                raise json.JSONDecodeError(f"Invalid JSON in file {path}: {str(e)}", e.doc, e.pos)
+                
+        if not isinstance(loaded_dictionary, dict):
+            raise ValueError(f"Expected dictionary in {path}, got {type(loaded_dictionary)}")
+            
+        return loaded_dictionary
+        
+    except Exception as e:
+        st.error(f"Error loading configuration from {path}: {str(e)}")
+        raise
 
 
 def get_full_data_store_path():
-    store_name = f"data_store_{sst.project_name}.json"
-    return os.path.join(data_store_path, store_name)
+    """Get the full path to the data store file for the current project.
+    
+    Returns:
+        str: Full path to the data store file
+    """
+    try:
+        store_name = f"data_store_{sst.project_name}.json"
+        full_path = os.path.join(data_store_path, store_name)
+        
+        # Ensure the data store directory exists
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        
+        return full_path
+    except Exception as e:
+        st.error(f"Error getting data store path: {str(e)}")
+        raise
 
 
 def update_data_store():
-    # Synchronize shared elements before saving
-    synchronize_shared_elements(sst.data_store, sst.elements_config, sst.template_config)
-    # --- Fix: Remove any BytesIO objects before saving ---
-    for template, element_store in sst.data_store.items():
-        for element, values in element_store.items():
-            if isinstance(values, list):
-                filtered = []
-                for v in values:
-                    if hasattr(v, 'getvalue') and callable(v.getvalue):
-                        # This is a BytesIO or similar, skip it and warn
-                        print(f"Warning: Skipping BytesIO object in {template} -> {element}")
-                        continue
-                    filtered.append(v)
-                element_store[element] = filtered
-    full_path = get_full_data_store_path()
-    with open(full_path, "w", encoding="utf-8") as file:
-        json.dump(sst.data_store, file, indent=4)
+    """Update the data store file with the current session state data.
+    
+    This function handles:
+    - Synchronizing shared elements
+    - Filtering out BytesIO objects
+    - Writing to the data store file
+    
+    Raises:
+        Exception: If there's an error updating the data store
+    """
+    try:
+        # Synchronize shared elements before saving
+        synchronize_shared_elements(sst.data_store, sst.elements_config, sst.template_config)
+        
+        # Filter out BytesIO objects
+        for template, element_store in sst.data_store.items():
+            for element, values in element_store.items():
+                if isinstance(values, list):
+                    filtered = []
+                    for v in values:
+                        if hasattr(v, 'getvalue') and callable(v.getvalue):
+                            st.warning(f"Skipping BytesIO object in {template} -> {element}")
+                            continue
+                        filtered.append(v)
+                    element_store[element] = filtered
+        
+        # Get the full path and ensure directory exists
+        full_path = get_full_data_store_path()
+        
+        # Create a backup of the existing file if it exists
+        if os.path.exists(full_path):
+            backup_path = f"{full_path}.bak"
+            try:
+                shutil.copy2(full_path, backup_path)
+            except Exception as e:
+                st.warning(f"Could not create backup of data store: {str(e)}")
+        
+        # Write the new data
+        try:
+            with open(full_path, "w", encoding="utf-8") as file:
+                json.dump(sst.data_store, file, indent=4)
+        except Exception as e:
+            # If writing fails, try to restore from backup
+            if os.path.exists(backup_path):
+                try:
+                    shutil.copy2(backup_path, full_path)
+                except Exception as restore_error:
+                    st.error(f"Failed to restore from backup: {str(restore_error)}")
+            raise Exception(f"Failed to write data store: {str(e)}")
+            
+    except Exception as e:
+        st.error(f"Error updating data store: {str(e)}")
+        raise
 
 
 def load_data_store():
-    full_path = get_full_data_store_path()
-    if not os.path.exists(full_path):
+    """Load the data store for the current project.
+    
+    Returns:
+        dict: The loaded data store dictionary
+        
+    Raises:
+        Exception: If there's an error loading the data store
+    """
+    try:
+        full_path = get_full_data_store_path()
+        
+        if not os.path.exists(full_path):
+            st.info(f"No existing data store found for project '{sst.project_name}'. Creating new one.")
+            sst.data_store = {}
+            return {}
+            
+        try:
+            sst.data_store = load_json_dictionary(full_path)
+        except Exception as e:
+            st.error(f"Error loading data store: {str(e)}")
+            # Try to load from backup if available
+            backup_path = f"{full_path}.bak"
+            if os.path.exists(backup_path):
+                try:
+                    sst.data_store = load_json_dictionary(backup_path)
+                    st.success("Successfully restored from backup")
+                except Exception as backup_error:
+                    st.error(f"Failed to restore from backup: {str(backup_error)}")
+                    sst.data_store = {}
+            else:
+                sst.data_store = {}
+                
+        align_data_store()
+        return sst.data_store
+        
+    except Exception as e:
+        st.error(f"Error in load_data_store: {str(e)}")
+        sst.data_store = {}
         return {}
-    sst.data_store = load_json_dictionary(full_path)
-    align_data_store()
 
 
 def check_if_contained(data_store, required_items):
@@ -830,26 +942,34 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
-    # --- Main controls row ---
-    st.markdown("### Generation Controls")
-    top_cols = st.columns([1, 1, 1, 2], gap="medium")
-    
-    # Set default mode to 'Generate' when switching templates
-    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
-        sst['creation_mode'] = 'Generate'
-        sst['last_template'] = sst.selected_template_name
-    
-    creation_mode = sst.get('creation_mode', 'Generate')
-    
-    with top_cols[0]:
+    st.markdown("## Artifact Generation Wizard")
+    st.markdown("""
+        <style>
+        .step-header { font-size: 1.2em; font-weight: bold; margin-bottom: 0.2em; }
+        .step-desc { color: #888; font-size: 0.98em; margin-bottom: 0.5em; }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # --- Step 1: What to generate ---
+    with st.expander("1️⃣ Select What to Generate", expanded=True):
+        st.markdown('<div class="step-header">What do you want to generate?</div>', unsafe_allow_html=True)
+        st.markdown('<div class="step-desc">Pick the artifact type or template you want to work on.</div>', unsafe_allow_html=True)
         element_selected = st.selectbox(
             label="Element to generate:",
             help="Select the element to generate artifacts for.",
             options=assigned_elements,
             format_func=element_selection_format_func
         )
-    
-    with top_cols[1]:
+
+    # --- Step 2: Creation Mode ---
+    with st.expander("2️⃣ Choose Creation Mode", expanded=True):
+        st.markdown('<div class="step-header">How do you want to create this artifact?</div>', unsafe_allow_html=True)
+        st.markdown('<div class="step-desc">Manual: Enter yourself. Generate: Let the AI help. Import: Upload from file.</div>', unsafe_allow_html=True)
+        # Set default mode to 'Generate' when switching templates
+        if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
+            sst['creation_mode'] = 'Generate'
+            sst['last_template'] = sst.selected_template_name
+        creation_mode = sst.get('creation_mode', 'Generate')
         new_creation_mode = st.radio(
             label="Creation Mode:",
             options=["Manual", "Generate", "Import"],
@@ -860,21 +980,6 @@ def general_creation_view(assigned_elements):
             sst['creation_mode'] = new_creation_mode
             st.rerun()
         creation_mode = new_creation_mode
-    
-    generate_now_clicked = False
-    with top_cols[2]:
-        if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
-        elif creation_mode == "Import":
-            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-    
-    with top_cols[3]:
-        auto_assign_max = st.toggle(
-            "Auto-assign max allowed artifacts after generation",
-            key="auto_assign_max_toggle",
-            value=False,
-            help="Automatically assigns the maximum allowed number of generated artifacts after generation."
-        )
 
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
@@ -883,75 +988,102 @@ def general_creation_view(assigned_elements):
     selected_template_config = sst.template_config[sst.selected_template_name]
     vertical_gap = 1
 
-    # Add a visual separator
-    st.divider()
-
-    def auto_assign_artifacts(elements, is_image_type=False):
-        rerun_needed = False
-        for element in elements:
-            generated = sst.generated_artifacts.get(element, {})
-            assigned = element_store[element]
-            config = sst.elements_config[element]
-            max_entries = config.get("max", len(generated))
-            new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
-            to_add = new_artifacts[:max_entries - len(assigned)]
-            if config.get("type") == "image":
-                rerun_needed = _assign_image_artifacts(element, element_store, to_add) or rerun_needed
-            else:
-                if to_add:
-                    assigned.extend(to_add)
-                    rerun_needed = True
-        if rerun_needed:
-            update_data_store()
-            st.rerun()
-
-    def _assign_image_artifacts(element, element_store, to_add):
-        rerun = False
-        for artifact in to_add:
-            if not isinstance(artifact, str):
-                add_image_to_image_store(element, element_store, artifact)
-                rerun = True
-            else:
-                element_store[element].append(artifact)
-                rerun = True
-        return rerun
-
-    def display_group_elements(elements_group, manual=False):
-        position = 0
-        for row_config in selected_template_config['display']:
-            sub_rows = row_config['format']
-            height = row_config['height'] * 2
-            number_cols = len(sub_rows)
-            cols = st.columns(number_cols, vertical_alignment='center')
-            for col, sub_row in zip(cols, sub_rows):
-                with col:
-                    height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                    for _ in range(sub_row):
-                        if position < len(elements_group):
-                            _display_group_element(elements_group[position], height_single, manual)
-                            position += 1
-
-    def _display_group_element(element_name, height_single, manual):
-        config = sst.elements_config[element_name]
-        display_name = config.get("display_name", element_name)
-        description = config.get("description", "")
-        with st.container(border=True, height=height_single):
-            st.markdown(
-                f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
-                f"<span style='color:#888;font-size:0.98em'>{description}</span>",
-                unsafe_allow_html=True)
-            if manual:
-                artifact_input_subview(element_name, element_store)
+    # --- Step 3: Settings (mode-specific) ---
+    if creation_mode == "Generate":
+        with st.expander("3️⃣ Configure Generation Settings", expanded=True):
+            st.markdown('<div class="step-header">Configure AI Generation</div>', unsafe_allow_html=True)
+            st.markdown('<div class="step-desc">Select resources and tune AI parameters for best results.</div>', unsafe_allow_html=True)
+            # Resource selection and AI params
+            st.markdown("**Resources**")
+            home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_selected)
+            st.markdown("**AI Parameters**")
+            with st.popover("Advanced AI Settings"):
+                st.session_state.setdefault("temperature", 1.0)
+                st.session_state.setdefault("top_p", 1.0)
+                temperature = st.slider(
+                    "Temperature",
+                    min_value=0.0,
+                    max_value=1.8,
+                    step=0.1,
+                    key="temperature"
+                )
+                top_p = st.slider(
+                    "Top-P",
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.1,
+                    key="top_p"
+                )
+            # Template/element selection, prompt/schema as collapsible details
+            with st.expander("Template & Element selection (information sources)"):
+                all_templates = list(sst.template_config.keys())
+                required_items = element_config['used_templates']
+                selected_keys = st.multiselect(
+                    label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+                    placeholder="Choose templates to use",
+                    options=all_templates,
+                    default=required_items
+                )
+                selected_elements = {}
+                columns = st.columns(2)
+                position = 0
+                for selected_key in selected_keys:
+                    element_store2 = sst.data_store[selected_key]
+                    with columns[position]:
+                        element_names = [element for element in element_store2.keys() if element != element_selected]
+                        selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
+                                                   options=element_names,
+                                                   default=element_names, key=f"multiselect_{selected_key}")
+                        selected_elements[selected_key] = selection
+                        position += 1
+                    if position >= 2:
+                        position = 0
+            with st.expander("Prompt & Response Schema"):
+                prompt_name = element_config['prompt_name']
+                prompt = load_prompt(prompt_name)
+                schema = None
+                if not is_image:
+                    schema_name = element_config['schema_name']
+                    schema = load_schema(schema_name)
+                st.markdown("**Prompt:** " + prompt_name + ".txt")
+                if prompt:
+                    st.markdown(prompt)
+                else:
+                    st.error("There is no prompt assigned")
+                if not is_image and schema is not None:
+                    st.divider()
+                    st.markdown("**Schema:** " + schema_name + ".json")
+                    st.json(schema)
                 st.divider()
-                st.markdown("**Assigned & Available Artifacts**")
-            display_generated_artifacts_view(element_name)
-            if not manual:
-                st.divider()
+                st.markdown("**Contextual Information:**")
+                # Show a preview of the context that will be sent
+                selected_resources = {}
+                for selected_key, selected_elements_list in selected_elements.items():
+                    element_store2 = sst.data_store[selected_key]
+                    for name in selected_elements_list:
+                        resource_text = ""
+                        element_value = element_store2[name]
+                        for value in element_value:
+                            resource_text += f"- {value}\n"
+                        if resource_text.strip() != "":
+                            name_display = sst.elements_config[name].get("display_name", name)
+                            description = sst.elements_config[name].get("description", "No description available.")
+                            resource_text = f"_{description}_\n{resource_text}"
+                            selected_resources[name_display] = resource_text
+                user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
+                st.markdown(user_prompt)
 
-    if creation_mode == "Manual":
-        if is_single:
-            with st.container(border=True):
-                st.markdown("### Manual Input")
+    elif creation_mode == "Import":
+        with st.expander("3️⃣ Import Settings", expanded=True):
+            st.markdown('<div class="step-header">Import Artifacts</div>', unsafe_allow_html=True)
+            st.markdown('<div class="step-desc">Upload a PDF or other supported file to import artifacts.</div>', unsafe_allow_html=True)
+            import_artifacts(element_selected, False)
+
+    elif creation_mode == "Manual":
+        with st.expander("3️⃣ Manual Entry", expanded=True):
+            st.markdown('<div class="step-header">Manual Input</div>', unsafe_allow_html=True)
+            st.markdown('<div class="step-desc">Type in your artifact(s) manually.</div>', unsafe_allow_html=True)
+            if is_single:
                 if not is_image:
                     artifact_input_subview(element_selected, element_store)
                 else:
@@ -959,44 +1091,85 @@ def general_creation_view(assigned_elements):
                 st.divider()
                 st.markdown("### Current Artifacts")
                 display_generated_artifacts_view(element_selected)
-        else:
-            elements_group = element_config["elements"]
-            display_group_elements(elements_group, manual=True)
-    
-    elif creation_mode in ("Generate", "Import"):
+            else:
+                elements_group = element_config["elements"]
+                position = 0
+                for row_config in selected_template_config['display']:
+                    sub_rows = row_config['format']
+                    height = row_config['height'] * 2
+                    number_cols = len(sub_rows)
+                    cols = st.columns(number_cols, vertical_alignment='center')
+                    for col, sub_row in zip(cols, sub_rows):
+                        with col:
+                            height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
+                            for _ in range(sub_row):
+                                if position < len(elements_group):
+                                    config = sst.elements_config[elements_group[position]]
+                                    display_name = config.get("display_name", elements_group[position])
+                                    description = config.get("description", "")
+                                    with st.container(border=True, height=height_single):
+                                        st.markdown(
+                                            f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
+                                            f"<span style='color:#888;font-size:0.98em'>{description}</span>",
+                                            unsafe_allow_html=True)
+                                        artifact_input_subview(elements_group[position], element_store)
+                                        st.divider()
+                                        st.markdown("**Assigned & Available Artifacts**")
+                                        display_generated_artifacts_view(elements_group[position])
+                                    position += 1
+
+    # --- Step 4: Review & Generate ---
+    with st.expander("4️⃣ Review & Generate", expanded=True):
+        st.markdown('<div class="step-header">Review your selections and generate artifacts</div>', unsafe_allow_html=True)
+        st.markdown('<div class="step-desc">Check your configuration and click Generate/Import to proceed.</div>', unsafe_allow_html=True)
+        auto_assign_max = st.toggle(
+            "Auto-assign max allowed artifacts after generation",
+            key="auto_assign_max_toggle",
+            value=False,
+            help="Automatically assigns the maximum allowed number of generated artifacts after generation."
+        )
         if creation_mode == "Generate":
-            with st.container(border=True):
-                st.markdown("### Generation Settings")
-                generate_artifacts(element_selected, is_image, generate_now_clicked)
-                if generate_now_clicked and auto_assign_max:
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+            if generate_now_clicked:
+                generate_artifacts(element_selected, is_image, True)
+                if auto_assign_max:
                     if is_single:
-                        auto_assign_artifacts([element_selected], is_image)
-                    else:
-                        elements_group = element_config["elements"]
-                        auto_assign_artifacts(elements_group)
-        
-        if creation_mode == "Import":
-            with st.container(border=True):
-                st.markdown("### Import Settings")
-                import_artifacts(element_selected, generate_now_clicked)
-        
-        st.divider()
-        
+                        # Assign generated artifacts
+                        generated = sst.generated_artifacts.get(element_selected, {})
+                        assigned = element_store[element_selected]
+                        config = sst.elements_config[element_selected]
+                        max_entries = config.get("max", len(generated))
+                        new_artifacts = [artifact for artifact in generated.values() if artifact not in assigned]
+                        to_add = new_artifacts[:max_entries - len(assigned)]
+                        if config.get("type") == "image":
+                            for artifact in to_add:
+                                if not isinstance(artifact, str):
+                                    add_image_to_image_store(element_selected, element_store, artifact)
+                                else:
+                                    element_store[element_selected].append(artifact)
+                        else:
+                            assigned.extend(to_add)
+                        update_data_store()
+                        st.rerun()
+        elif creation_mode == "Import":
+            import_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+            if import_now_clicked:
+                import_artifacts(element_selected, False)
+        elif creation_mode == "Manual":
+            st.info("Artifacts are added as you confirm them above.")
+        # Show generated/assigned artifacts
         if is_single:
             st.markdown("### Generated Artifacts")
             display_generated_artifacts_view(element_selected)
-            if auto_assign_max:
-                auto_assign_artifacts([element_selected], is_image)
+            if is_image:
+                st.divider()
+                st.markdown("### Current Image")
+                display_artifact_view_image(element_selected, element_store)
         else:
             elements_group = element_config["elements"]
-            display_group_elements(elements_group)
-            if auto_assign_max:
-                auto_assign_artifacts(elements_group)
-    
-    if is_single and is_image:
-        st.divider()
-        st.markdown("### Current Image")
-        display_artifact_view_image(element_selected, element_store)
+            for el in elements_group:
+                st.markdown(f"### {sst.elements_config[el].get('display_name', el)}")
+                display_generated_artifacts_view(el)
 
 
 def template_edit_subview():
