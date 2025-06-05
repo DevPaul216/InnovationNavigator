@@ -26,7 +26,7 @@ data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
 COLOR_COMPLETED = "rgb(76, 175, 80)"  # Green - more professional looking
 COLOR_IN_PROGRESS = "rgb(255, 152, 0)"  # Orange - warmer tone
-COLOR_AVAILABLE = "rgb(224, 224, 255)"  # Light blue - subtle
+COLOR_NOT_STARTED = "rgb(224, 224, 224)"  # Light gray - neutral
 COLOR_NEXT = "rgb(33, 150, 243)"  # Bright blue - stands out for recommended next
 
 
@@ -190,11 +190,58 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
+def get_template_status(template_name):
+    """Determine the completion status of a template based on its elements."""
+    if template_name in ["Start", "End"]:
+        return "special"
+        
+    template_config = sst.template_config[template_name]
+    element_store = sst.data_store.get(template_name, {})
+    
+    # Get all elements for this template
+    elements = template_config.get("elements", [])
+    if not elements:
+        return "not_started"
+        
+    # Count total elements and filled elements
+    total_elements = 0
+    filled_elements = 0
+    
+    for element in elements:
+        element_config = sst.elements_config.get(element, {})
+        if element_config.get("type") == "group":
+            # For group elements, check all sub-elements
+            group_elements = element_config.get("elements", [])
+            for sub_element in group_elements:
+                total_elements += 1
+                if sub_element in element_store and element_store[sub_element]:
+                    filled_elements += 1
+        else:
+            # For regular elements
+            total_elements += 1
+            if element in element_store and element_store[element]:
+                filled_elements += 1
+    
+    if total_elements == 0:
+        return "not_started"
+        
+    completion_ratio = filled_elements / total_elements
+    
+    if completion_ratio == 0:
+        return "not_started"
+    elif completion_ratio == 1:
+        return "completed"
+    else:
+        return "in_progress"
+
+
 def init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
+            template_status = get_template_status(template_name)
+            
             # Special formatting for key templates
             special_templates = []
             if template_name.lower() in special_templates:
@@ -220,12 +267,33 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                        data={'content': f"{template_display_name}"},
                                        node_type="output", target_position='left')
             else:
-                # Use consistent default styling for all regular nodes
-                style = {'background-color': 'white', "color": 'black', "border": "1px solid #ccc"}
-                node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
-                                     draggable=True, focusable=False, node_type="default", source_position="right",
-                                     target_position="left",
-                                     style={**style, "width": "90px", "padding": "1px"})
+                # Set color based on template status
+                if template_status == "completed":
+                    bg_color = COLOR_COMPLETED
+                elif template_status == "in_progress":
+                    bg_color = COLOR_IN_PROGRESS
+                else:  # not_started
+                    bg_color = COLOR_NOT_STARTED
+                    
+                style = {
+                    'background-color': bg_color,
+                    'color': 'white',
+                    'border': '1px solid #ccc',
+                    'width': '90px',
+                    'padding': '1px'
+                }
+                
+                node = StreamlitFlowNode(
+                    id=template_name,
+                    pos=(0, 0),
+                    data={'content': f"{template_display_name}"},
+                    draggable=True,
+                    focusable=False,
+                    node_type="default",
+                    source_position="right",
+                    target_position="left",
+                    style=style
+                )
             nodes.append(node)
         edges = []
         for source, value in sst.template_config.items():
@@ -813,7 +881,7 @@ def legend_subview():
         )
     with legend_cols[3]:
         st.markdown(
-            f"<div style='background-color: {COLOR_AVAILABLE}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Available",
+            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Not Started",
             unsafe_allow_html=True,
         )
 
@@ -1257,7 +1325,7 @@ def about_view():
     st.markdown("---")
     st.markdown("## **1. Experimental Nature**")
     st.markdown(
-        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an “as-is” and “as-available” basis and may include:"
+        "The Innovation Navigator is a **prototype tool currently under active development**. It is provided on an "as-is" and "as-available" basis and may include:"
     )
     st.markdown(
         """
