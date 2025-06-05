@@ -903,8 +903,7 @@ def get_progress_stats():
     
     # Skip special templates like "Start", "End", and phase headers
     special_templates = ["Start", "End", "align", "discover", "define", "develop", "deliver", "continue",
-                         "empathize", "define+", "ideate", "prototype", "test"]
-    
+                         "empathize", "define+", "ideate", "prototype", "test"]    
     for template_name, element_store in sst.data_store.items():
         # Skip special templates
         if template_name in special_templates or template_name.lower() in special_templates:
@@ -912,7 +911,8 @@ def get_progress_stats():
             
         template_config = sst.template_config.get(template_name, {})
         elements = template_config.get("elements", [])
-          for element in elements:
+        
+        for element in elements:
             element_config = sst.elements_config.get(element, {})
             # Only count required elements - default to True for consistency with init_graph()
             is_required = element_config.get("required", True)
