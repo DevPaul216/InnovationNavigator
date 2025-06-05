@@ -269,10 +269,10 @@ def init_graph():
         # Check if template has any content
         elements = template_config.get("elements", [])
         has_required_elements = False
-        
-        # Get the element store for this template
+          # Get the element store for this template
         element_store = sst.data_store.get(template_name, {})
-          for element_name in elements:
+        
+        for element_name in elements:
             # Get element config to check if it's required
             element_config = sst.elements_config.get(element_name, {})
             is_required = element_config.get("required", True)  # Default to True if not specified
