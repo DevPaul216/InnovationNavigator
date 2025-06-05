@@ -5,7 +5,6 @@ import shutil
 import time
 from datetime import datetime
 from pathlib import Path
-import hashlib
 
 import PyPDF2
 import streamlit as st
@@ -349,14 +348,15 @@ def display_generated_artifacts_view(element_name):
     if isinstance(assigned, dict):
         assigned = list(assigned.values())
         sst.data_store[sst.selected_template_name][element_name] = assigned
+
     # Build a unique list: keep order, but don't duplicate
     all_artifacts = []
     artifact_keys = []
+    
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
         # Use both id and hash of artifact for uniqueness
-        # For images, use hash of bytes if possible
         if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
             try:
                 artifact_hash = hash(artifact.getvalue())
@@ -365,19 +365,19 @@ def display_generated_artifacts_view(element_name):
         else:
             artifact_hash = hash(str(artifact))
         artifact_keys.append(f"generated_{artifact_id}_{artifact_hash}")
+        
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
         if artifact not in all_artifacts:
             all_artifacts.append(artifact)
             artifact_keys.append(f"assigned_{hash(str(artifact))}")
+            
     if not all_artifacts:
         st.write("Nothing to show")
         return
+
     element_store = sst.data_store[sst.selected_template_name]
-    # --- Make the display more compact ---
-    compact_container_style = ""
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
-        # Use a more compact container without any background, border, or margin
         with st.container():
             columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
@@ -385,28 +385,30 @@ def display_generated_artifacts_view(element_name):
                 if isinstance(artifact, str) and artifact.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
                     st.image(artifact, use_container_width=True)
                 elif hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
-                    # Show BytesIO image
+                    # Show BytesIO image directly
                     st.image(artifact, use_container_width=True)
                 else:
                     st.markdown(str(artifact))
+            
             with columns[3]:
                 # Use a unique key for each toggle based on artifact_key and element_name
                 is_assigned = artifact in assigned
                 toggled = st.toggle("+", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
-                if toggled and not is_assigned:                # For BytesIO images, save to disk and store path
+                
+                if toggled and not is_assigned:
+                    # For BytesIO images, save to disk and store path
                     if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
                         import hashlib
-                        import os
-                        from PIL import Image
                         artifact.seek(0)
-                        img = Image.open(artifact)
                         hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
                         directory_path = './stores/image_store'
                         if not os.path.exists(directory_path):
                             os.makedirs(directory_path)
                         filename = f"{element_name}_{sst.project_name}_{hash_digest}.jpg"
                         full_path = os.path.join(directory_path, filename)
-                        img.save(full_path)
+                        # Write bytes directly without using PIL
+                        with open(full_path, 'wb') as f:
+                            f.write(artifact.getvalue())
                         artifact_to_add = full_path
                     else:
                         artifact_to_add = artifact
