@@ -482,12 +482,14 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
 
     # --- Rearranged UI: Left (main controls), Right (generation params) ---
-    main_cols = st.columns([2, 1], gap="large")
+    # Use a wider left column and a narrower right column for the controls
+    main_cols = st.columns([2.5, 1], gap="large")
     with main_cols[0]:
         # Left column: resource selection, expanders, etc.
-        # Resource selection is already above
+        # Place the resource selection and expanders in a vertical stack
+        st.markdown("<div style='min-width:340px;max-width:480px;'>", unsafe_allow_html=True)
         # --- Combine Template selection and individual elements selection ---
-        with st.expander("Template & Element selection (information sources)"):
+        with st.expander("Template & Element selection (information sources)", expanded=True):
             all_templates = list(sst.template_config.keys())
             selected_keys = st.multiselect(
                 label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
@@ -523,13 +525,13 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                         selected_resources[name_display] = resource_text
 
         # --- Combine Prompt and Schema into one expander ---
-        prompt_name = element_config['prompt_name']
-        prompt = load_prompt(prompt_name)
-        schema = None
-        if not is_image:
-            schema_name = element_config['schema_name']
-            schema = load_schema(schema_name)
-        with st.expander("Prompt & Response Schema"):
+        with st.expander("Prompt & Response Schema", expanded=True):
+            prompt_name = element_config['prompt_name']
+            prompt = load_prompt(prompt_name)
+            schema = None
+            if not is_image:
+                schema_name = element_config['schema_name']
+                schema = load_schema(schema_name)
             st.markdown("**Prompt:** " + prompt_name + ".txt")
             if prompt:
                 st.markdown(prompt)
@@ -543,35 +545,38 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
             st.markdown("**Contextual Information:**")
             user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
             st.markdown(user_prompt)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     with main_cols[1]:
-        # Right column: generation parameters (blue box in screenshot)
-        st.session_state.setdefault("temperature", 1.0)
-        st.session_state.setdefault("top_p", 1.0)
-        st.markdown("<div style='border:2px solid #888; border-radius:8px; padding:16px; background:#fff;'>", unsafe_allow_html=True)
-        cols = st.columns(3)
+        # Right column: generation parameters (styled box)
+        st.markdown("<div style='border:2px solid #888; border-radius:8px; padding:18px 18px 8px 18px; background:#fff; min-width:340px; max-width:420px;'>", unsafe_allow_html=True)
+        st.markdown("<div style='display:flex; gap:16px; justify-content:center; margin-bottom:12px;'>", unsafe_allow_html=True)
+        cols = st.columns([1,1,1], gap="small")
         if cols[0].button("Creative", key="creative_button"):
             st.session_state.update(temperature=1.6, top_p=1.0)
         if cols[1].button("Logic", key="logic_button"):
             st.session_state.update(temperature=0.2, top_p=1.0)
         if cols[2].button("Simplify", key="simple_button"):
             st.session_state.update(temperature=1.0, top_p=0.1)
+        st.markdown("</div>", unsafe_allow_html=True)
         temperature = st.slider(
             "Temperature",
             min_value=0.0,
             max_value=1.8,
             step=0.1,
-            key="temperature"
+            key="temperature",
+            label_visibility="visible",
         )
         top_p = st.slider(
             "Top-P",
             min_value=0.0,
             max_value=1.0,
             step=0.1,
-            key="top_p"
+            key="top_p",
+            label_visibility="visible",
         )
-        temperature = st.session_state.temperature
-        top_p = st.session_state.top_p
+        st.session_state.temperature = temperature
+        st.session_state.top_p = top_p
         st.markdown("</div>", unsafe_allow_html=True)
 
     # --- Generate logic remains unchanged ---
