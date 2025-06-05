@@ -190,7 +190,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates):
+def init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -258,6 +258,7 @@ def init_graph():
     # Identify completed templates and templates with some content
     for template_name, template_config in sst.template_config.items():
         has_content = False
+        has_all_required_content = True
         
         # Skip special templates and Start/End
         if template_name in ["Start", "End"]:
@@ -265,20 +266,41 @@ def init_graph():
             
         # Check if template has any content
         elements = template_config.get("elements", [])
+        has_required_elements = False
+          # Get the element store for this template
         element_store = sst.data_store.get(template_name, {})
         
         for element_name in elements:
+            # Get element config to check if it's required
             element_config = sst.elements_config.get(element_name, {})
+            is_required = element_config.get("required", True)  # Default to True if not specified
+            
             if element_name in element_store:
                 values = element_store[element_name]
+                # Consistent check for content - same as in get_progress_stats()
                 has_element_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
+                
                 if has_element_content:
-                    has_content = True       
+                    has_content = True
+                
+                # Only track required elements for completion status
+                if is_required:
+                    has_required_elements = True
+                    if not has_element_content:
+                        has_all_required_content = False
+            # If the element is required but not in the store or doesn't have content
+            elif is_required:
+                has_required_elements = True
+                has_all_required_content = False
+        # Mark as completed ONLY if it has all required elements filled AND at least one element has content
+        # Templates with no required elements should never be marked as completed
+        if has_all_required_content and has_required_elements and has_content:
+            completed_templates.append(template_name)
             # Set connection states for edges
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = True
-        if has_content:
+        elif has_content:
             in_progress_templates.append(template_name)
             # Edges from in-progress templates are not animated
             for target in template_config.get("connects", []):
@@ -302,6 +324,7 @@ def init_graph():
     
     # All templates that aren't completed, in progress, or next recommended are considered "available" 
     # We're not blocking any templates, as requested
+    blocked_templates = []
 
     # Debug prints for color logic
     print("[DEBUG] completed_templates:", completed_templates)
@@ -309,7 +332,7 @@ def init_graph():
     print("[DEBUG] next_templates:", next_templates)
     print("[DEBUG] connection_states:", connection_states)
 
-    return connection_states, completed_templates, in_progress_templates, next_templates, []
+    return connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
