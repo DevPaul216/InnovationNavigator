@@ -478,41 +478,52 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     required_items = element_config['used_templates']
     selected_resources = {}
 
-    # --- Resource selection and Generation parameters side by side ---
-    top_cols = st.columns([1, 1], gap="large")
-    with top_cols[0]:
-        home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
-    with top_cols[1]:
+    # --- Resource selection above Generation parameters ---
+    home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+    
+    # --- Generation parameters with presets and sliders ---
+    with st.expander("Generation Parameters"):
+        # Initialize session state values if they don't exist
         st.session_state.setdefault("temperature", 1.0)
         st.session_state.setdefault("top_p", 1.0)
-        cols = st.columns(3)
-        if cols[0].button("Creative", key="creative_button"):
-            st.session_state.update(temperature=1.6, top_p=1.0)
-        if cols[1].button("Logic", key="logic_button"):
-            st.session_state.update(temperature=0.2, top_p=1.0)
-        if cols[2].button("Simplify", key="simple_button"):
-            st.session_state.update(temperature=1.0, top_p=0.1)
-        temperature = st.slider(
-            "Temperature",
-            min_value=0.0,
-            max_value=1.8,
-            step=0.1,
-            key="temperature"
-        )
-        top_p = st.slider(
-            "Top-P",
-            min_value=0.0,
-            max_value=1.0,
-            step=0.1,
-            key="top_p"
-        )
-        temperature = st.session_state.temperature
-        top_p = st.session_state.top_p
-
-    # --- Combine Template selection and individual elements selection ---
+        
+        # Create two columns for better layout
+        preset_col, slider_col = st.columns([1, 2])
+        
+        with preset_col:
+            st.markdown("##### Parameter Presets")
+            preset_buttons = st.columns(3)
+            if preset_buttons[0].button("Creative", key="creative_button", use_container_width=True):
+                st.session_state.update(temperature=1.6, top_p=1.0)
+            if preset_buttons[1].button("Logic", key="logic_button", use_container_width=True):
+                st.session_state.update(temperature=0.2, top_p=1.0)
+            if preset_buttons[2].button("Simplify", key="simple_button", use_container_width=True):
+                st.session_state.update(temperature=1.0, top_p=0.1)
+        
+        with slider_col:
+            st.markdown("##### Fine-tune Parameters")
+            temperature = st.slider(
+                "Temperature",
+                min_value=0.0,
+                max_value=1.8,
+                step=0.1,
+                key="temperature",
+                help="Higher values produce more creative results, lower values produce more focused results"
+            )
+            top_p = st.slider(
+                "Top-P",
+                min_value=0.0,
+                max_value=1.0,
+                step=0.1,
+                key="top_p",
+                help="Controls diversity of output. Lower values make output more focused"
+            )
+            temperature = st.session_state.temperature
+            top_p = st.session_state.top_p    # --- Combine Template selection and individual elements selection ---
     with st.expander("Information Sources"):
         st.markdown("##### Select Templates and Elements to Use as Context")
-
+        
+        # Template selection
         all_templates = list(sst.template_config.keys())
         selected_keys = st.multiselect(
             label="Templates to use as information sources",
@@ -521,15 +532,16 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
             default=required_items,
             help="Select templates to use as context for generation"
         )
-
+        
         if selected_keys:
             st.divider()
             st.markdown("##### Select Elements from Each Template")
-
+            
+            # Element selection with better organization
             selected_elements = {}
             columns = st.columns(2)
             position = 0
-
+            
             for selected_key in selected_keys:
                 element_store = sst.data_store[selected_key]
                 with columns[position]:
@@ -544,7 +556,8 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                         )
                         selected_elements[selected_key] = selection
                 position = (position + 1) % 2
-
+                
+            # Process selected elements to create resource text
             for selected_key, selected_elements_list in selected_elements.items():
                 element_store = sst.data_store[selected_key]
                 for name in selected_elements_list:
@@ -556,19 +569,18 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                         name_display = sst.elements_config[name].get("display_name", name)
                         description = sst.elements_config[name].get("description", "No description available.")
                         resource_text = f"_{description}_\n{resource_text}"
-                        selected_resources[name_display] = resource_text
-
-    # --- Combine Prompt and Schema into one expander ---
+                        selected_resources[name_display] = resource_text    # --- Combine Prompt and Schema into one expander ---
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
     schema = None
-    if not element_config.get("type") == "image":
+    if not is_image:
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
-
+    
     with st.expander("Prompt & Response Details"):
+        # Create tabs for better organization
         prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
-
+        
         with prompt_tab:
             st.markdown(f"##### System Prompt: `{prompt_name}.txt`")
             if prompt:
@@ -576,15 +588,18 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     st.markdown(prompt)
             else:
                 st.error("No prompt assigned to this element")
-
+                
         with schema_tab:
-            if schema is not None:
+            if not is_image and schema is not None:
                 st.markdown(f"##### Response Schema: `{schema_name}.json`")
                 with st.container(border=False, height=300):
                     st.json(schema)
             else:
-                st.warning("No schema defined for this element")
-
+                if is_image:
+                    st.info("Image generation does not use a response schema")
+                else:
+                    st.warning("No schema defined for this element")
+                
         with context_tab:
             st.markdown("##### Contextual Information Used in Generation")
             if selected_resources:
@@ -593,6 +608,15 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     st.markdown(user_prompt)
             else:
                 st.info("No contextual information selected yet")
+
+    if generate_now_clicked:
+        with st.spinner("Generating..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not is_image:
+                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_name, prompt, selected_resources)
+
 
 def import_artifacts(element_name, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
