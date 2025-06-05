@@ -5,7 +5,7 @@
   "Start": {
     "display_name": "Create Project",
     "description": "Define a new project to get started",
-    "required": false,
+    "required": true,
     "connects": ["Problem", "Resources", "Strategic Foundation"],
     "elements": []
   },
