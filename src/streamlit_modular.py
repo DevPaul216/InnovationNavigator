@@ -25,9 +25,12 @@ from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
-COLOR_BLOCKED = "rgb(250, 240, 220)"
-COLOR_COMPLETED = "rgb(104, 223, 200)"
-COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
+# Improved color scheme for better visual distinction and accessibility
+COLOR_BLOCKED = "#F8D7DA"        # Light red/pink for blocked (error/requirements not met)
+COLOR_NOT_STARTED = "#F0F0F0"    # Light gray for not started
+COLOR_COMPLETED = "#B6E2A1"      # Soft green for completed
+COLOR_IN_PROGRESS = "#FFD966"    # Warm yellow for in progress
+
 
 
 
@@ -815,20 +818,25 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1, 1,1,1,1,1], gap="small")  # Adjusted gap to reduce horizontal space
+    legend_cols = st.columns([1, 1, 1, 1], gap="small")
     with legend_cols[0]:
         st.markdown(
-            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
+            f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Blocked (Requirements not met)",
             unsafe_allow_html=True,
         )
     with legend_cols[1]:
         st.markdown(
-            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed/Optional",
+            f"<div style='background-color: {COLOR_NOT_STARTED}; width: 20px; height: 20px; display: inline-block;'></div> Not Started",
             unsafe_allow_html=True,
         )
     with legend_cols[2]:
         st.markdown(
-            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[3]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
             unsafe_allow_html=True,
         )
 
