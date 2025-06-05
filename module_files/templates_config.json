@@ -14,7 +14,7 @@
     "description": "This template clearly identifies and describes the core issue your innovation seeks to address, emphasizing who it affects and why solving it matters. Clearly defining the problem ensures your project remains focused, relevant, and impactful.",
     "required": true,
     "connects": ["Design Challenge"],
-    "elements": ["InnovationIssue", "TargetGroup"],
+    "elements": ["InnovationGroup"],
     "display": [{ "format": [1, 1], "height": 200 }]
   },
   "Resources": {

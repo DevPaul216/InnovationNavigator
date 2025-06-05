@@ -1,34 +1,35 @@
 {
+
+
+
+
+
+  "Innovation_Group": {
+    "display_name": "Innovation Project",
+    "description": "A group of elements defining the innovation project",
+    "required": true,
+    "type": "group",
+    "used_templates": ["Innovation"],
+    "elements": ["InnovationIssue", "TargetGroup"],
+    "prompt_name": "prompt_innovationgroup",
+    "schema_name": "schema innovationgroup",
+    "prompt_name_import": "prompt_import",
+    "schema_name_import": "schema_innovation",
+    "resources": ["documents","websearch","website"]
+  },
   "InnovationIssue": {
     "display_name": "Problem to be solved",
     "description": "The problem or challenge to be addressed in the innovation process",
     "required": true,
-    "used_templates": null,
-    "prompt_name": "prompt_innovationissue",
-    "schema_name": "schema_generic_array",
-    "prompt_name_import": "prompt_import",
-    "schema_name_import": "schema_generic_array",
     "max": 1,
     "resources": ["documents","websearch", "website"]
   },
-  "SelectedIdea": {
-    "display_name": "Selected Idea",
-    "description": "The idea chosen to address the identified innovation issue",
-    "required": true,
-    "used_templates": null,
-    "prompt_name": "idea_generation",
-    "schema_name": "schema_generic_array",
-    "max": 1,
-    "resources": ["documents","websearch","website"]
-  },
+
+
   "TargetGroup": {
     "display_name": "Person affected by the problem",
     "description": "The group of people or entities affected by the problem or challenge",
     "required": true,
-    "used_templates": null,
-    "prompt_name": "prompt_targetgroup",
-    "schema_name": "schema_generic_array",
-    "prompt_name_import": "prompt_import",
     "schema_name_import": "schema_generic_array",
     "max": 1,
     "resources": ["documents","websearch","website"]

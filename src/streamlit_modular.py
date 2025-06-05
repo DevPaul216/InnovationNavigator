@@ -769,11 +769,16 @@ def legend_subview():
 
 
 def get_progress_stats():
-    total_required_elements = 0
-    total_filled_required_elements = 0
+    # Progress is the percentage of templates that are at least half-full (or more)
+    total_templates = 0
+    templates_half_or_full = 0
     for template_name, element_store in sst.data_store.items():
         template_config = sst.template_config.get(template_name, {})
         elements = template_config.get("elements", [])
+        if not elements:
+            continue
+        total_required_elements = 0
+        total_filled_required_elements = 0
         for element in elements:
             element_config = sst.elements_config.get(element, {})
             if not element_config.get("required", True):
@@ -784,8 +789,12 @@ def get_progress_stats():
             values = element_store[element]
             if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
                 total_filled_required_elements += 1
-    progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
-    return progress, total_filled_required_elements, total_required_elements
+        if total_required_elements > 0:
+            total_templates += 1
+            if total_filled_required_elements >= (total_required_elements / 2):
+                templates_half_or_full += 1
+    progress = (templates_half_or_full / total_templates) if total_templates > 0 else 0
+    return progress, templates_half_or_full, total_templates
 
 
 def chart_view():

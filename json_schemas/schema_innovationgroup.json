@@ -1,0 +1,30 @@
+{
+  "name": "innovationgroup",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "InnovationIssue": {
+        "type": "array",
+        "description": "A list of issues or challenges that need to be solved",
+        "items": {
+          "type": "string",
+          "description": "An issue that needs to be solved."
+        }
+      },
+      "TargetGroup": {
+        "type": "array",
+        "description": "A list of people or groups affected by the issue.",
+        "items": {
+          "type": "string",
+          "description": "A person, group or demografic that is affected by the issue."
+        }
+      }
+    },
+    "required": [
+      "InnovationIssue",
+      "TargetGroup"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}
