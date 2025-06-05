@@ -221,26 +221,20 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                # Robustly check all required elements for filled status
+                # Status: completed if ALL elements are filled, in progress if SOME, available if NONE
                 elements = sst.template_config[template_name].get("elements", [])
                 element_store = sst.data_store.get(template_name, {})
-                required_elements = []
-                filled_required_elements = 0
-                total_required = 0
+                total_elements = len(elements)
+                filled_elements = 0
                 for element in elements:
-                    element_config = sst.elements_config.get(element, {})
-                    is_required = element_config.get("required", True)
-                    if not is_required:
-                        continue
-                    total_required += 1
                     value = element_store.get(element, None)
                     if value is not None and ((isinstance(value, list) and len(value) > 0) or (isinstance(value, str) and value.strip())):
-                        filled_required_elements += 1
-                if total_required == 0:
+                        filled_elements += 1
+                if total_elements == 0:
                     style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
-                elif filled_required_elements == total_required:
+                elif filled_elements == total_elements:
                     style = {'background-color': COLOR_COMPLETED, "color": 'white'}
-                elif filled_required_elements > 0:
+                elif filled_elements > 0:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
