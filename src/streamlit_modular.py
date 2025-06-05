@@ -252,29 +252,65 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
 def init_graph():
     connection_states = {}
     completed_templates = []
+    
+    def expand_elements(elements):
+        """Expand group elements to their constituent elements"""
+        expanded = []
+        for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            if element_config.get("type") == "group":
+                # Recursively expand group elements
+                sub_elements = element_config.get("elements", [])
+                expanded.extend(expand_elements(sub_elements))
+            else:
+                expanded.append(element)
+        return expanded
+    
     for template_name, template_config in sst.template_config.items():
         is_fulfilled = True
         is_required = "required" not in template_config or template_config["required"]
+        
         if is_required:
             elements = template_config["elements"]
-            for element_name in elements:
-                element_config = sst.elements_config[element_name]
-                if element_config["required"]:
-                    element_store = sst.data_store[template_name]
-                    for element_values in element_store.values():
-                        if element_values is None or len(element_values) == 0:
+            
+            # If no elements are required, the template is fulfilled
+            if not elements:
+                is_fulfilled = True
+            else:
+                # Expand group elements to get all actual elements
+                expanded_elements = expand_elements(elements)
+                element_store = sst.data_store[template_name]
+                
+                # Check each required element
+                for element_name in expanded_elements:
+                    element_config = sst.elements_config.get(element_name, {})
+                    
+                    # Only check elements that are explicitly required
+                    if element_config.get("required", True):
+                        # Check if this specific element has data
+                        if element_name in element_store:
+                            element_values = element_store[element_name]
+                            if element_values is None or len(element_values) == 0:
+                                is_fulfilled = False
+                                break
+                        else:
                             is_fulfilled = False
+                            break
+        
         if is_fulfilled:
             completed_templates.append(template_name)
+            
         for target in template_config["connects"]:
             edge_id = f"{template_name}-{target}"
             connection_states[edge_id] = is_fulfilled
+            
     blocked_templates = []
     for template_name, template_config in sst.template_config.items():
         connections = template_config["connects"]
         if template_name not in completed_templates or template_name in blocked_templates:
             blocked_templates.extend(connections)
     blocked_templates = list(set(blocked_templates))
+    
     return connection_states, completed_templates, blocked_templates
 
 
