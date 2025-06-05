@@ -6,18 +6,11 @@ def about_view():
     st.title("Welcome to Innovation Navigator")
     st.markdown(
         """
-        ### Your Guide to Structured Innovation
+        ### Your Intelligent Innovation Companion
         
-        Innovation Navigator is a powerful tool designed to help innovators, entrepreneurs, and teams 
-        systematically develop impactful solutions. Using the proven Double Diamond framework, 
-        we guide you through four key phases:
-        
-        1. **Discover** - Research and understand your target users and market
-        2. **Define** - Frame the right problem to solve
-        3. **Develop** - Generate and refine creative solutions
-        4. **Deliver** - Test and implement your innovations
-        
-        Each phase provides structured templates and AI-powered guidance to help you make informed decisions.
+        Innovation Navigator empowers teams to transform ideas into impactful solutions using AI-guided 
+        frameworks and proven innovation methodologies. Our platform combines strategic thinking tools 
+        with artificial intelligence to help you navigate every step of your innovation journey.
         """
     )
 
@@ -26,57 +19,94 @@ def about_view():
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### Getting Started")
+        st.markdown("### Available Templates")
         st.markdown(
             """
-            1. Click **Start** in the sidebar to create a new project
-            2. Choose a template based on your current phase
-            3. Fill in the required information
-            4. Move through phases as you complete each step
-            5. Export or share your results when ready
+            📌 **Strategy & Analysis**
+            - Strategic Foundation
+            - PESTEL Analysis
+            - SWOT Analysis
+            - Trend Radar
+            
+            🎯 **User Understanding**
+            - Customer Persona Creation
+            - Empathy Mapping
+            - Jobs-to-be-Done Analysis
+            
+            💡 **Innovation Process**
+            - Structured Ideation
+            - Idea Evaluation (DFVS Framework)
+            - Value Proposition Canvas
+            - Business Model Canvas
+            - Product Concept Testing
             """
         )
     
     with col2:
-        st.markdown("### Key Features")
+        st.markdown("### AI-Powered Features")
         st.markdown(
             """
-            - 📋 Step-by-step innovation templates
-            - 🤖 AI-powered insights and suggestions
-            - 📊 Visual progress tracking
-            - 🔄 Iterative development workflow
-            - 💾 Automatic progress saving
-            - 📤 Export and sharing capabilities
+            - 🧠 **Intelligent Guidance**
+                Generate creative solutions and insights using advanced AI
+
+            - 📊 **Framework Integration**
+                Seamlessly connect insights across multiple innovation tools
+            
+            - 🔄 **Iterative Development**
+                Test and refine ideas with structured experiments
+            
+            - 📈 **Progress Tracking**
+                Monitor your innovation journey with visual progress indicators
+            
+            - 🤝 **Collaboration Support**
+                Share and iterate on ideas with your team
+            
+            - 📱 **Product Visualization**
+                Generate and visualize product concepts
             """
         )
 
     st.divider()
     
     # Important Notes section
-    st.markdown("### Important Notes")
+    st.markdown("### Getting Started")
     st.info(
         """
-        - This is an experimental tool under active development
-        - Your data is processed securely and not retained without consent
-        - Always review AI-generated suggestions critically
-        - For optimal results, be thorough in providing information
+        1. Click **Start** in the sidebar to create a new innovation project
+        2. Define your challenge and target audience
+        3. Follow the suggested templates in sequence
+        4. Use AI assistance to generate insights and ideas
+        5. Iterate and refine based on feedback and learnings
         """
     )
 
-    if st.button("Get Started", type="primary", use_container_width=True):
+    if st.button("Create New Project", type="primary", use_container_width=True):
         from streamlit_modular import sst
         sst.selected_template_name = "Start"
         sst.current_view = "detail"
         sst.sidebar_state = "expanded"
         sst.update_graph = True
-        st.rerun()
-
-    # Footer with version and contact
+        st.rerun()    # Research Project Information
     st.markdown("---")
-    st.markdown(
-        """
-        <div style='text-align: center; color: #666;'>
-        Version 1.0 Beta | Contact: innovationnavigator@support.com
+    st.markdown("""
+        ### About This Project
+        
+        Innovation Navigator was developed as a master thesis research project at the 
+        [University of Applied Sciences Upper Austria](https://fh-ooe.at/) by:
+        
+        - **Paul Scheichl** - AI & Innovation Research
+        - **Martin Hanreich** - Innovation Process Design
+        
+        This tool represents the culmination of research in AI-assisted innovation methodologies, 
+        combining proven frameworks with state-of-the-art artificial intelligence to create 
+        a guided innovation experience.
+        
+        <div style='text-align: center; margin-top: 20px;'>
+            <img src="https://www.fh-ooe.at/fileadmin/user_upload/responsive-images/logo_fhooe_projektil_RGB_positiv.png" width="200">
+        </div>
+        
+        <div style='text-align: center; color: #666; margin-top: 20px;'>
+        Version 1.0 Beta | Research Contact: paul.scheichl@gmail.com
         </div>
         """,
         unsafe_allow_html=True
