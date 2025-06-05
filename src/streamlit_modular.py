@@ -259,76 +259,43 @@ def init_graph():
     # Identify completed templates and templates with some content
     for template_name, template_config in sst.template_config.items():
         has_content = False
-        has_all_required_content = True
-        
         # Skip special templates and Start/End
         if template_name in ["Start", "End"] or template_name.lower() in ["align", "discover", "define", "develop", "deliver", "continue", 
                            "empathize", "define+", "ideate", "prototype", "test"]:
             continue
-            
-        # Check if template has any content
-        elements = template_config.get("elements", [])
-        has_required_elements = False
-          # Get the element store for this template
-        element_store = sst.data_store.get(template_name, {})
         
+        # Check if template has any content (ignore required markers)
+        elements = template_config.get("elements", [])
+        element_store = sst.data_store.get(template_name, {})
         for element_name in elements:
-            # Get element config to check if it's required
-            element_config = sst.elements_config.get(element_name, {})
-            is_required = element_config.get("required", True)  # Default to True if not specified
-            
             if element_name in element_store:
                 values = element_store[element_name]
-                # Consistent check for content - same as in get_progress_stats()
                 has_element_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
-                
                 if has_element_content:
                     has_content = True
-                
-                # Only track required elements for completion status
-                if is_required:
-                    has_required_elements = True
-                    if not has_element_content:
-                        has_all_required_content = False
-            # If the element is required but not in the store or doesn't have content
-            elif is_required:
-                has_required_elements = True
-                has_all_required_content = False# Add template to appropriate list
-        # Mark as completed ONLY if it has all required elements filled AND at least one element has content
-        # Templates with no required elements should never be marked as completed
-        if has_all_required_content and has_required_elements and has_content:
+        # Mark as completed if it has any content
+        if has_content:
             completed_templates.append(template_name)
             # Set connection states for edges
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = True
-        elif has_content:
-            in_progress_templates.append(template_name)
-            # Edges from in-progress templates are not animated
-            for target in template_config.get("connects", []):
-                edge_id = f"{template_name}-{target}"
-                connection_states[edge_id] = False
-      # Identify the next recommended templates to complete (based on the flow process)
-    # Look for templates that follow completed ones in the flow
+        # If no content, do not add to completed or in_progress
+    # Identify the next recommended templates to complete (based on the flow process)
     next_templates = []
     for completed in completed_templates:
         config = sst.template_config.get(completed, {})
         for target in config.get("connects", []):
-            # Only consider as "next" if not already completed or in progress
-            if target not in completed_templates and target not in in_progress_templates:
+            # Only consider as "next" if not already completed
+            if target not in completed_templates:
                 # Skip special templates
                 if target not in ["Start", "End"] and target.lower() not in ["align", "discover", "define", "develop", "deliver", "continue", 
                                "empathize", "define+", "ideate", "prototype", "test"]:
                     next_templates.append(target)
-    
     # Remove duplicates while preserving order
     seen = set()
     next_templates = [x for x in next_templates if not (x in seen or seen.add(x))]
-    
-    # All templates that aren't completed, in progress, or next recommended are considered "available" 
-    # We're not blocking any templates, as requested
     blocked_templates = []
-    
     return connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates
 
 
