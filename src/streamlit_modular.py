@@ -799,19 +799,19 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1, 1], gap="small")
+    legend_cols = st.columns([1, 1, 1, 1, 1], gap="small")
 
-    with legend_cols[3]:
+    with legend_cols[1]:
         st.markdown(
             f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Template",
             unsafe_allow_html=True,
         )
-    with legend_cols[0]:
+    with legend_cols[2]:
         st.markdown(
             f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Empty",
             unsafe_allow_html=True,
         )
-    with legend_cols[2]:
+    with legend_cols[3]:
         st.markdown(
             f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
             unsafe_allow_html=True,
