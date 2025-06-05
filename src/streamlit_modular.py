@@ -75,93 +75,34 @@ def init_page():
                        page_icon=os.path.join("misc", "LogoFH.png"),
                        initial_sidebar_state=sst.sidebar_state)
 
-    # Apply comprehensive styling for a cleaner, more modern interface
     st.markdown(
         """
-        <style>
-            /* Main container adjustments */
-            .block-container {
-                padding-top: 0rem;
-                padding-bottom: 2rem;
-                padding-left: 2rem;
-                padding-right: 2rem;
-            }
-            
-            /* Sidebar adjustments */
+            <style>
+                .block-container {
+                        padding-top: 0rem; /* Reduced padding to give more space to the graph */
+                        padding-bottom: 2rem;
+                        padding-left: 2rem; /* Adjusted for better layout */
+                        padding-right: 2rem;
+                    }
+                      /* Adjust the sidebar width */
             [data-testid="stSidebar"] {
                 min-width: 250px;
                 max-width: 250px;
-                background-color: #f8f9fa;
-                border-right: 1px solid #eaeaea;
             }
-            
-            /* Better form controls */
-            div[data-baseweb="select"] {
-                border-radius: 6px;
-                border: 1px solid #eaeaea;
-            }
-            
-            /* Improved button styling */
-            button[kind="primary"] {
-                border-radius: 6px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-                transition: all 0.2s ease;
-            }
-            button[kind="primary"]:hover {
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                transform: translateY(-1px);
-            }
-            
-            /* Container styling */
-            [data-testid="stExpander"] {
-                border-radius: 6px;
-                border: 1px solid #f0f0f0;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-            
-            /* Headings */
-            h1, h2, h3, h4, h5, h6 {
-                margin-top: 0.5rem;
-                margin-bottom: 0.5rem;
-                color: #333;
-            }
-            
-            /* Radio buttons */
-            .st-cc {
-                border-radius: 6px;
-                overflow: hidden;
-            }
-            
-            /* Mode selection highlights */
-            .mode-selected {
-                background-color: #f0f7ff;
-                border-color: #0078d4;
-                box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
-            }
-            
-            /* Divider styling */
-            .stDivider {
-                margin-top: 1rem;
-                margin-bottom: 1rem;
-                border-top: 1px solid #f0f0f0;
-            }
-            
-            /* Tabs styling */
-            .stTabs {
-                background-color: #fff;
-                border-radius: 6px;
-                overflow: hidden;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            }
-            
-            /* Toggle switch */
-            [data-testid="stToggle"] {
-                margin-top: 0.5rem;
-                margin-bottom: 0.5rem;
-            }
+            </style>
+            """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        """
+        <style>
+        .stDivider {
+            margin-top: 5px;  /* Adjust the top margin */
+            margin-bottom: 5px;  /* Adjust the bottom margin */
+        }
         </style>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
 
@@ -453,61 +394,38 @@ def resource_selection_view(element_name):
     uploaded_files = None
 
     if used_resources is not None and len(used_resources) > 0:
-        with st.container(border=False):
-            st.markdown("##### Additional Resources")
-            
-            # Use segmented control with improved styling
-            selected_option = st.segmented_control(
-                label="Resource Type",
-                options=used_resources,
-                selection_mode='single',
-                format_func=format_func,
-            )
+        # Use segmented control with single selection mode
+        selected_option = st.segmented_control(
+            label="Add additional Resources",
+            options=used_resources,
+            selection_mode='single',  # Allow only one selection
+            format_func=format_func
+        )
 
-            # Show the appropriate input fields based on the selection
-            if selected_option == "website":
-                with st.container(border=True):
-                    cols = st.columns([1, 10])
-                    cols[0].markdown("🏠")
-                    cols[1].markdown("#### Website")
-                    home_url = st.text_input(
-                        label="Enter website URL to extract content from",
-                        placeholder="https://example.com",
-                        help="Content from this URL will be used as additional context"
-                    ).strip()
+        if selected_option == "website":
+            with st.container(border=True):
+                st.subheader(":material/home: Website")
+                home_url = st.text_input(label="Website URL").strip()
 
-            elif selected_option == "websearch":
-                with st.container(border=True):
-                    cols = st.columns([1, 10])
-                    cols[0].markdown("🔍")
-                    cols[1].markdown("#### Google Search")
-                    query = st.text_input(
-                        label="Enter search query",
-                        placeholder="Type your search query here",
-                        help="Results from this search will be used as additional context"
-                    ).strip()
-                    
-                    search_cols = st.columns([3, 2])
-                    with search_cols[0]:
-                        number_entries_used = st.slider(
-                            label="Number of results to use",
-                            min_value=1,
-                            max_value=10,
-                            value=5,
-                            help="How many search results should be included"
-                        )
+        elif selected_option == "websearch":
+            with st.container(border=True):
+                st.subheader(":material/globe: Google Search")
+                query = st.text_input(label="Search Query").strip()
+                number_entries_used = st.number_input(
+                    label="Number of websites searched (1-10)",
+                    min_value=1,
+                    max_value=10,
+                    value=5
+                )
 
-            elif selected_option == "documents":
-                with st.container(border=True):
-                    cols = st.columns([1, 10])
-                    cols[0].markdown("📄")
-                    cols[1].markdown("#### Document Upload")
-                    uploaded_files = st.file_uploader(
-                        label="Upload PDF documents",
-                        type="pdf",
-                        accept_multiple_files=True,
-                        help="Upload PDF documents containing relevant information"
-                    )
+        elif selected_option == "documents":
+            with st.container(border=True):
+                st.subheader(":material/description: Documents")
+                uploaded_files = st.file_uploader(
+                    label="Upload Relevant Documents",
+                    type="pdf",
+                    accept_multiple_files=True
+                )
 
     return home_url, query, number_entries_used, uploaded_files
 
@@ -977,83 +895,47 @@ def element_selection_format_func(item):
 
 def general_creation_view(assigned_elements):
     #st.subheader("Generate Information Artifacts")
-    # --- Main controls row with improved layout ---
-    with st.container(border=True):
-        # First row: Element selection and mode selection with better organization
-        row1_cols = st.columns([2, 3], gap="medium")
-        
-        with row1_cols[0]:
-            st.markdown("##### Element Selection")
-            element_selected = st.selectbox(
-                label="Select element to work with:",
-                help="Choose which element you want to generate or modify",
-                options=assigned_elements,
-                format_func=element_selection_format_func
+    # --- Main controls row ---
+    top_cols = st.columns([1, 1, 1, 2], gap="medium")
+    # Set default mode to 'Generate' when switching templates
+    if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
+        sst['creation_mode'] = 'Generate'
+        sst['last_template'] = sst.selected_template_name
+    creation_mode = sst.get('creation_mode', 'Generate')
+    with top_cols[0]:
+        element_selected = st.selectbox(
+            label="Select Element to generate:",
+            help="Select the element to generate artifacts for.",
+            options=assigned_elements,
+            format_func=element_selection_format_func
+        )
+    with top_cols[1]:
+        # Use st.radio for robust single selection, avoid session state key conflicts
+        new_creation_mode = st.radio(
+            label="Select Mode:",
+            options=["Manual", "Generate", "Import"],
+            index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
+            help="Select the mode to create artifacts."
+        )
+        if new_creation_mode != creation_mode:
+            sst['creation_mode'] = new_creation_mode
+            st.rerun()
+        creation_mode = new_creation_mode
+    generate_now_clicked = False
+    with top_cols[2]:
+        if creation_mode == "Generate":
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+        elif creation_mode == "Import":
+            generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+    with top_cols[3]:
+        auto_assign_max = False
+        if creation_mode != "Manual":
+            auto_assign_max = st.toggle(
+                "Auto-assign max allowed artifacts after generation",
+                key="auto_assign_max_toggle",
+                value=False,
+                help="Automatically assigns the maximum allowed number of generated artifacts after generation."
             )
-            
-        with row1_cols[1]:
-            st.markdown("##### Mode Selection")
-            
-            # Set default mode to 'Generate' when switching templates
-            if 'last_template' not in sst or sst.last_template != sst.selected_template_name:
-                sst['creation_mode'] = 'Generate'
-                sst['last_template'] = sst.selected_template_name
-            creation_mode = sst.get('creation_mode', 'Generate')
-            
-            # Create mode icons and descriptions for better visual distinction
-            mode_options = ["Manual", "Generate", "Import"]
-            mode_icons = ["✏️", "🔄", "📥"]
-            mode_descriptions = [
-                "Manually create and edit artifacts",
-                "Auto-generate artifacts with AI",
-                "Import artifacts from documents"
-            ]
-            
-            # Create a more visual mode selector
-            mode_cols = st.columns(3)
-            for i, (mode, icon, desc) in enumerate(zip(mode_options, mode_icons, mode_descriptions)):
-                with mode_cols[i]:
-                    mode_selected = mode == creation_mode
-                    container_style = "background-color: #f0f2f6; border-radius: 5px; padding: 10px;" if mode_selected else ""
-                    
-                    # Create a clickable container for each mode
-                    with st.container(border=mode_selected):
-                        st.markdown(f"<div style='text-align: center; {container_style}'>"
-                                   f"<h3>{icon}</h3>"
-                                   f"<h6>{mode}</h6>"
-                                   "</div>", unsafe_allow_html=True)
-                        mode_button = st.button(
-                            f"Select", 
-                            key=f"mode_{mode}",
-                            use_container_width=True,
-                            disabled=mode_selected
-                        )
-                        if mode_button and not mode_selected:
-                            sst['creation_mode'] = mode
-                            st.rerun()
-            
-            # Small description of the selected mode
-            st.caption(f"**Current mode:** {mode_descriptions[mode_options.index(creation_mode)]}")
-        
-        # Second row: Action buttons and toggles
-        row2_cols = st.columns([3, 2], gap="medium")
-        
-        with row2_cols[0]:
-            generate_now_clicked = False
-            if creation_mode == "Generate":
-                generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
-            elif creation_mode == "Import":
-                generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
-        
-        with row2_cols[1]:
-            auto_assign_max = False
-            if creation_mode != "Manual":
-                auto_assign_max = st.toggle(
-                    "Auto-assign artifacts after generation",
-                    key="auto_assign_max_toggle",
-                    value=False,
-                    help="Automatically assigns the maximum allowed number of generated artifacts"
-                )
 
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
@@ -1124,90 +1006,39 @@ def general_creation_view(assigned_elements):
             if not manual:
                 st.divider()
 
-    # Display different content based on selected mode
-    # Each mode is visually separated and has consistent styling
-    
     if creation_mode == "Manual":
-        # Manual mode with clear visual distinction
-        with st.container():
-            # Header with mode icon
-            st.markdown("#### ✏️ Manual Entry Mode")
-            st.caption("Directly create and edit artifacts")
-            
-            if is_single:
-                with st.container(border=True):
-                    if not is_image:
-                        artifact_input_subview(element_selected, element_store)
-                    else:
-                        image_input_subview(element_selected, element_store)
-                    display_generated_artifacts_view(element_selected)
-            else:
-                elements_group = element_config["elements"]
-                display_group_elements(elements_group, manual=True)
-                
-    elif creation_mode == "Generate":
-        # Generate mode with proper sections
-        with st.container():
-            # Header with mode icon
-            st.markdown("#### 🔄 Generate Mode")
-            st.caption("AI-powered artifact generation")
-            
-            # Generation parameters and controls
+        if is_single:
+            with st.container(border=True):
+                if not is_image:
+                    artifact_input_subview(element_selected, element_store)
+                else:
+                    image_input_subview(element_selected, element_store)
+                display_generated_artifacts_view(element_selected)
+        else:
+            elements_group = element_config["elements"]
+            display_group_elements(elements_group, manual=True)
+    elif creation_mode in ("Generate", "Import"):
+        if creation_mode == "Generate":
             generate_artifacts(element_selected, is_image, generate_now_clicked)
-            
-            # Auto-assign if enabled
             if generate_now_clicked and auto_assign_max:
                 if is_single:
                     auto_assign_artifacts([element_selected], is_image)
                 else:
                     elements_group = element_config["elements"]
                     auto_assign_artifacts(elements_group)
-            
-            # Display generated artifacts section
-            st.divider()
-            
-            # Display artifacts with clear section header
-            if is_single:
-                with st.container(border=True):
-                    st.markdown("##### Generated Artifacts")
-                    st.caption("Select artifacts to assign to this element")
-                    display_generated_artifacts_view(element_selected)
-                    if auto_assign_max:
-                        auto_assign_artifacts([element_selected], is_image)
-            else:
-                elements_group = element_config["elements"]
-                with st.container(border=True):
-                    st.markdown("##### Generated Elements")
-                    display_group_elements(elements_group)
-                    if auto_assign_max:
-                        auto_assign_artifacts(elements_group)
-    
-    elif creation_mode == "Import":
-        # Import mode with consistent styling
-        with st.container():
-            # Header with mode icon
-            st.markdown("#### 📥 Import Mode")
-            st.caption("Extract information from documents")
-            
-            # Import functionality
+        if creation_mode == "Import":
             import_artifacts(element_selected, generate_now_clicked)
-            
-            # Display imported artifacts
-            st.divider()
-            if is_single:
-                with st.container(border=True):
-                    st.markdown("##### Imported Artifacts")
-                    st.caption("Select artifacts to assign to this element")
-                    display_generated_artifacts_view(element_selected)
-                    if auto_assign_max:
-                        auto_assign_artifacts([element_selected], is_image)
-            else:
-                elements_group = element_config["elements"]
-                with st.container(border=True):
-                    st.markdown("##### Imported Elements")
-                    display_group_elements(elements_group)
-                    if auto_assign_max:
-                        auto_assign_artifacts(elements_group)
+        st.divider()
+        if is_single:
+            st.subheader("Generated Artifacts")
+            display_generated_artifacts_view(element_selected)
+            if auto_assign_max:
+                auto_assign_artifacts([element_selected], is_image)
+        else:
+            elements_group = element_config["elements"]
+            display_group_elements(elements_group)
+            if auto_assign_max:
+                auto_assign_artifacts(elements_group)
     if is_single and is_image:
         st.divider()
         display_artifact_view_image(element_selected, element_store)
