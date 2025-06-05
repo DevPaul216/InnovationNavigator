@@ -141,6 +141,7 @@ def update_data_store():
     full_path = get_full_data_store_path()
     with open(full_path, "w", encoding="utf-8") as file:
         json.dump(sst.data_store, file, indent=4)
+    sst.update_graph = True  # Ensure the flow graph updates after any data change
 
 
 def load_data_store():
