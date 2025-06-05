@@ -343,6 +343,14 @@ def add_artifact(toggle_key, element_name, artifact_id, artifact):
     sst.confirmed_artifacts[element_name] = artifacts_dict
 
 
+# Function declaration moved below to consolidate with the enhanced version
+def add_to_confirmed_artifacts(element_name, artifact_key, artifact):
+    """Add an artifact to the confirmed artifacts."""
+    if element_name not in sst.confirmed_artifacts:
+        sst.confirmed_artifacts[element_name] = {}
+    sst.confirmed_artifacts[element_name][artifact_key] = artifact
+
+
 def display_generated_artifacts_view(element_name):
     # Combine generated artifacts and already assigned artifacts, show all with toggles
     generated = sst.generated_artifacts.get(element_name, {})
@@ -451,63 +459,136 @@ def resource_selection_view(element_name):
     query = None
     number_entries_used = None
     uploaded_files = None
+    
+    # Initialize state key for resource selection
+    if f"selected_resource_{element_name}" not in st.session_state:
+        st.session_state[f"selected_resource_{element_name}"] = used_resources[0] if used_resources else None
 
     if used_resources is not None and len(used_resources) > 0:
-        with st.container(border=False):
+        with st.container(border=True):
             st.markdown("##### Additional Resources")
             
-            # Use segmented control with improved styling
-            selected_option = st.segmented_control(
-                label="Resource Type",
-                options=used_resources,
-                selection_mode='single',
-                format_func=format_func,
-            )
-
+            # Create tabs to select resource type with better visual organization
+            resource_cols = st.columns(len(used_resources))
+            
+            for i, resource in enumerate(used_resources):
+                with resource_cols[i]:
+                    resource_selected = resource == st.session_state[f"selected_resource_{element_name}"]
+                    container_style = "background-color: #f0f7ff; padding: 10px; border-radius: 5px;" if resource_selected else ""
+                    
+                    # Resource icons
+                    resource_icons = {
+                        "website": "🏠",
+                        "websearch": "🔍",
+                        "documents": "📄"
+                    }
+                    
+                    # Resource titles
+                    resource_titles = {
+                        "website": "Website",
+                        "websearch": "Google Search",
+                        "documents": "Documents"
+                    }
+                    
+                    # Create clickable container for each resource type
+                    with st.container(border=resource_selected):
+                        st.markdown(f"""<div style='text-align: center; {container_style}'>
+                                    <h3>{resource_icons.get(resource, '📌')}</h3>
+                                    <h6>{resource_titles.get(resource, format_func(resource))}</h6>
+                                    </div>""", unsafe_allow_html=True)
+                        
+                        resource_button = st.button(
+                            f"Select",
+                            key=f"resource_{resource}_{element_name}",
+                            use_container_width=True,
+                            disabled=resource_selected
+                        )
+                        
+                        if resource_button and not resource_selected:
+                            st.session_state[f"selected_resource_{element_name}"] = resource
+                            st.rerun()
+            
+            # Get the currently selected resource
+            selected_option = st.session_state[f"selected_resource_{element_name}"]
+            
+            # Show a divider
+            st.divider()
+            
             # Show the appropriate input fields based on the selection
             if selected_option == "website":
                 with st.container(border=True):
                     cols = st.columns([1, 10])
-                    cols[0].markdown("🏠")
-                    cols[1].markdown("#### Website")
+                    cols[0].markdown(f"<div style='font-size: 2rem; text-align: center;'>🏠</div>", unsafe_allow_html=True)
+                    cols[1].markdown("#### Website Content")
+                    
                     home_url = st.text_input(
                         label="Enter website URL to extract content from",
                         placeholder="https://example.com",
                         help="Content from this URL will be used as additional context"
                     ).strip()
+                    
+                    # Add visual indicator for valid URL
+                    if home_url:
+                        if home_url.startswith(('http://', 'https://')):
+                            st.success("URL looks valid. Click 'Generate now!' to continue.")
+                        else:
+                            st.warning("Please enter a complete URL starting with http:// or https://")
 
             elif selected_option == "websearch":
                 with st.container(border=True):
                     cols = st.columns([1, 10])
-                    cols[0].markdown("🔍")
+                    cols[0].markdown(f"<div style='font-size: 2rem; text-align: center;'>🔍</div>", unsafe_allow_html=True)
                     cols[1].markdown("#### Google Search")
+                    
                     query = st.text_input(
                         label="Enter search query",
                         placeholder="Type your search query here",
                         help="Results from this search will be used as additional context"
                     ).strip()
                     
-                    search_cols = st.columns([3, 2])
-                    with search_cols[0]:
-                        number_entries_used = st.slider(
-                            label="Number of results to use",
-                            min_value=1,
-                            max_value=10,
-                            value=5,
-                            help="How many search results should be included"
-                        )
+                    if query:
+                        search_cols = st.columns([3, 2])
+                        with search_cols[0]:
+                            number_entries_used = st.slider(
+                                label="Number of results to use",
+                                min_value=1,
+                                max_value=10,
+                                value=5,
+                                help="How many search results should be included"
+                            )
+                        # Add visual indicator
+                        st.info(f"Will search for '{query}' and use top {number_entries_used} results")
 
             elif selected_option == "documents":
                 with st.container(border=True):
                     cols = st.columns([1, 10])
-                    cols[0].markdown("📄")
+                    cols[0].markdown(f"<div style='font-size: 2rem; text-align: center;'>📄</div>", unsafe_allow_html=True)
                     cols[1].markdown("#### Document Upload")
+                    
                     uploaded_files = st.file_uploader(
                         label="Upload PDF documents",
                         type="pdf",
                         accept_multiple_files=True,
                         help="Upload PDF documents containing relevant information"
                     )
+                      # Show preview of uploaded files
+                    if uploaded_files:
+                        st.markdown("##### Uploaded Documents")
+                        doc_cols = st.columns(min(3, len(uploaded_files)))
+                        
+                        for i, file in enumerate(uploaded_files):
+                            with doc_cols[i % 3]:
+                                with st.container(border=True):
+                                    st.markdown(f"**{file.name}**")
+                                    try:
+                                        # Try to display first page preview
+                                        reader = PyPDF2.PdfReader(file)
+                                        num_pages = len(reader.pages)
+                                        st.caption(f"{num_pages} pages")
+                                    except Exception as e:
+                                        st.caption("Error reading PDF")
+                                          # Reset file pointer for later processing
+                                    file.seek(0)
 
     return home_url, query, number_entries_used, uploaded_files
 
@@ -658,7 +739,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
     if not is_image:
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
-    
+
     with st.expander("Prompt & Response Details"):
         # Create tabs for better organization
         prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
@@ -976,7 +1057,6 @@ def element_selection_format_func(item):
 
 
 def general_creation_view(assigned_elements):
-    #st.subheader("Generate Information Artifacts")
     # --- Main controls row with improved layout ---
     with st.container(border=True):
         # First row: Element selection and mode selection with better organization
@@ -1002,7 +1082,7 @@ def general_creation_view(assigned_elements):
             
             # Create mode icons and descriptions for better visual distinction
             mode_options = ["Manual", "Generate", "Import"]
-            mode_icons = ["✏️", "🔄", "📥"]
+            mode_icons = ["✏️", "🤖", "📥"]
             mode_descriptions = [
                 "Manually create and edit artifacts",
                 "Auto-generate artifacts with AI",
@@ -1014,16 +1094,29 @@ def general_creation_view(assigned_elements):
             for i, (mode, icon, desc) in enumerate(zip(mode_options, mode_icons, mode_descriptions)):
                 with mode_cols[i]:
                     mode_selected = mode == creation_mode
-                    container_style = "background-color: #f0f2f6; border-radius: 5px; padding: 10px;" if mode_selected else ""
                     
-                    # Create a clickable container for each mode
+                    # Create a clickable container for each mode with better styling
                     with st.container(border=mode_selected):
-                        st.markdown(f"<div style='text-align: center; {container_style}'>"
-                                   f"<h3>{icon}</h3>"
-                                   f"<h6>{mode}</h6>"
-                                   "</div>", unsafe_allow_html=True)
+                        # Apply custom styling for selected vs non-selected modes
+                        bg_color = "#f0f7ff" if mode_selected else "#ffffff"
+                        border_color = "#0078d4" if mode_selected else "#e0e0e0"
+                        shadow = "0 0 10px rgba(0, 120, 212, 0.2)" if mode_selected else "none"
+                        
+                        # Render the mode container with improved styling
+                        st.markdown(f"""<div style='text-align: center; 
+                                    background-color: {bg_color}; 
+                                    border-radius: 5px; 
+                                    padding: 15px 10px;
+                                    border: 1px solid {border_color};
+                                    box-shadow: {shadow};'>
+                                    <div style='font-size: 2rem;'>{icon}</div>
+                                    <div style='font-weight: 600; margin-top: 5px;'>{mode}</div>
+                                    <div style='font-size: 0.8rem; color: #666; margin-top: 5px;'>{desc}</div>
+                                    </div>""", unsafe_allow_html=True)
+                        
+                        # Hidden button for interaction
                         mode_button = st.button(
-                            f"Select", 
+                            "Select", 
                             key=f"mode_{mode}",
                             use_container_width=True,
                             disabled=mode_selected
@@ -1031,19 +1124,31 @@ def general_creation_view(assigned_elements):
                         if mode_button and not mode_selected:
                             sst['creation_mode'] = mode
                             st.rerun()
-            
-            # Small description of the selected mode
-            st.caption(f"**Current mode:** {mode_descriptions[mode_options.index(creation_mode)]}")
         
         # Second row: Action buttons and toggles
+        st.divider()
         row2_cols = st.columns([3, 2], gap="medium")
         
         with row2_cols[0]:
             generate_now_clicked = False
+            
+            # Customize button based on selected mode
             if creation_mode == "Generate":
-                generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+                generate_now_clicked = st.button(
+                    "🚀 Generate Now!", 
+                    type="primary", 
+                    use_container_width=True,
+                    help="Generate content using AI based on your settings"
+                )
             elif creation_mode == "Import":
-                generate_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+                generate_now_clicked = st.button(
+                    "📥 Import Now!", 
+                    type="primary", 
+                    use_container_width=True,
+                    help="Import content from the selected resources"
+                )
+            elif creation_mode == "Manual":
+                st.info("📝 You are in manual mode. Edit or create content directly below.")
         
         with row2_cols[1]:
             auto_assign_max = False
@@ -1055,6 +1160,12 @@ def general_creation_view(assigned_elements):
                     help="Automatically assigns the maximum allowed number of generated artifacts"
                 )
 
+    # Display a header with the current mode and element
+    selected_element_name = element_selection_format_func(element_selected)
+    mode_icon = mode_icons[mode_options.index(creation_mode)]
+    st.markdown(f"### {mode_icon} {creation_mode} Mode: {selected_element_name}")
+    
+    # Element configuration
     element_store = sst.data_store[sst.selected_template_name]
     element_config = sst.elements_config[element_selected]
     is_image = element_config.get("type") == "image"
@@ -1092,20 +1203,40 @@ def general_creation_view(assigned_elements):
                 rerun = True
         return rerun
 
-    def display_group_elements(elements_group, manual=False):
-        position = 0
-        for row_config in selected_template_config['display']:
-            sub_rows = row_config['format']
-            height = row_config['height'] * 2
-            number_cols = len(sub_rows)
-            cols = st.columns(number_cols, vertical_alignment='center')
-            for col, sub_row in zip(cols, sub_rows):
-                with col:
-                    height_single = int(height / sub_row) - (sub_row - 1) * vertical_gap
-                    for _ in range(sub_row):
-                        if position < len(elements_group):
-                            _display_group_element(elements_group[position], height_single, manual)
-                            position += 1
+    # ----- Conditional UI based on selected mode -----
+    if creation_mode == "Manual":
+        # Manual mode UI
+        with st.container(border=True):
+            st.markdown("##### Manual Content Creation")
+            if is_single:
+                if not is_image:
+                    # Text content creation
+                    st.caption("Enter content directly:")
+                    new_entry = st.text_area("New content", key=f"manual_text_{element_selected}", height=150)
+                    col1, col2 = st.columns([1, 4])
+                    with col1:
+                        if st.button("Add", key=f"add_manual_text_{element_selected}", use_container_width=True):
+                            if new_entry.strip():
+                                element_store[element_selected].append(new_entry)
+                                update_data_store()
+                                st.rerun()
+                else:                    # Image content creation
+                    st.caption("Upload an image:")
+                    uploaded_image = st.file_uploader("Upload image", type=["png", "jpg", "jpeg"], key=f"manual_image_{element_selected}")
+                    if uploaded_image:
+                        try:
+                            # Safe handling of PIL Image
+                            image = Image.open(uploaded_image)
+                            st.image(image, caption="Preview", width=300)
+                            if st.button("Add Image", key=f"add_manual_image_{element_selected}", use_container_width=True):
+                                add_image_to_image_store(element_selected, element_store, uploaded_image)
+                                update_data_store()
+                                st.rerun()
+                        except Exception as e:
+                            st.error(f"Error processing image: {str(e)}")
+            else:
+                # Group elements
+                st.info("This is a group element. Please use the 'Display & Edit' section below to manage its content.")
 
     def _display_group_element(element_name, height_single, manual):
         config = sst.elements_config[element_name]
@@ -1638,6 +1769,9 @@ def start_sub_view():
     if uploaded_file is not None:
         if st.button("Import"):
             save_path = "uploaded_project.zip"
+           
+
+
             with open(save_path, "wb") as file:
                 file.write(uploaded_file.getbuffer())
             shutil.unpack_archive(save_path, "./stores", "zip")
@@ -1667,3 +1801,103 @@ if __name__ == '__main__':
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
+
+def display_group_elements(elements_group, manual=False):
+    """Display a group of elements with proper organization and controls."""
+    element_store = sst.data_store[sst.selected_template_name]
+    
+    # Display each element in the group
+    for element_name in elements_group:
+        config = sst.elements_config[element_name]
+        display_name = config.get("display_name", element_name)
+        description = config.get("description", "")
+        
+        with st.container(border=True):
+            st.markdown(
+                f"<span style='font-weight:bold;font-size:1.1em'>{display_name}</span> "
+                f"<span style='color:#888;font-size:0.98em'>{description}</span>",
+                unsafe_allow_html=True)
+            
+            if manual:
+                # Add manual entry controls for this element
+                if config.get("type") == "image":
+                    image_input_subview(element_name, element_store)
+                else:
+                    artifact_input_subview(element_name, element_store)
+                st.divider()
+                
+            # Display existing artifacts
+            display_generated_artifacts_view(element_name)
+            
+            if not manual:
+                st.divider()
+
+def display_single_element(element_selected, element_store, element_config):
+    """Display a single element with appropriate controls for editing and deletion."""
+    element_type = element_config.get("type")
+    is_image = element_type == "image"
+    
+    if is_image:
+        # Handle image elements
+        if element_selected in element_store and element_store[element_selected]:
+            try:
+                image_path = element_store[element_selected][0]
+                if image_path and os.path.exists(image_path):
+                    image = Image.open(image_path)
+                    col1, col2 = st.columns([4, 1])
+                    with col1:
+                        st.image(image, use_column_width=True)
+                    with col2:
+                        if st.button("🗑️ Remove", key=f"remove_img_{element_selected}"):
+                            element_store[element_selected] = []
+                            update_data_store()
+                            st.rerun()
+                else:
+                    st.info("No image available")
+            except Exception as e:
+                st.error(f"Error displaying image: {str(e)}")
+        else:
+            st.info("No image has been added yet")
+    else:
+        # Handle text elements
+        if element_selected in element_store and element_store[element_selected]:
+            for i, item in enumerate(element_store[element_selected]):
+                with st.container(border=True):
+                    cols = st.columns([10, 1])
+                    with cols[0]:
+                        st.markdown(f"**Item {i+1}**")
+                        st.markdown(item)
+                    with cols[1]:
+                        if st.button("🗑️", key=f"delete_{element_selected}_{i}"):
+                            element_store[element_selected].pop(i)
+                            update_data_store()
+                            st.rerun()
+        else:
+            st.info("No content has been added yet")
+
+def show_element_group(element_selected, element_config, element_store):
+    """Display a group of elements with proper organization and controls."""
+    if "elements" not in element_config:
+        st.warning("Element configuration is missing the 'elements' field.")
+        return
+        
+    elements_group = element_config["elements"]
+    
+    # Use tabs for better organization of group elements
+    if not elements_group:
+        st.info("No elements in this group.")
+        return
+        
+    # Create tabs for each element in the group
+    tabs = st.tabs([element_selection_format_func(element) for element in elements_group])
+    
+    for i, (element, tab) in enumerate(zip(elements_group, tabs)):
+        with tab:
+            if element in sst.elements_config:
+                sub_element_config = sst.elements_config[element]
+                st.markdown(f"**{element_selection_format_func(element)}**")
+                st.caption(sub_element_config.get("description", ""))
+                st.divider()
+                display_single_element(element, element_store, sub_element_config)
+            else:
+                st.error(f"Configuration for element '{element}' not found.")
