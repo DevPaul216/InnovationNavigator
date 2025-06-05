@@ -1343,6 +1343,8 @@ def start_sub_view():
             sst.project_name = new_project_name
             # Create new empty data store
             sst.data_store = {}
+            sst.generated_artifacts = {}
+            sst.confirmed_artifacts = {}
             update_data_store()
             load_data_store()
             st.success("Project created")
@@ -1359,6 +1361,8 @@ def start_sub_view():
                                          index=project_names.index(sst.project_name))
     if selected_project_name != sst.project_name:
         sst.project_name = selected_project_name
+        sst.generated_artifacts = {}
+        sst.confirmed_artifacts = {}
         load_data_store()
         sst.sidebar_state = "expanded"
         st.rerun()
