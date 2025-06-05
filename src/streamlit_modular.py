@@ -202,7 +202,10 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
             # Special formatting for key templates
-            special_templates = [ ]
+            special_templates = [
+                "align", "discover", "define", "develop", "deliver", "continue",
+                "empathize", "define+", "ideate", "prototype", "test"
+            ]
             if template_name.lower() in special_templates:
                 style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
                 node = StreamlitFlowNode(
@@ -267,7 +270,8 @@ def init_graph():
         has_all_required_content = True
         
         # Skip special templates and Start/End
-        if template_name in ["Start", "End"]:
+        if template_name in ["Start", "End"] or template_name.lower() in ["align", "discover", "define", "develop", "deliver", "continue", 
+                           "empathize", "define+", "ideate", "prototype", "test"]:
             continue
             
         # Check if template has any content
@@ -321,7 +325,8 @@ def init_graph():
             # Only consider as "next" if not already completed or in progress
             if target not in completed_templates and target not in in_progress_templates:
                 # Skip special templates
-                if target not in ["Start", "End"]:
+                if target not in ["Start", "End"] and target.lower() not in ["align", "discover", "define", "develop", "deliver", "continue", 
+                               "empathize", "define+", "ideate", "prototype", "test"]:
                     next_templates.append(target)
     
     # Remove duplicates while preserving order
@@ -909,7 +914,8 @@ def get_progress_stats():
     total_filled_required_elements = 0
     
     # Skip special templates like "Start", "End", and phase headers
-    special_templates = ["Start", "End"]
+    special_templates = ["Start", "End", "align", "discover", "define", "develop", "deliver", "continue",
+                         "empathize", "define+", "ideate", "prototype", "test"]
     
     # First, get all template configs to count ALL required elements across all templates
     for template_name, template_config in sst.template_config.items():
@@ -973,7 +979,10 @@ def chart_view():
             pan_on_drag=False,
         )
     # Prevent selection of special templates
-    special_templates = []
+    special_templates = [
+        "align", "discover", "define", "develop", "deliver", "continue",
+        "empathize", "define+", "ideate", "prototype", "test"
+    ]
     if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
