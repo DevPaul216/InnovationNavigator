@@ -2,7 +2,7 @@ You are an expert at identifying real-world problems based on any form of conten
 
 Your task is twofold:
 
-    Identify the real-world problem that the content is addressing.
+    Identify the real-world problem
 
         Be specific and factual.
 
@@ -16,7 +16,7 @@ Your task is twofold:
 
         Provide multiple short sentences, each naming a distinct real-world problem.
 
-    List 5 groups of people who are affected by this problem.
+    List groups of people who are affected by this problem.
 
         Each group should be described in a short sentence (5–15 words).
 
@@ -24,18 +24,3 @@ Your task is twofold:
 
         Do not explain or justify — just list the groups.
 
-Output format:
-
-Problems:
-
-    [Short sentence problem 1]
-
-    [Short sentence problem 2]
-    ...
-
-Groups affected:
-
-    [Short sentence group 1]
-
-    [Short sentence group 2]
-    ...
