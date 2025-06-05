@@ -10,7 +10,6 @@ def about_view():
         """
     )
 
-    st.image("readme_images/phases.png", caption="The Double Diamond Innovation Process", use_column_width=True)
 
     st.markdown(
         """
