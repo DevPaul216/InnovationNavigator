@@ -9,7 +9,7 @@
     "description": "A group of elements defining the innovation project",
     "required": true,
     "type": "group",
-    "used_templates": ["Innovation"],
+    "used_templates": [],
     "elements": ["InnovationIssue", "TargetGroup"],
     "prompt_name": "prompt_innovationgroup",
     "schema_name": "schema innovationgroup",
