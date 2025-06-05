@@ -191,7 +191,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(completed_templates):
+def init_flow_graph(connection_states, completed_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -224,7 +224,9 @@ def init_flow_graph(completed_templates):
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                if template_name in completed_templates:
+                if template_name in blocked_templates:
+                    style = {'background-color': COLOR_BLOCKED, "color": 'black'}
+                elif template_name in completed_templates:
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
                 else:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
@@ -238,13 +240,17 @@ def init_flow_graph(completed_templates):
             # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
-                edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'})
+                connection_state = connection_states[edge_id]
+                edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'},
+                                         animated=connection_state,
+                                         style={"backgroundColor": "green"})
                 edges.append(edge)
         sst.flow_state = StreamlitFlowState(nodes, edges)
         sst.update_graph = False
 
 
 def init_graph():
+    connection_states = {}
     completed_templates = []
     for template_name, template_config in sst.template_config.items():
         is_fulfilled = True
@@ -260,7 +266,16 @@ def init_graph():
                             is_fulfilled = False
         if is_fulfilled:
             completed_templates.append(template_name)
-    return completed_templates
+        for target in template_config["connects"]:
+            edge_id = f"{template_name}-{target}"
+            connection_states[edge_id] = is_fulfilled
+    blocked_templates = []
+    for template_name, template_config in sst.template_config.items():
+        connections = template_config["connects"]
+        if template_name not in completed_templates or template_name in blocked_templates:
+            blocked_templates.extend(connections)
+    blocked_templates = list(set(blocked_templates))
+    return connection_states, completed_templates, blocked_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
@@ -1416,8 +1431,8 @@ view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()
-    completed_templates = init_graph()
-    init_flow_graph(completed_templates)
+    connection_states, completed_templates, blocked_templates = init_graph()
+    init_flow_graph(connection_states, completed_templates, blocked_templates)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
