@@ -1547,8 +1547,9 @@ def generation_import_details_view(element_name, generate_now_clicked=False):
         schema = load_schema(schema_name)
 
     with st.expander("Prompt & Response Details"):
+        # Create tabs for better organization
         prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
-
+        
         with prompt_tab:
             st.markdown(f"##### System Prompt: `{prompt_name}.txt`")
             if prompt:
@@ -1556,15 +1557,18 @@ def generation_import_details_view(element_name, generate_now_clicked=False):
                     st.markdown(prompt)
             else:
                 st.error("No prompt assigned to this element")
-
+                
         with schema_tab:
-            if schema is not None:
+            if not is_image and schema is not None:
                 st.markdown(f"##### Response Schema: `{schema_name}.json`")
                 with st.container(border=False, height=300):
                     st.json(schema)
             else:
-                st.warning("No schema defined for this element")
-
+                if is_image:
+                    st.info("Image generation does not use a response schema")
+                else:
+                    st.warning("No schema defined for this element")
+                
         with context_tab:
             st.markdown("##### Contextual Information Used in Generation")
             if selected_resources:
