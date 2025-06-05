@@ -198,26 +198,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            # Special formatting for key templates
-            special_templates = [
-                "align", "discover", "define", "develop", "deliver", "continue",
-                "empathize", "define+", "ideate", "prototype", "test"
-            ]
-            if template_name.lower() in special_templates:
-                style = {"backgroundColor": "white", "width": "320px", "padding": "1px", "border": "2px solid #bbb"}
-                node = StreamlitFlowNode(
-                    id=str(template_name),
-                    pos=(0, 0),
-                    data={'content': f"{template_display_name}"},
-                    node_type="default",
-                    source_position="right",
-                    target_position="left",
-                    style=style,
-                    draggable=False,
-                    focusable=False,
-                    selectable=False
-                )
-            elif template_name == "Start":
+            if template_name == "Start":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
                                          node_type="input", source_position='right')
@@ -260,19 +241,12 @@ def init_graph():
         if is_required:
             elements = template_config["elements"]
             for element_name in elements:
-                if element_name in sst.elements_config:
-                    element_config = sst.elements_config[element_name]
-                    if element_config.get("required", False):
-                        element_store = sst.data_store[template_name]
-                        # Check if this specific required element has data
-                        if element_name in element_store:
-                            element_values = element_store[element_name]
-                            if element_values is None or len(element_values) == 0:
-                                is_fulfilled = False
-                                break
-                        else:
+                element_config = sst.elements_config[element_name]
+                if element_config["required"]:
+                    element_store = sst.data_store[template_name]
+                    for element_values in element_store.values():
+                        if element_values is None or len(element_values) == 0:
                             is_fulfilled = False
-                            break
         if is_fulfilled:
             completed_templates.append(template_name)
         for target in template_config["connects"]:
@@ -281,8 +255,7 @@ def init_graph():
     blocked_templates = []
     for template_name, template_config in sst.template_config.items():
         connections = template_config["connects"]
-        # Fix: Only block connections if this template is not completed
-        if template_name not in completed_templates:
+        if template_name not in completed_templates or template_name in blocked_templates:
             blocked_templates.extend(connections)
     blocked_templates = list(set(blocked_templates))
     return connection_states, completed_templates, blocked_templates
