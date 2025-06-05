@@ -23,6 +23,12 @@ from utils import load_prompt, make_request_structured, load_schema, make_reques
 from website_parser import get_url_text_and_images
 
 data_store_path = os.path.join("stores", "data_stores")
+# Define color scheme
+COLOR_COMPLETED = "rgb(76, 175, 80)"  # Green - more professional looking
+COLOR_IN_PROGRESS = "rgb(255, 152, 0)"  # Orange - warmer tone
+COLOR_AVAILABLE = "rgb(224, 224, 255)"  # Light blue - subtle
+COLOR_NEXT = "rgb(33, 150, 243)"  # Bright blue - stands out for recommended next
+
 
 
 def align_data_store():
@@ -212,8 +218,18 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
             elif template_name == "End":
                 node = StreamlitFlowNode(id=str(template_name), pos=(0, 0),
                                          data={'content': f"{template_display_name}"},
-                                         node_type="output", target_position='left')            else:
-                style = {'background-color': '#ffffff', "color": 'black', "border": "1px solid #9999FF"}
+                                         node_type="output", target_position='left')
+            else:                # Enhanced logic with next recommended template highlighting
+                if template_name in completed_templates:
+                    style = {'background-color': COLOR_COMPLETED, "color": 'white'}
+                elif template_name in in_progress_templates:
+                    style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
+                elif template_name in next_templates:
+                    # Highlight the next recommended template
+                    style = {'background-color': COLOR_NEXT, "color": 'white', "border": "2px solid white"}
+                else:
+                    # All other templates are available to start
+                    style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
@@ -822,14 +838,86 @@ def display_template_view(selected_template_name):
                              vertical_gap)
 
 
+def legend_subview():
+    # Add a legend for the graph colors
+    legend_cols = st.columns([1, 1, 1, 1], gap="small")  # Back to 4 columns for the new status
+    with legend_cols[0]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed (All Required Elements)",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[1]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[2]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_NEXT}; width: 20px; height: 20px; display: inline-block; border: 2px solid white;'></div> Next Recommended",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[3]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_AVAILABLE}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Available",
+            unsafe_allow_html=True,
+        )
 
+
+def get_progress_stats():
+    total_required_elements = 0
+    total_filled_required_elements = 0
+    
+    # Skip special templates like "Start", "End", and phase headers
+    special_templates = ["Start", "End"]
+    
+    # First, get all template configs to count ALL required elements across all templates
+    for template_name, template_config in sst.template_config.items():
+        # Skip special templates
+        if template_name in special_templates or template_name.lower() in special_templates:
+            continue
+            
+        elements = template_config.get("elements", [])
+        element_store = sst.data_store.get(template_name, {})
+        
+        for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            # Only count required elements - default to True for consistency with init_graph()
+            is_required = element_config.get("required", True)
+            if not is_required:
+                continue
+            
+            # Count this as a required element regardless of whether it's in the data store
+            total_required_elements += 1
+            
+            # Check if the element exists in the data store and has content
+            if element in element_store:
+                values = element_store[element]
+                # Check if the element has content
+                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                    total_filled_required_elements += 1
+    
+    # Calculate progress percentage (prevent division by zero)
+    progress = (total_filled_required_elements / total_required_elements) if total_required_elements > 0 else 0
+    
+    return progress, total_filled_required_elements, total_required_elements
 
 
 def chart_view():
     add_empty_lines(3)
-    st.subheader(f"Project: {sst.project_name}")
-    add_empty_lines(1)
+    # Progress bar next to project title
+    progress, filled_elements, total_elements = get_progress_stats()
     
+    cols = st.columns([3, 7])
+    with cols[0]:
+        st.subheader(f"Project: {sst.project_name}")
+    with cols[1]:
+        # Add more context to the progress display
+        progress_text = f"Progress: {int(progress*100)}% ({filled_elements}/{total_elements} elements completed)"
+        st.progress(progress, text=progress_text)
+        
+    add_empty_lines(1)
+    legend_subview()
+
     with st.container(border=True):
         updated_state = streamlit_flow(
             key="ret_val_flow",
