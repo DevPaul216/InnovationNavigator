@@ -116,13 +116,12 @@
       { "format": [1, 4], "height": 600 },
       { "format": [1], "height": 200 }]
   },
-
   "Idea Comparison": {
     "display_name": "Idea Comparison",
     "description": "This template compares multiple ideas against each other, evaluating them based on criteria such as desirability, feasibility, viability, and sustainability (DFVS). This structured comparison helps identify the most promising solutions for further development.",
     "required": true,
     "connects": ["Value Proposition Canvas"],
-    "elements": ["IdeaList_group","RatingMatrix_group","Recommendation","ProductConcept"],
+    "elements": ["IdeaList_group","RatingMatrix_group","Recommendation","ProductConcept_Group"],
     "display": [{ "format": [9,9,9,9,9], "height": 2000 },
                 { "format": [1], "height": 200 }]
   },
