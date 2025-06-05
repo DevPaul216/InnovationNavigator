@@ -837,27 +837,50 @@ def get_progress_stats():
     # Progress is the percentage of templates that are at least half-full (or more)
     total_templates = 0
     templates_half_or_full = 0
+    
+    def expand_elements(elements):
+        """Expand group elements to their constituent elements"""
+        expanded = []
+        for element in elements:
+            element_config = sst.elements_config.get(element, {})
+            if element_config.get("type") == "group":
+                # Recursively expand group elements
+                sub_elements = element_config.get("elements", [])
+                expanded.extend(expand_elements(sub_elements))
+            else:
+                expanded.append(element)
+        return expanded
+    
     for template_name, element_store in sst.data_store.items():
         template_config = sst.template_config.get(template_name, {})
         elements = template_config.get("elements", [])
         if not elements:
             continue
+            
+        # Expand group elements to get all actual elements
+        expanded_elements = expand_elements(elements)
+        
         total_required_elements = 0
         total_filled_required_elements = 0
-        for element in elements:
+        
+        for element in expanded_elements:
             element_config = sst.elements_config.get(element, {})
             if not element_config.get("required", True):
                 continue
-            if element not in element_store:
-                continue
+                
             total_required_elements += 1
-            values = element_store[element]
-            if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
-                total_filled_required_elements += 1
+            
+            # Check if element has data in the store
+            if element in element_store:
+                values = element_store[element]
+                if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                    total_filled_required_elements += 1
+        
         if total_required_elements > 0:
             total_templates += 1
             if total_filled_required_elements >= (total_required_elements / 2):
                 templates_half_or_full += 1
+                
     progress = (templates_half_or_full / total_templates) if total_templates > 0 else 0
     return progress, templates_half_or_full, total_templates
 
@@ -865,11 +888,12 @@ def get_progress_stats():
 def chart_view():
     add_empty_lines(3)
     # Progress bar next to project title
-    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
+    progress, templates_half_or_full, total_templates = get_progress_stats()
     cols = st.columns([3, 7, 1])
     with cols[0]:
         st.subheader(f"Project: {sst.project_name}")
-        st.markdown("FYI-color indicationas and progress bars are not really functioning...maybe i will fix it later")
+        # Updated message since progress bar is now fixed
+        st.markdown(f"Templates: {templates_half_or_full}/{total_templates} at least 50% complete")
     with cols[1]:
         st.progress(progress, text=f"Progress: {int(progress*100)}%")
     add_empty_lines(1)
