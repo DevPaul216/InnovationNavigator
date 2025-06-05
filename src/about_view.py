@@ -1,7 +1,7 @@
 import streamlit as st
 
 def about_view():
-    st.title("Welcome to Innovation Navigator")
+    st.title("Welcome to Innovation Navigator.")
     st.markdown(
         """
         ## Your AI-Powered Guide for Innovation
