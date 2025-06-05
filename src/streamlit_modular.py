@@ -33,9 +33,10 @@ COLOR_NEXT = "rgb(33, 150, 243)"  # Bright blue - stands out for recommended nex
 
 def align_data_store():
     for template_name, template_config in sst.template_config.items():
-        element_store = {}
-        if template_name in sst.data_store:
-            element_store = sst.data_store[template_name]
+        # Only update missing elements, do not overwrite existing data
+        if template_name not in sst.data_store:
+            sst.data_store[template_name] = {}
+        element_store = sst.data_store[template_name]
         elements = template_config["elements"]
         for element in elements:
             if element in sst.elements_config:
@@ -51,8 +52,8 @@ def align_data_store():
             else:
                 print(
                     f"Element config of {element} referenced from template {template_name} not found in the element config!")
-        sst.data_store[template_name] = element_store
-    update_data_store()
+        # Do not overwrite sst.data_store[template_name] here, just update in place
+    # Do not call update_data_store() here to avoid overwriting with empty data
 
 
 def init_session_state():
