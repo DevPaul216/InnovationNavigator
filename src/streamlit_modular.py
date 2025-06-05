@@ -280,8 +280,8 @@ def init_graph():
             completed_templates.append(template_name)
     # Second pass: determine which templates should be blocked based on completion state
     for template_name, template_config in sst.template_config.items():
-        # Get the list of templates this one connects to
-        connections = template_config["connects"]
+        # (Previously unused: connections = template_config["connects"])
+        pass
     # Return the connection states, completed templates, and blocked templates
     return connection_states, completed_templates, blocked_templates
 
