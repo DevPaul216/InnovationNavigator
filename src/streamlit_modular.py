@@ -510,71 +510,89 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
         top_p = st.session_state.top_p
 
     # --- Combine Template selection and individual elements selection ---
-    with st.expander("Template & Element selection (information sources)"):
+    with st.expander("Information Sources"):
+        st.markdown("##### Select Templates and Elements to Use as Context")
+
         all_templates = list(sst.template_config.keys())
         selected_keys = st.multiselect(
-            label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
+            label="Templates to use as information sources",
             placeholder="Choose templates to use",
             options=all_templates,
-            default=required_items
+            default=required_items,
+            help="Select templates to use as context for generation"
         )
-        selected_elements = {}
-        columns = st.columns(2)
-        position = 0
-        for selected_key in selected_keys:
-            element_store = sst.data_store[selected_key]
-            with columns[position]:
-                element_names = [element for element in element_store.keys() if element != element_name]
-                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                           options=element_names,
-                                           default=element_names, key=f"multiselect_{selected_key}")
-                selected_elements[selected_key] = selection
-                position += 1
-            if position >= 2:
-                position = 0
-        for selected_key, selected_elements_list in selected_elements.items():
-            element_store = sst.data_store[selected_key]
-            for name in selected_elements_list:
-                resource_text = ""
-                element_value = element_store[name]
-                for value in element_value:
-                    resource_text += f"- {value}\n"
-                if resource_text.strip() != "":
-                    name_display = sst.elements_config[name].get("display_name", name)
-                    description = sst.elements_config[name].get("description", "No description available.")
-                    resource_text = f"_{description}_\n{resource_text}"
-                    selected_resources[name_display] = resource_text
+
+        if selected_keys:
+            st.divider()
+            st.markdown("##### Select Elements from Each Template")
+
+            selected_elements = {}
+            columns = st.columns(2)
+            position = 0
+
+            for selected_key in selected_keys:
+                element_store = sst.data_store[selected_key]
+                with columns[position]:
+                    with st.container(border=True):
+                        st.markdown(f"**{selected_key}**")
+                        element_names = [element for element in element_store.keys() if element != element_name]
+                        selection = st.multiselect(
+                            label="Available elements",
+                            options=element_names,
+                            default=element_names, 
+                            key=f"multiselect_{selected_key}"
+                        )
+                        selected_elements[selected_key] = selection
+                position = (position + 1) % 2
+
+            for selected_key, selected_elements_list in selected_elements.items():
+                element_store = sst.data_store[selected_key]
+                for name in selected_elements_list:
+                    resource_text = ""
+                    element_value = element_store[name]
+                    for value in element_value:
+                        resource_text += f"- {value}\n"
+                    if resource_text.strip() != "":
+                        name_display = sst.elements_config[name].get("display_name", name)
+                        description = sst.elements_config[name].get("description", "No description available.")
+                        resource_text = f"_{description}_\n{resource_text}"
+                        selected_resources[name_display] = resource_text
 
     # --- Combine Prompt and Schema into one expander ---
     prompt_name = element_config['prompt_name']
     prompt = load_prompt(prompt_name)
     schema = None
-    if not is_image:
+    if not element_config.get("type") == "image":
         schema_name = element_config['schema_name']
         schema = load_schema(schema_name)
-    with st.expander("Prompt & Response Schema"):
-        st.markdown("**Prompt:** " + prompt_name + ".txt")
-        if prompt:
-            st.markdown(prompt)
-        else:
-            st.error("There is no prompt assigned")
-        if not is_image and schema is not None:
-            st.divider()
-            st.markdown("**Schema:** " + schema_name + ".json")
-            st.json(schema)
-        st.divider()
-        st.markdown("**Contextual Information:**")
-        user_prompt = "\n".join([f"{key}: {value}" for key, value in selected_resources.items()])
-        st.markdown(user_prompt)
 
-    if generate_now_clicked:
-        with st.spinner("Generating..."):
-            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
-            if not is_image:
-                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+    with st.expander("Prompt & Response Details"):
+        prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
+
+        with prompt_tab:
+            st.markdown(f"##### System Prompt: `{prompt_name}.txt`")
+            if prompt:
+                with st.container(border=False, height=300):
+                    st.markdown(prompt)
             else:
-                handle_response_image(element_name, prompt, selected_resources)
+                st.error("No prompt assigned to this element")
 
+        with schema_tab:
+            if schema is not None:
+                st.markdown(f"##### Response Schema: `{schema_name}.json`")
+                with st.container(border=False, height=300):
+                    st.json(schema)
+            else:
+                st.warning("No schema defined for this element")
+
+        with context_tab:
+            st.markdown("##### Contextual Information Used in Generation")
+            if selected_resources:
+                with st.container(border=False, height=300):
+                    user_prompt = "\n".join([f"**{key}:**\n{value}\n" for key, value in selected_resources.items()])
+                    st.markdown(user_prompt)
+            else:
+                st.info("No contextual information selected yet")
 
 def import_artifacts(element_name, generate_now_clicked=False):
     element_config = sst.elements_config[element_name]
@@ -1489,90 +1507,7 @@ def generation_import_details_view(element_name, generate_now_clicked=False):
             temperature = st.session_state.temperature
             top_p = st.session_state.top_p
 
-    # --- Combine Template selection and individual elements selection ---
-    with st.expander("Information Sources"):
-        st.markdown("##### Select Templates and Elements to Use as Context")
 
-        all_templates = list(sst.template_config.keys())
-        selected_keys = st.multiselect(
-            label="Templates to use as information sources",
-            placeholder="Choose templates to use",
-            options=all_templates,
-            default=required_items,
-            help="Select templates to use as context for generation"
-        )
-
-        if selected_keys:
-            st.divider()
-            st.markdown("##### Select Elements from Each Template")
-
-            selected_elements = {}
-            columns = st.columns(2)
-            position = 0
-
-            for selected_key in selected_keys:
-                element_store = sst.data_store[selected_key]
-                with columns[position]:
-                    with st.container(border=True):
-                        st.markdown(f"**{selected_key}**")
-                        element_names = [element for element in element_store.keys() if element != element_name]
-                        selection = st.multiselect(
-                            label="Available elements",
-                            options=element_names,
-                            default=element_names, 
-                            key=f"multiselect_{selected_key}"
-                        )
-                        selected_elements[selected_key] = selection
-                position = (position + 1) % 2
-
-            for selected_key, selected_elements_list in selected_elements.items():
-                element_store = sst.data_store[selected_key]
-                for name in selected_elements_list:
-                    resource_text = ""
-                    element_value = element_store[name]
-                    for value in element_value:
-                        resource_text += f"- {value}\n"
-                    if resource_text.strip() != "":
-                        name_display = sst.elements_config[name].get("display_name", name)
-                        description = sst.elements_config[name].get("description", "No description available.")
-                        resource_text = f"_{description}_\n{resource_text}"
-                        selected_resources[name_display] = resource_text
-
-    # --- Combine Prompt and Schema into one expander ---
-    prompt_name = element_config['prompt_name']
-    prompt = load_prompt(prompt_name)
-    schema = None
-    if not element_config.get("type") == "image":
-        schema_name = element_config['schema_name']
-        schema = load_schema(schema_name)
-
-    with st.expander("Prompt & Response Details"):
-        prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
-
-        with prompt_tab:
-            st.markdown(f"##### System Prompt: `{prompt_name}.txt`")
-            if prompt:
-                with st.container(border=False, height=300):
-                    st.markdown(prompt)
-            else:
-                st.error("No prompt assigned to this element")
-
-        with schema_tab:
-            if schema is not None:
-                st.markdown(f"##### Response Schema: `{schema_name}.json`")
-                with st.container(border=False, height=300):
-                    st.json(schema)
-            else:
-                st.warning("No schema defined for this element")
-
-        with context_tab:
-            st.markdown("##### Contextual Information Used in Generation")
-            if selected_resources:
-                with st.container(border=False, height=300):
-                    user_prompt = "\n".join([f"**{key}:**\n{value}\n" for key, value in selected_resources.items()])
-                    st.markdown(user_prompt)
-            else:
-                st.info("No contextual information selected yet")
 
     if generate_now_clicked:
         with st.spinner("Generating..."):
