@@ -8,6 +8,7 @@ from pathlib import Path
 
 import PyPDF2
 import streamlit as st
+from PIL import Image
 from streamlit import session_state as sst
 from streamlit_flow import streamlit_flow
 from streamlit_flow.elements import StreamlitFlowNode, StreamlitFlowEdge
@@ -140,6 +141,8 @@ def update_data_store():
     full_path = get_full_data_store_path()
     with open(full_path, "w", encoding="utf-8") as file:
         json.dump(sst.data_store, file, indent=4)
+    # Ensure the graph is updated after data changes
+    sst.update_graph = True
 
 
 def load_data_store():
@@ -292,7 +295,7 @@ def init_graph():
             # If the element is required but not in the store or doesn't have content
             elif is_required:
                 has_required_elements = True
-                has_all_required_content = False# Add template to appropriate list
+                has_all_required_content = False
         # Mark as completed ONLY if it has all required elements filled AND at least one element has content
         # Templates with no required elements should never be marked as completed
         if has_all_required_content and has_required_elements and has_content:
@@ -307,7 +310,7 @@ def init_graph():
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = False
-      # Identify the next recommended templates to complete (based on the flow process)
+    # Identify the next recommended templates to complete (based on the flow process)
     # Look for templates that follow completed ones in the flow
     next_templates = []
     for completed in completed_templates:
@@ -327,7 +330,13 @@ def init_graph():
     # All templates that aren't completed, in progress, or next recommended are considered "available" 
     # We're not blocking any templates, as requested
     blocked_templates = []
-    
+
+    # Debug prints for color logic
+    print("[DEBUG] completed_templates:", completed_templates)
+    print("[DEBUG] in_progress_templates:", in_progress_templates)
+    print("[DEBUG] next_templates:", next_templates)
+    print("[DEBUG] connection_states:", connection_states)
+
     return connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates
 
 
@@ -348,15 +357,14 @@ def display_generated_artifacts_view(element_name):
     if isinstance(assigned, dict):
         assigned = list(assigned.values())
         sst.data_store[sst.selected_template_name][element_name] = assigned
-
     # Build a unique list: keep order, but don't duplicate
     all_artifacts = []
     artifact_keys = []
-    
     # Add generated artifacts first (with their ids)
     for artifact_id, artifact in generated.items():
         all_artifacts.append(artifact)
         # Use both id and hash of artifact for uniqueness
+        # For images, use hash of bytes if possible
         if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
             try:
                 artifact_hash = hash(artifact.getvalue())
@@ -365,19 +373,19 @@ def display_generated_artifacts_view(element_name):
         else:
             artifact_hash = hash(str(artifact))
         artifact_keys.append(f"generated_{artifact_id}_{artifact_hash}")
-        
     # Add assigned artifacts that are not in generated
     for artifact in assigned:
         if artifact not in all_artifacts:
             all_artifacts.append(artifact)
             artifact_keys.append(f"assigned_{hash(str(artifact))}")
-            
     if not all_artifacts:
         st.write("Nothing to show")
         return
-
     element_store = sst.data_store[sst.selected_template_name]
+    # --- Make the display more compact ---
+    compact_container_style = ""
     for i, (artifact, artifact_key) in enumerate(zip(all_artifacts, artifact_keys)):
+        # Use a more compact container without any background, border, or margin
         with st.container():
             columns = st.columns([0.2, 2.5, 0.2, 1], gap="small")
             with columns[1]:
@@ -385,39 +393,35 @@ def display_generated_artifacts_view(element_name):
                 if isinstance(artifact, str) and artifact.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
                     st.image(artifact, use_container_width=True)
                 elif hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
-                    # Show BytesIO image directly
+                    # Show BytesIO image
                     st.image(artifact, use_container_width=True)
                 else:
                     st.markdown(str(artifact))
-            
             with columns[3]:
                 # Use a unique key for each toggle based on artifact_key and element_name
                 is_assigned = artifact in assigned
                 toggled = st.toggle("+", value=is_assigned, key=f"toggle_{element_name}_{artifact_key}")
-                
                 if toggled and not is_assigned:
                     # For BytesIO images, save to disk and store path
                     if hasattr(artifact, 'getvalue') and callable(artifact.getvalue):
                         import hashlib
+                        import os
+                        from PIL import Image
                         artifact.seek(0)
+                        img = Image.open(artifact)
                         hash_digest = hashlib.sha256(artifact.getvalue()).hexdigest()[:10]
                         directory_path = './stores/image_store'
                         if not os.path.exists(directory_path):
                             os.makedirs(directory_path)
                         filename = f"{element_name}_{sst.project_name}_{hash_digest}.jpg"
                         full_path = os.path.join(directory_path, filename)
-                        # Write bytes directly without using PIL
-                        with open(full_path, 'wb') as f:
-                            f.write(artifact.getvalue())
+                        img.save(full_path)
                         artifact_to_add = full_path
                     else:
                         artifact_to_add = artifact
-                    
                     check = check_can_add(element_store, element_name, [artifact_to_add])
                     if check is None:
                         assigned.append(artifact_to_add)
-                        # Ensure graph updates when artifacts are added
-                        sst.update_graph = True
                         update_data_store()
                         st.rerun()
                     else:
@@ -425,8 +429,6 @@ def display_generated_artifacts_view(element_name):
                 elif not toggled and is_assigned:
                     if artifact in assigned:
                         assigned.remove(artifact)
-                        # Ensure graph updates when artifacts are removed
-                        sst.update_graph = True
                         update_data_store()
                         st.rerun()
 
