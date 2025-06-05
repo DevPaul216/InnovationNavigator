@@ -25,8 +25,9 @@ from website_parser import get_url_text_and_images
 data_store_path = os.path.join("stores", "data_stores")
 # Define color scheme
 COLOR_BLOCKED = "rgb(250, 240, 220)"
-COLOR_COMPLETED = "rgb(104, 223, 200)"
+COLOR_COMPLETED = "rgb(104, 223, 200)" 
 COLOR_IN_PROGRESS = "rgb(255, 165, 0)"
+COLOR_AVAILABLE = "rgb(221, 221, 255)"
 
 
 
@@ -187,7 +188,7 @@ def get_config_value(name, for_template=True, config_value="display_name", defau
     return display_name
 
 
-def init_flow_graph(connection_states, completed_templates, blocked_templates):
+def init_flow_graph(connection_states, completed_templates, in_progress_templates, blocked_templates):
     if sst.update_graph:
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
@@ -224,8 +225,11 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
                     style = {'background-color': COLOR_BLOCKED, "color": 'black'}
                 elif template_name in completed_templates:
                     style = {'background-color': COLOR_COMPLETED, "color": 'black'}
-                else:
+                elif template_name in in_progress_templates:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
+                else:
+                    # Available to start, but not yet in progress
+                    style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
                                          target_position="left",
@@ -236,7 +240,7 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
             # Skip edges connected to the "Prompts" template
             for target in value["connects"]:
                 edge_id = f'{source}-{target}'
-                connection_state = connection_states[edge_id]
+                connection_state = connection_states.get(edge_id, False)
                 edge = StreamlitFlowEdge(edge_id, str(source), str(target), marker_end={'type': 'arrowclosed'},
                                          animated=connection_state,
                                          style={"backgroundColor": "green"})
@@ -248,30 +252,58 @@ def init_flow_graph(connection_states, completed_templates, blocked_templates):
 def init_graph():
     connection_states = {}
     completed_templates = []
+    in_progress_templates = []
+    
+    # First pass: identify completed templates and templates with some content
     for template_name, template_config in sst.template_config.items():
         is_fulfilled = True
+        has_some_content = False
         is_required = "required" not in template_config or template_config["required"]
+        
         if is_required:
             elements = template_config["elements"]
             for element_name in elements:
                 element_config = sst.elements_config[element_name]
                 if element_config["required"]:
                     element_store = sst.data_store[template_name]
-                    for element_values in element_store.values():
-                        if element_values is None or len(element_values) == 0:
+                    if element_name in element_store:
+                        values = element_store[element_name]
+                        if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                            has_some_content = True
+                        else:
                             is_fulfilled = False
+                    else:
+                        is_fulfilled = False
+            
         if is_fulfilled:
             completed_templates.append(template_name)
+        elif has_some_content:
+            in_progress_templates.append(template_name)
+            
+        # Set connection states for edges
         for target in template_config["connects"]:
             edge_id = f"{template_name}-{target}"
             connection_states[edge_id] = is_fulfilled
+    
+    # Second pass: identify blocked templates
+    # A template is blocked if all templates pointing to it are not completed
     blocked_templates = []
     for template_name, template_config in sst.template_config.items():
-        connections = template_config["connects"]
-        if template_name not in completed_templates or template_name in blocked_templates:
-            blocked_templates.extend(connections)
-    blocked_templates = list(set(blocked_templates))
-    return connection_states, completed_templates, blocked_templates
+        # Skip special templates
+        if template_name in ["Start", "End"] or template_name.lower() in ["align", "discover", "define", "develop", "deliver"]:
+            continue
+            
+        # Find prerequisites (templates that connect to this one)
+        prerequisites = []
+        for source, source_config in sst.template_config.items():
+            if template_name in source_config.get("connects", []):
+                prerequisites.append(source)
+        
+        # If template has prerequisites and none are completed, it's blocked
+        if prerequisites and not any(prereq in completed_templates for prereq in prerequisites):
+            blocked_templates.append(template_name)
+    
+    return connection_states, completed_templates, in_progress_templates, blocked_templates
 
 
 def add_artifact(toggle_key, element_name, artifact_id, artifact):
@@ -814,7 +846,7 @@ def display_template_view(selected_template_name):
 
 def legend_subview():
     # Add a legend for the graph colors
-    legend_cols = st.columns([1, 1, 1, 1,1,1,1,1], gap="small")  # Adjusted gap to reduce horizontal space
+    legend_cols = st.columns([1, 1, 1, 1], gap="small")  # Adjusted to 4 columns
     with legend_cols[0]:
         st.markdown(
             f"<div style='background-color: {COLOR_BLOCKED}; width: 20px; height: 20px; display: inline-block;'></div> Requirements not met",
@@ -822,12 +854,17 @@ def legend_subview():
         )
     with legend_cols[1]:
         st.markdown(
-            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed/Optional",
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
             unsafe_allow_html=True,
         )
     with legend_cols[2]:
         st.markdown(
-            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> Next Step",
+            f"<div style='background-color: {COLOR_IN_PROGRESS}; width: 20px; height: 20px; display: inline-block;'></div> In Progress",
+            unsafe_allow_html=True,
+        )
+    with legend_cols[3]:
+        st.markdown(
+            f"<div style='background-color: {COLOR_AVAILABLE}; width: 20px; height: 20px; display: inline-block; border: 1px solid #9999FF;'></div> Available to Start",
             unsafe_allow_html=True,
         )
 
@@ -1484,8 +1521,8 @@ view_assignment_dict = {"general": general_creation_view}
 if __name__ == '__main__':
     init_session_state()
     init_page()
-    connection_states, completed_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, blocked_templates)
+    connection_states, completed_templates, in_progress_templates, blocked_templates = init_graph()
+    init_flow_graph(connection_states, completed_templates, in_progress_templates, blocked_templates)
     open_sidebar()
     if sst.current_view == "chart":
         chart_view()
