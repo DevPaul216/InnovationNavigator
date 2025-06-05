@@ -628,18 +628,22 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
             label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
             placeholder="Choose templates to use",
             options=all_templates,
-            default=required_items
+            default=required_items,
+            key="template_multiselect"
         )
         selected_elements = {}
         columns = st.columns(2)
         position = 0
-        for selected_key in selected_keys:
-            element_store = sst.data_store[selected_key]
+        for idx, selected_key in enumerate(selected_keys):
+            element_store2 = sst.data_store[selected_key]
             with columns[position]:
-                element_names = [element for element in element_store.keys() if element != element_name]
-                selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                           options=element_names,
-                                           default=element_names, key=f"multiselect_{selected_key}")
+                element_names = [element for element in element_store2.keys() if element != element_name]
+                selection = st.multiselect(
+                    label=f"Available elements from template **{selected_key}**",
+                    options=element_names,
+                    default=element_names,
+                    key=f"multiselect_{selected_key}_{idx}"
+                )
                 selected_elements[selected_key] = selection
                 position += 1
             if position >= 2:
@@ -958,7 +962,8 @@ def general_creation_view(assigned_elements):
             label="Element to generate:",
             help="Select the element to generate artifacts for.",
             options=assigned_elements,
-            format_func=element_selection_format_func
+            format_func=element_selection_format_func,
+            key="element_selectbox"
         )
 
     # --- Step 2: Creation Mode ---
@@ -973,7 +978,8 @@ def general_creation_view(assigned_elements):
             label="Creation Mode:",
             options=["Manual", "Generate", "Import"],
             index=["Manual", "Generate", "Import"].index(creation_mode) if creation_mode in ["Manual", "Generate", "Import"] else 1,
-            help="Select the mode to create artifacts."
+            help="Select the mode to create artifacts.",
+            key="creation_mode_radio"
         )
         if new_creation_mode != creation_mode:
             sst['creation_mode'] = new_creation_mode
@@ -1003,14 +1009,14 @@ def general_creation_view(assigned_elements):
                     min_value=0.0,
                     max_value=1.8,
                     step=0.1,
-                    key="temperature"
+                    key="temperature_slider"
                 )
                 top_p = st.slider(
                     "Top-P",
                     min_value=0.0,
                     max_value=1.0,
                     step=0.1,
-                    key="top_p"
+                    key="top_p_slider"
                 )
             # --- Template & Element selection (information sources) ---
             st.markdown("#### Template & Element selection (information sources)")
@@ -1020,18 +1026,22 @@ def general_creation_view(assigned_elements):
                 label="Suggested templates used as information sources for this generation (open dropdown menu to add others)",
                 placeholder="Choose templates to use",
                 options=all_templates,
-                default=required_items
+                default=required_items,
+                key="template_multiselect"
             )
             selected_elements = {}
             columns = st.columns(2)
             position = 0
-            for selected_key in selected_keys:
+            for idx, selected_key in enumerate(selected_keys):
                 element_store2 = sst.data_store[selected_key]
                 with columns[position]:
                     element_names = [element for element in element_store2.keys() if element != element_selected]
-                    selection = st.multiselect(label=f"Available elements from template **{selected_key}**",
-                                               options=element_names,
-                                               default=element_names, key=f"multiselect_{selected_key}")
+                    selection = st.multiselect(
+                        label=f"Available elements from template **{selected_key}**",
+                        options=element_names,
+                        default=element_names,
+                        key=f"multiselect_{selected_key}_{idx}"
+                    )
                     selected_elements[selected_key] = selection
                     position += 1
                 if position >= 2:
@@ -1127,7 +1137,7 @@ def general_creation_view(assigned_elements):
             help="Automatically assigns the maximum allowed number of generated artifacts after generation."
         )
         if creation_mode == "Generate":
-            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True)
+            generate_now_clicked = st.button("Generate now!", type="primary", use_container_width=True, key="generate_now_btn")
             if generate_now_clicked:
                 generate_artifacts(element_selected, is_image, True)
                 if auto_assign_max:
@@ -1149,7 +1159,7 @@ def general_creation_view(assigned_elements):
                         update_data_store()
                         st.rerun()
         elif creation_mode == "Import":
-            import_now_clicked = st.button("Import now!", type="primary", use_container_width=True)
+            import_now_clicked = st.button("Import now!", type="primary", use_container_width=True, key="import_now_btn")
             if import_now_clicked:
                 import_artifacts(element_selected, False)
         elif creation_mode == "Manual":
