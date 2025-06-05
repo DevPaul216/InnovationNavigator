@@ -220,8 +220,29 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                        data={'content': f"{template_display_name}"},
                                        node_type="output", target_position='left')
             else:
-                # Use consistent default styling for all regular nodes
-                style = {'background-color': 'white', "color": 'black', "border": "1px solid #ccc"}
+                # Calculate completion ratio for this template
+                template_config = sst.template_config[template_name]
+                elements = template_config.get("elements", [])
+                element_store = sst.data_store.get(template_name, {})
+                total_elements = len(elements)
+                filled_elements = 0
+                for element in elements:
+                    if element in element_store:
+                        values = element_store[element]
+                        if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                            filled_elements += 1
+                if total_elements == 0:
+                    completion_ratio = 0
+                else:
+                    completion_ratio = filled_elements / total_elements
+                # Choose color
+                if completion_ratio == 1.0:
+                    node_color = COLOR_COMPLETED
+                elif completion_ratio > 0:
+                    node_color = COLOR_IN_PROGRESS
+                else:
+                    node_color = COLOR_AVAILABLE
+                style = {'background-color': node_color, "color": 'black', "border": "1px solid #ccc"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                      draggable=True, focusable=False, node_type="default", source_position="right",
                                      target_position="left",
