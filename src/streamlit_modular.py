@@ -123,11 +123,6 @@ def get_full_data_store_path():
     return os.path.join(data_store_path, store_name)
 
 
-def refresh_graph():
-    connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates = init_graph()
-    init_flow_graph(connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates)
-
-
 def update_data_store():
     # Synchronize shared elements before saving
     synchronize_shared_elements(sst.data_store, sst.elements_config, sst.template_config)
@@ -146,9 +141,6 @@ def update_data_store():
     full_path = get_full_data_store_path()
     with open(full_path, "w", encoding="utf-8") as file:
         json.dump(sst.data_store, file, indent=4)
-    # Ensure the graph is updated after data changes
-    sst.update_graph = True
-    refresh_graph()
 
 
 def load_data_store():
@@ -301,7 +293,7 @@ def init_graph():
             # If the element is required but not in the store or doesn't have content
             elif is_required:
                 has_required_elements = True
-                has_all_required_content = False
+                has_all_required_content = False# Add template to appropriate list
         # Mark as completed ONLY if it has all required elements filled AND at least one element has content
         # Templates with no required elements should never be marked as completed
         if has_all_required_content and has_required_elements and has_content:
@@ -316,7 +308,7 @@ def init_graph():
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = False
-    # Identify the next recommended templates to complete (based on the flow process)
+      # Identify the next recommended templates to complete (based on the flow process)
     # Look for templates that follow completed ones in the flow
     next_templates = []
     for completed in completed_templates:
@@ -336,13 +328,7 @@ def init_graph():
     # All templates that aren't completed, in progress, or next recommended are considered "available" 
     # We're not blocking any templates, as requested
     blocked_templates = []
-
-    # Debug prints for color logic
-    print("[DEBUG] completed_templates:", completed_templates)
-    print("[DEBUG] in_progress_templates:", in_progress_templates)
-    print("[DEBUG] next_templates:", next_templates)
-    print("[DEBUG] connection_states:", connection_states)
-
+    
     return connection_states, completed_templates, in_progress_templates, next_templates, blocked_templates
 
 
