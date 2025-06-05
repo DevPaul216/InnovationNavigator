@@ -194,7 +194,6 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
         nodes = []
         for i, template_name in enumerate(sst.template_config.keys()):
             template_display_name = get_config_value(template_name)
-            # Special formatting for key templates
             special_templates = [
                 "align", "discover", "define", "develop", "deliver", "continue",
                 "empathize", "define+", "ideate", "prototype", "test"
@@ -222,11 +221,29 @@ def init_flow_graph(connection_states, completed_templates, in_progress_template
                                          data={'content': f"{template_display_name}"},
                                          node_type="output", target_position='left')
             else:
-                if template_name in completed_templates:
+                # Determine color by reading the data_store directly (like get_progress_stats)
+                elements = sst.template_config[template_name].get("elements", [])
+                element_store = sst.data_store.get(template_name, {})
+                required_elements = []
+                filled_required_elements = 0
+                for element in elements:
+                    element_config = sst.elements_config.get(element, {})
+                    is_required = element_config.get("required", True)
+                    if not is_required:
+                        continue
+                    required_elements.append(element)
+                    if element in element_store:
+                        values = element_store[element]
+                        if (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip()):
+                            filled_required_elements += 1
+                total_required = len(required_elements)
+                if total_required == 0:
+                    style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
+                elif filled_required_elements == total_required:
                     style = {'background-color': COLOR_COMPLETED, "color": 'white'}
-                elif template_name in in_progress_templates:
+                elif filled_required_elements > 0:
                     style = {'background-color': COLOR_IN_PROGRESS, "color": 'black'}
-                else:  # available
+                else:
                     style = {'background-color': COLOR_AVAILABLE, "color": 'black', "border": "1px solid #9999FF"}
                 node = StreamlitFlowNode(id=template_name, pos=(0, 0), data={'content': f"{template_display_name}"},
                                          draggable=True, focusable=False, node_type="default", source_position="right",
