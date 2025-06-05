@@ -272,8 +272,7 @@ def init_graph():
         
         # Get the element store for this template
         element_store = sst.data_store.get(template_name, {})
-        
-        for element_name in elements:
+          for element_name in elements:
             # Get element config to check if it's required
             element_config = sst.elements_config.get(element_name, {})
             is_required = element_config.get("required", True)  # Default to True if not specified
@@ -286,7 +285,7 @@ def init_graph():
                 if has_element_content:
                     has_content = True
                 
-                # Only check required elements for completion status
+                # Only track required elements for completion status
                 if is_required:
                     has_required_elements = True
                     if not has_element_content:
@@ -294,11 +293,10 @@ def init_graph():
             # If the element is required but not in the store or doesn't have content
             elif is_required:
                 has_required_elements = True
-                has_all_required_content = False
-        
-        # Add template to appropriate list
-        # Mark as completed if it has all required elements filled (or has no required elements)
-        if has_all_required_content and (has_content or not has_required_elements):
+                has_all_required_content = False# Add template to appropriate list
+        # Mark as completed ONLY if it has all required elements filled AND at least one element has content
+        # Templates with no required elements should never be marked as completed
+        if has_all_required_content and has_required_elements and has_content:
             completed_templates.append(template_name)
             # Set connection states for edges
             for target in template_config.get("connects", []):
@@ -877,7 +875,7 @@ def legend_subview():
     legend_cols = st.columns([1, 1, 1, 1], gap="small")  # Back to 4 columns for the new status
     with legend_cols[0]:
         st.markdown(
-            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed",
+            f"<div style='background-color: {COLOR_COMPLETED}; width: 20px; height: 20px; display: inline-block;'></div> Completed (All Required Elements)",
             unsafe_allow_html=True,
         )
     with legend_cols[1]:
