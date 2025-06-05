@@ -261,7 +261,7 @@ def init_graph():
         has_all_required_content = True
         
         # Skip special templates and Start/End
-        if template_name in ["Start", "End"] or template_name.lower() in ["align"]:
+        if template_name in ["Start", "End"]:
             continue
             
         # Check if template has any content
@@ -281,26 +281,12 @@ def init_graph():
                 has_element_content = (isinstance(values, list) and len(values) > 0) or (isinstance(values, str) and values.strip())
                 
                 if has_element_content:
-                    has_content = True
-                
-                # Only track required elements for completion status
-                if is_required:
-                    has_required_elements = True
-                    if not has_element_content:
-                        has_all_required_content = False
-            # If the element is required but not in the store or doesn't have content
-            elif is_required:
-                has_required_elements = True
-                has_all_required_content = False
-        # Mark as completed ONLY if it has all required elements filled AND at least one element has content
-        # Templates with no required elements should never be marked as completed
-        if has_all_required_content and has_required_elements and has_content:
-            completed_templates.append(template_name)
+                    has_content = True       
             # Set connection states for edges
             for target in template_config.get("connects", []):
                 edge_id = f"{template_name}-{target}"
                 connection_states[edge_id] = True
-        elif has_content:
+        if has_content:
             in_progress_templates.append(template_name)
             # Edges from in-progress templates are not animated
             for target in template_config.get("connects", []):
