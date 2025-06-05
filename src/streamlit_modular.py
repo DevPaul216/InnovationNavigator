@@ -1432,3 +1432,142 @@ if __name__ == '__main__':
     elif sst.current_view == "datastore_browser":
         import streamlit_datastore_browser
         streamlit_datastore_browser.main()
+
+def generation_import_details_view(element_name, generate_now_clicked=False):
+    element_config = sst.elements_config[element_name]
+    required_items = element_config['used_templates']
+    selected_resources = {}
+
+    # --- Resource selection above Generation parameters ---
+    home_url, query, number_entries_used, uploaded_files = resource_selection_view(element_name)
+
+    # --- Generation parameters with presets and sliders ---
+    with st.expander("Generation Parameters"):
+        st.session_state.setdefault("temperature", 1.0)
+        st.session_state.setdefault("top_p", 1.0)
+
+        preset_col, slider_col = st.columns([1, 2])
+
+        with preset_col:
+            st.markdown("##### Parameter Presets")
+            preset_buttons = st.columns(3)
+            if preset_buttons[0].button("Creative", key="creative_button", use_container_width=True):
+                st.session_state.update(temperature=1.6, top_p=1.0)
+            if preset_buttons[1].button("Logic", key="logic_button", use_container_width=True):
+                st.session_state.update(temperature=0.2, top_p=1.0)
+            if preset_buttons[2].button("Simplify", key="simple_button", use_container_width=True):
+                st.session_state.update(temperature=1.0, top_p=0.1)
+
+        with slider_col:
+            st.markdown("##### Fine-tune Parameters")
+            temperature = st.slider(
+                "Temperature",
+                min_value=0.0,
+                max_value=1.8,
+                step=0.1,
+                key="temperature",
+                help="Higher values produce more creative results, lower values produce more focused results"
+            )
+            top_p = st.slider(
+                "Top-P",
+                min_value=0.0,
+                max_value=1.0,
+                step=0.1,
+                key="top_p",
+                help="Controls diversity of output. Lower values make output more focused"
+            )
+            temperature = st.session_state.temperature
+            top_p = st.session_state.top_p
+
+    # --- Combine Template selection and individual elements selection ---
+    with st.expander("Information Sources"):
+        st.markdown("##### Select Templates and Elements to Use as Context")
+
+        all_templates = list(sst.template_config.keys())
+        selected_keys = st.multiselect(
+            label="Templates to use as information sources",
+            placeholder="Choose templates to use",
+            options=all_templates,
+            default=required_items,
+            help="Select templates to use as context for generation"
+        )
+
+        if selected_keys:
+            st.divider()
+            st.markdown("##### Select Elements from Each Template")
+
+            selected_elements = {}
+            columns = st.columns(2)
+            position = 0
+
+            for selected_key in selected_keys:
+                element_store = sst.data_store[selected_key]
+                with columns[position]:
+                    with st.container(border=True):
+                        st.markdown(f"**{selected_key}**")
+                        element_names = [element for element in element_store.keys() if element != element_name]
+                        selection = st.multiselect(
+                            label="Available elements",
+                            options=element_names,
+                            default=element_names, 
+                            key=f"multiselect_{selected_key}"
+                        )
+                        selected_elements[selected_key] = selection
+                position = (position + 1) % 2
+
+            for selected_key, selected_elements_list in selected_elements.items():
+                element_store = sst.data_store[selected_key]
+                for name in selected_elements_list:
+                    resource_text = ""
+                    element_value = element_store[name]
+                    for value in element_value:
+                        resource_text += f"- {value}\n"
+                    if resource_text.strip() != "":
+                        name_display = sst.elements_config[name].get("display_name", name)
+                        description = sst.elements_config[name].get("description", "No description available.")
+                        resource_text = f"_{description}_\n{resource_text}"
+                        selected_resources[name_display] = resource_text
+
+    # --- Combine Prompt and Schema into one expander ---
+    prompt_name = element_config['prompt_name']
+    prompt = load_prompt(prompt_name)
+    schema = None
+    if not element_config.get("type") == "image":
+        schema_name = element_config['schema_name']
+        schema = load_schema(schema_name)
+
+    with st.expander("Prompt & Response Details"):
+        prompt_tab, schema_tab, context_tab = st.tabs(["Prompt", "Response Schema", "Context"])
+
+        with prompt_tab:
+            st.markdown(f"##### System Prompt: `{prompt_name}.txt`")
+            if prompt:
+                with st.container(border=False, height=300):
+                    st.markdown(prompt)
+            else:
+                st.error("No prompt assigned to this element")
+
+        with schema_tab:
+            if schema is not None:
+                st.markdown(f"##### Response Schema: `{schema_name}.json`")
+                with st.container(border=False, height=300):
+                    st.json(schema)
+            else:
+                st.warning("No schema defined for this element")
+
+        with context_tab:
+            st.markdown("##### Contextual Information Used in Generation")
+            if selected_resources:
+                with st.container(border=False, height=300):
+                    user_prompt = "\n".join([f"**{key}:**\n{value}\n" for key, value in selected_resources.items()])
+                    st.markdown(user_prompt)
+            else:
+                st.info("No contextual information selected yet")
+
+    if generate_now_clicked:
+        with st.spinner("Generating..."):
+            add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
+            if not element_config.get("type") == "image":
+                handle_response(element_name, prompt, schema, selected_resources, temperature, top_p)
+            else:
+                handle_response_image(element_name, prompt, selected_resources)
