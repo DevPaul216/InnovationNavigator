@@ -865,7 +865,7 @@ def get_progress_stats():
 def chart_view():
     add_empty_lines(3)
     # Progress bar next to project title
-    progress = get_progress_stats()
+    progress, frac_elements_filled, frac_templates_2_3 = get_progress_stats()
     cols = st.columns([3, 7, 1])
     with cols[0]:
         st.subheader(f"Project: {sst.project_name}")
@@ -888,11 +888,7 @@ def chart_view():
             allow_zoom=True,
             pan_on_drag=False,
         )
-    # Prevent selection of special templates
-    special_templates = [
-        "align", "discover", "define", "develop", "deliver", "continue",
-        "empathize", "define+", "ideate", "prototype", "test"
-    ]
+
     if updated_state.selected_id is not None and updated_state.selected_id.lower() not in special_templates:
         sst.selected_template_name = updated_state.selected_id
         sst.current_view = "detail"
