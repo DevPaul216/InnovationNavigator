@@ -5,18 +5,18 @@
     "properties": {
       "InnovationIssue": {
         "type": "array",
-        "description": "A list of issues or challenges that need to be solved",
+        "description": "A list of problem, issues or challenges that need to be solved",
         "items": {
           "type": "string",
-          "description": "An issue that needs to be solved."
+          "description": "A single problem, issue or challange that needs to be solved."
         }
       },
       "TargetGroup": {
         "type": "array",
-        "description": "A list of people or groups affected by the issue.",
+        "description": "A list of differnt people or groups affected by the issue.",
         "items": {
           "type": "string",
-          "description": "A person, group or demografic that is affected by the issue."
+          "description": "A single person, group or demografic that is affected by the issue."
         }
       }
     },

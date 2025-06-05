@@ -15,6 +15,7 @@ from streamlit_flow.elements import StreamlitFlowNode, StreamlitFlowEdge
 from streamlit_flow.layouts import LayeredLayout
 from streamlit_flow.state import StreamlitFlowState
 from utils import synchronize_shared_elements
+from about_view import about_view
 
 from experimental.streamlit_artifact_generation import scrape_texts
 # from streamlit_idea_generation import idea_generation_view  # commented out
@@ -1263,7 +1264,7 @@ def detail_view():
     update_data_store()
 
 
-from about_view import about_view
+
 
 def open_sidebar():
     sst.sidebar_state = "expanded"
@@ -1297,7 +1298,7 @@ def open_sidebar():
         st.rerun()
 
     # button for other stuff
-    if st.sidebar.button(label="About :(", type="secondary", use_container_width=True):
+    if st.sidebar.button(label="About", type="secondary", use_container_width=True):
         sst.selected_template_name = "About"
         sst.current_view = "about"
         sst.sidebar_state = "expanded"
