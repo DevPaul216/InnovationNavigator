@@ -595,9 +595,10 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                 st.info("No contextual information selected yet")
         # Clear existing generated artifacts for this element when generating new ones
         # Keep confirmed artifacts so user can see their previous selections
-        if element_name in sst.generated_artifacts:
-            del sst.generated_artifacts[element_name]
-        
+        if generate_now_clicked:
+            if element_name in sst.generated_artifacts:
+                del sst.generated_artifacts[element_name]
+            
         with st.spinner("Generating..."):
             add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
             if not is_image:
