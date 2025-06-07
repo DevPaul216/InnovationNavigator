@@ -26,48 +26,6 @@ def load_templates_config() -> Dict:
         return {}
 
 
-def get_prompt_categories(txt_files: List[str], elements_config: Dict) -> Dict[str, List[str]]:
-    """Organize prompts by their categories/templates."""
-    categories = {
-        "Core Generation": [],
-        "Import/Utility": [],
-        "Business Models": [],
-        "Analysis & Research": [],
-        "Product & Design": [],
-        "Ideas & Innovation": [],
-        "Uncategorized": []
-    }
-    
-    # Categorize prompts based on their names and usage
-    for file in txt_files:
-        base_name = file.replace('.txt', '')
-        
-        # Check if prompt is used by elements
-        used_by_elements = []
-        for element_name, element_config in elements_config.items():
-            if element_config.get("prompt_name") == base_name or element_config.get("prompt_name_import") == base_name:
-                used_by_elements.append(element_name)
-        
-        # Categorize based on name patterns
-        if "import" in base_name.lower() or "generic" in base_name.lower():
-            categories["Import/Utility"].append(file)
-        elif any(term in base_name.lower() for term in ["businessmodel", "swot", "pestel", "canvas", "strategy"]):
-            categories["Business Models"].append(file)
-        elif any(term in base_name.lower() for term in ["trends", "empathy", "persona", "research", "feedback"]):
-            categories["Analysis & Research"].append(file)
-        elif any(term in base_name.lower() for term in ["product", "design", "testcard", "experiment", "image"]):
-            categories["Product & Design"].append(file)
-        elif any(term in base_name.lower() for term in ["idea", "innovation", "rating", "problem", "solution", "challenge"]):
-            categories["Ideas & Innovation"].append(file)
-        elif used_by_elements:
-            categories["Core Generation"].append(file)
-        else:
-            categories["Uncategorized"].append(file)
-    
-    # Remove empty categories
-    return {k: v for k, v in categories.items() if v}
-
-
 def get_prompt_info(filename: str, elements_config: Dict) -> Tuple[List[str], str]:
     """Get information about which elements use this prompt and its description."""
     base_name = filename.replace('.txt', '')
@@ -130,9 +88,7 @@ def prompt_editor_view(folder_path):
         txt_files.sort()  # Sort alphabetically
     except Exception as e:
         st.error(f"Could not read prompt folder: {e}")
-        return
-
-    # Initialize session state
+        return    # Initialize session state
     if "selected_file" not in st.session_state:
         st.session_state.selected_file = txt_files[0] if txt_files else None
     if "confirm_delete" not in st.session_state:
@@ -148,30 +104,29 @@ def prompt_editor_view(folder_path):
             if not txt_files:
                 st.info("No prompt files found.")
             else:
-                # Organize prompts by categories
-                categories = get_prompt_categories(txt_files, elements_config)
-                
-                for category, files in categories.items():
-                    if files:
-                        with st.expander(f"📂 {category} ({len(files)})", expanded=True):
-                            for file in files:
-                                used_by, description = get_prompt_info(file, elements_config)
-                                
-                                # Create a clickable prompt item
-                                cols = st.columns([1])
-                                with cols[0]:
-                                    is_selected = st.session_state.selected_file == file
-                                    
-                                    if st.button(
-                                        f"📄 {file.replace('.txt', '')}",
-                                        key=f"select_{file}",
-                                        help=f"Used by: {', '.join(used_by) if used_by else 'Not linked'}\n{description[:100] + '...' if len(description) > 100 else description}",
-                                        use_container_width=True,
-                                        type="primary" if is_selected else "secondary"
-                                    ):
-                                        st.session_state.selected_file = file
-                                        st.session_state.confirm_delete = False
-                                        st.rerun()
+                # Display all prompts in a simple list
+                for file in txt_files:
+                    used_by, description = get_prompt_info(file, elements_config)
+                    
+                    # Create button label with used by info
+                    base_name = file.replace('.txt', '')
+                    if used_by:
+                        button_label = f"📄 {base_name} • Used by: {', '.join(used_by)}"
+                    else:
+                        button_label = f"📄 {base_name} • Not linked"
+                    
+                    is_selected = st.session_state.selected_file == file
+                    
+                    if st.button(
+                        button_label,
+                        key=f"select_{file}",
+                        help=f"{description[:100] + '...' if len(description) > 100 else description}" if description else "No description available",
+                        use_container_width=True,
+                        type="primary" if is_selected else "secondary"
+                    ):
+                        st.session_state.selected_file = file
+                        st.session_state.confirm_delete = False
+                        st.rerun()
 
         # File management section
         with st.container(border=True):
