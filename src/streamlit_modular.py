@@ -592,7 +592,7 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     user_prompt = "\n".join([f"**{key}:**\n{value}\n" for key, value in selected_resources.items()])
                     st.markdown(user_prompt)
             else:
-                st.info("No contextual information selected yet")    if generate_now_clicked:
+                st.info("No contextual information selected yet")
         # Clear existing generated artifacts for this element when generating new ones
         # Keep confirmed artifacts so user can see their previous selections
         if element_name in sst.generated_artifacts:
