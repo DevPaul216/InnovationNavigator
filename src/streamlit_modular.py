@@ -592,9 +592,12 @@ def generate_artifacts(element_name, is_image=False, generate_now_clicked=False)
                     user_prompt = "\n".join([f"**{key}:**\n{value}\n" for key, value in selected_resources.items()])
                     st.markdown(user_prompt)
             else:
-                st.info("No contextual information selected yet")
-
-    if generate_now_clicked:
+                st.info("No contextual information selected yet")    if generate_now_clicked:
+        # Clear existing generated artifacts for this element when generating new ones
+        # Keep confirmed artifacts so user can see their previous selections
+        if element_name in sst.generated_artifacts:
+            del sst.generated_artifacts[element_name]
+        
         with st.spinner("Generating..."):
             add_resources(selected_resources, home_url, number_entries_used, query, uploaded_files)
             if not is_image:
@@ -642,13 +645,16 @@ def import_artifacts(element_name, generate_now_clicked=False):
         with schema_tab:
             st.markdown(f"##### Import Schema: `{schema_name}.json`")
             with st.container(border=False, height=300):
-                st.json(schema)
-
-    # Only run the import if the button was clicked
+                st.json(schema)    # Only run the import if the button was clicked
     if generate_now_clicked:
         if not uploaded_files:
             st.error("Please upload a document before importing")
         else:
+            # Clear existing generated artifacts for this element when importing new ones
+            # Keep confirmed artifacts so user can see their previous selections
+            if element_name in sst.generated_artifacts:
+                del sst.generated_artifacts[element_name]
+            
             with st.spinner("Processing uploaded document..."):
                 selected_resources = {}
                 add_resources(selected_resources, None, None, None, uploaded_files)
