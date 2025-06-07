@@ -67,10 +67,10 @@ def about_view():
     st.markdown(
         """
         ### Getting Started
-        1. Click **Start** in the sidebar to create a new innovation project.
+        1. Click **Create new Project** below or **Project** in the sidebar to create a new innovation project.
         2. Define your challenge and target audience.
         3. Follow the suggested templates in sequence.
-        4. Use AI assistance to generate insights and ideas.
+        4. Use AI to generate insights and ideas.
         5. Iterate and refine based on feedback and learnings.
         """
     )
