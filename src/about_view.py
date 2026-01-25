@@ -84,7 +84,8 @@ def about_view():
         sst.update_graph = True
         st.rerun()
 
-    st.markdown("25.01.2026: small bugfixes.")
+    st.markdown("12.2025: switched model to gpt-5-mini")
+    st.markdown("25.01.2026: small bugfixes, increased max token length, adapted some prompts...")
     st.markdown(
         """
         <div style='text-align: center; color: #666; margin-top: 20px;'>
