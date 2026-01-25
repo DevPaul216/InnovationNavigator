@@ -1272,40 +1272,31 @@ def detail_view():
     nav_cols = st.columns([1, 1, 1], gap="large")
     with nav_cols[0]:
         if prev_template and show_nav:
-            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary"):
-                if unsaved_input_warning:
-                    st.error("Please confirm your input first before switching templates.")
-                    st.stop()
-                else:
-                    reset_template_ui_state()
-                    sst.selected_template_name = prev_template
-                    sst.current_view = "detail"
-                    sst.sidebar_state = "expanded"
-                    st.rerun()
+            if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary", 
+                        disabled=unsaved_input_warning, help="Confirm your input first" if unsaved_input_warning else None):
+                reset_template_ui_state()
+                sst.selected_template_name = prev_template
+                sst.current_view = "detail"
+                sst.sidebar_state = "expanded"
+                st.rerun()
     with nav_cols[1]:
         if show_nav:
-            if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
-                if unsaved_input_warning:
-                    st.error("Please confirm your input first before switching views.")
-                    st.stop()
-                else:
-                    reset_template_ui_state()
-                    sst.selected_template_name = None
-                    sst.current_view = "chart"
-                    sst.sidebar_state = "expanded"
-                    st.rerun()
+            if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary",
+                        disabled=unsaved_input_warning, help="Confirm your input first" if unsaved_input_warning else None):
+                reset_template_ui_state()
+                sst.selected_template_name = None
+                sst.current_view = "chart"
+                sst.sidebar_state = "expanded"
+                st.rerun()
     with nav_cols[2]:
         if next_template and show_nav:
-            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary"):
-                if unsaved_input_warning:
-                    st.error("Please confirm your input first before switching templates.")
-                    st.stop()
-                else:
-                    reset_template_ui_state()
-                    sst.selected_template_name = next_template
-                    sst.current_view = "detail"
-                    sst.sidebar_state = "expanded"
-                    st.rerun()
+            if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary",
+                        disabled=unsaved_input_warning, help="Confirm your input first" if unsaved_input_warning else None):
+                reset_template_ui_state()
+                sst.selected_template_name = next_template
+                sst.current_view = "detail"
+                sst.sidebar_state = "expanded"
+                st.rerun()
 
     # Centered template name and description with larger text
     st.markdown(f"""
