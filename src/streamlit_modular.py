@@ -930,6 +930,8 @@ def general_creation_view(assigned_elements):
             options=assigned_elements,
             format_func=element_selection_format_func
         )
+        # Track the selected element for unsaved input checking
+        sst.last_element_selected = element_selected
     with top_cols[1]:
         # Use st.radio for robust single selection, avoid session state key conflicts
         new_creation_mode = st.radio(
@@ -1181,6 +1183,28 @@ def check_can_add(element_store, element_selected, elements_to_add):
     return None
 
 
+def reset_template_ui_state():
+    """Reset UI state when switching templates."""
+    sst['creation_mode'] = 'Generate'
+    st.session_state['auto_assign_max_toggle'] = False
+    
+    # Clear all multiselect keys for templates and their elements
+    keys_to_delete = []
+    for key in st.session_state.keys():
+        if key.startswith('multiselect_') or key == 'selected_keys':
+            keys_to_delete.append(key)
+    for key in keys_to_delete:
+        del st.session_state[key]
+
+
+def has_unsaved_input(element_selected):
+    """Check if there is unsaved input in the text area."""
+    textarea_key = f"textarea_{element_selected}"
+    if textarea_key in st.session_state:
+        return str(st.session_state[textarea_key]).strip() != ""
+    return False
+
+
 def artifact_input_subview(element_selected, element_store):
     input_text = st.text_area(label="Type in artifacts manually:", key=f"textarea_{element_selected}",
                               label_visibility="collapsed")
@@ -1235,28 +1259,53 @@ def detail_view():
 
     # Hide navigation buttons on the projects screen (when selected_template_name == 'Start')
     show_nav = str(sst.selected_template_name).lower() != "start"
+    
+    # Check for unsaved input from template_edit_subview
+    unsaved_input_warning = False
+    if show_nav and 'last_element_selected' in sst:
+        unsaved_input_warning = has_unsaved_input(sst.last_element_selected)
+    
+    # Show warning if there's unsaved input
+    if unsaved_input_warning:
+        st.warning("⚠️ You have unconfirmed text input. Click 'Confirm' before switching templates or your changes will be lost.")
+    
     nav_cols = st.columns([1, 1, 1], gap="large")
     with nav_cols[0]:
         if prev_template and show_nav:
             if st.button("\u25C0 Previous Template", key="prev_template", use_container_width=True, type="primary"):
-                sst.selected_template_name = prev_template
-                sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
-                st.rerun()
+                if unsaved_input_warning:
+                    st.error("Please confirm your input first before switching templates.")
+                    st.stop()
+                else:
+                    reset_template_ui_state()
+                    sst.selected_template_name = prev_template
+                    sst.current_view = "detail"
+                    sst.sidebar_state = "expanded"
+                    st.rerun()
     with nav_cols[1]:
         if show_nav:
             if st.button("\u2302 Back to Overview", key="back_to_overview", use_container_width=True, type="primary"):
-                sst.selected_template_name = None
-                sst.current_view = "chart"
-                sst.sidebar_state = "expanded"
-                st.rerun()
+                if unsaved_input_warning:
+                    st.error("Please confirm your input first before switching views.")
+                    st.stop()
+                else:
+                    reset_template_ui_state()
+                    sst.selected_template_name = None
+                    sst.current_view = "chart"
+                    sst.sidebar_state = "expanded"
+                    st.rerun()
     with nav_cols[2]:
         if next_template and show_nav:
             if st.button("Next Template \u25B6", key="next_template", use_container_width=True, type="primary"):
-                sst.selected_template_name = next_template
-                sst.current_view = "detail"
-                sst.sidebar_state = "expanded"
-                st.rerun()
+                if unsaved_input_warning:
+                    st.error("Please confirm your input first before switching templates.")
+                    st.stop()
+                else:
+                    reset_template_ui_state()
+                    sst.selected_template_name = next_template
+                    sst.current_view = "detail"
+                    sst.sidebar_state = "expanded"
+                    st.rerun()
 
     # Centered template name and description with larger text
     st.markdown(f"""
