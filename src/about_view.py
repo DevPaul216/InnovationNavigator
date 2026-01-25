@@ -74,6 +74,7 @@ def about_view():
         5. Iterate and refine based on feedback and learnings.
         """
     )
+    "st.markdown('---')"
 
     if st.button("Create New Project", type="primary", use_container_width=True):
         from streamlit_modular import sst
@@ -83,7 +84,7 @@ def about_view():
         sst.update_graph = True
         st.rerun()
 
-    st.markdown("---")
+    st.markdown("25.01.2026: small bugfixes.")
     st.markdown(
         """
         <div style='text-align: center; color: #666; margin-top: 20px;'>
